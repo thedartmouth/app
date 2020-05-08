@@ -1,6 +1,6 @@
 import * as WebBrowser from 'expo-web-browser';
 import * as React from 'react';
-import { Image, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Button, Image, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 
 import { MonoText } from '../components/StyledText';
@@ -32,6 +32,12 @@ export default function HomeScreen() {
           <Text style={styles.getStartedText}>
             Change any of the text, save the file, and your app will automatically reload.
           </Text>
+
+          <Button
+            title="Hello!"
+            color="#841584"
+            accessibilityLabel="Learn more about this purple button"
+          />
         </View>
 
         <View style={styles.helpContainer}>
