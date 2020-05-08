@@ -1,11 +1,16 @@
 import * as WebBrowser from 'expo-web-browser';
 import * as React from 'react';
+<<<<<<< HEAD
 import { Button, Image, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+=======
+import { Alert, Button, Image, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+>>>>>>> 26613ccf5d9f9ce2903356ab9f0bb1bb49546a55
 import { ScrollView } from 'react-native-gesture-handler';
-
 import { MonoText } from '../components/StyledText';
 
+
 export default function HomeScreen() {
+
   return (
     <View style={styles.container}>
       <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
@@ -30,7 +35,7 @@ export default function HomeScreen() {
           </View>
 
           <Text style={styles.getStartedText}>
-            Change any of the text, save the file, and your app will automatically reload.
+            Change any of the text, save the file, and your app will automatically reload. 
           </Text>
 
           <Button
@@ -38,6 +43,25 @@ export default function HomeScreen() {
             color="#841584"
             accessibilityLabel="Learn more about this purple button"
           />
+        </View>
+
+        <View style = {styles.buttonDemo}>
+          <Button color="#ff5c5c"
+            title="Button 1"
+            onPress={() => Alert.alert('Cannot press this one')}/>
+          
+          <Button color = "#00008b"
+            title="Button 2"
+            onPress={() => Alert.alert('Cannot press this one')}/>
+
+          <Button color = "#a52a2a"
+            title="Button 3"
+            onPress={() => Alert.alert('Cannot press this one')}/>
+
+          <Button color = "#8a2be2"
+            title="Button 4"
+            onPress={() => Alert.alert('Cannot press this one')}/>
+
         </View>
 
         <View style={styles.helpContainer}>
@@ -181,4 +205,17 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#2e78b7',
   },
+  buttonDemo: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly'
+  },
+  button1: {
+
+  },
+  button2: {
+
+  },
+  button3: {
+
+  }
 });
