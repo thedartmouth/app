@@ -1,6 +1,6 @@
 import * as WebBrowser from 'expo-web-browser';
 import * as React from 'react';
-import { Alert, Button, Image, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, Button, Image, Platform, StyleSheet, Text, TouchableOpacity, View, flex } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { MonoText } from '../components/StyledText';
 
@@ -65,15 +65,31 @@ export default function HomeScreen() {
             <Text style={styles.helpLinkText}>Help, it didn’t automatically reload!</Text>
           </TouchableOpacity>
         </View>
+          
+        <View style={styles.buttonContainer}>
+            <View style={styles.button}>
+                <TouchableOpacity onPress={handleFirstButton}>
+                <Text style={styles.getStartedText}>This is a button </Text>
+                </TouchableOpacity>
+            </View>
+          <View style={styles.button}>
+              <TouchableOpacity onPress={handleFirstButton}>
+              <Text style={styles.buttonText}>This is a larger button </Text>
+              </TouchableOpacity>
+          </View>
+        </View>
+          
       </ScrollView>
-
+          
+    
+     
       <View style={styles.tabBarInfoContainer}>
         <Text style={styles.tabBarInfoText}>This is a tab bar. You can edit it in:</Text>
 
         <View style={[styles.codeHighlightContainer, styles.navigationFilename]}>
           <MonoText style={styles.codeHighlightText}>navigation/BottomTabNavigator.js</MonoText>
         </View>
-      </View>
+          </View>
     </View>
   );
 }
@@ -112,6 +128,10 @@ function handleHelpPress() {
   WebBrowser.openBrowserAsync(
     'https://docs.expo.io/versions/latest/get-started/create-a-new-app/#making-your-first-change'
   );
+}
+
+function handleFirstButton() {
+    alert("button pressed")
 }
 
 const styles = StyleSheet.create({
@@ -162,6 +182,20 @@ const styles = StyleSheet.create({
     lineHeight: 24,
     textAlign: 'center',
   },
+    buttonContainer: {
+        display: flex
+    },
+    button: {
+        alignItems: 'center',
+        marginBottom: 10,
+        alignSelf: 'center',
+        backgroundColor: '#DDDDDD',
+        padding: 10
+    },
+    buttonText: {
+        color: '#4c4baf',
+        fontSize: 20
+    },
   tabBarInfoContainer: {
     position: 'absolute',
     bottom: 0,
