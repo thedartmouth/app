@@ -1,74 +1,65 @@
 import { Ionicons } from '@expo/vector-icons';
 import * as WebBrowser from 'expo-web-browser';
 import * as React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, Switch } from 'react-native';
 import { RectButton, ScrollView } from 'react-native-gesture-handler';
 
 export default function LinksScreen() {
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
-      <OptionButton
-        icon="md-school"
-        label="Read the Expo documentation"
-        onPress={() => WebBrowser.openBrowserAsync('https://docs.expo.io')}
-      />
-
-      <OptionButton
-        icon="md-compass"
-        label="Read the React Navigation documentation"
-        onPress={() => WebBrowser.openBrowserAsync('https://reactnavigation.org')}
-      />
-
-      <OptionButton
-        icon="ios-chatboxes"
-        label="Ask a question on the forums"
-        onPress={() => WebBrowser.openBrowserAsync('https://forums.expo.io')}
-        isLastOption
-      />
-    </ScrollView>
-  );
-}
-
-function OptionButton({ icon, label, onPress, isLastOption }) {
-  return (
-    <RectButton style={[styles.option, isLastOption && styles.lastOption]} onPress={onPress}>
-      <View style={{ flexDirection: 'row' }}>
-        <View style={styles.optionIconContainer}>
-          <Ionicons name={icon} size={22} color="rgba(0,0,0,0.35)" />
-        </View>
-        <View style={styles.optionTextContainer}>
-          <Text style={styles.optionText}>{label}</Text>
+    <View style={styles.container}>
+      <View style={styles.intro}>
+        <Text style={styles.header1}>Hello, Jessica.</Text>
+        <View>
+          <Text>coffee cups earned</Text>
         </View>
       </View>
-    </RectButton>
+
+      <View>
+        <Text style={styles.header2}>Notification settings</Text>
+        <View style={styles.setting}>
+          <Text>Trending articles</Text>
+          <Switch/>
+        </View>
+        <View style={styles.setting}>
+          <Text>Followed tags</Text>
+          <Switch/>
+        </View>
+        <View style={styles.setting}>
+          <Text>Followed writers</Text>
+          <Switch/>
+        </View>
+      </View>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  header1: {
+    fontSize: 35,
+    marginTop: 40,
+    marginBottom: 40,
+  },
+  header2: {
+    fontSize: 25,
+    marginTop: 40,
+    marginBottom: 5,
+    marginLeft: 10,
+    marginRight: 10,
+  },
   container: {
     flex: 1,
     backgroundColor: '#fafafa',
+    alignItems: 'center',
   },
-  contentContainer: {
-    paddingTop: 15,
+  intro: {
+    alignItems: 'center',
   },
-  optionIconContainer: {
-    marginRight: 12,
-  },
-  option: {
-    backgroundColor: '#fdfdfd',
-    paddingHorizontal: 15,
-    paddingVertical: 15,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderBottomWidth: 0,
-    borderColor: '#ededed',
-  },
-  lastOption: {
-    borderBottomWidth: StyleSheet.hairlineWidth,
-  },
-  optionText: {
-    fontSize: 15,
-    alignSelf: 'flex-start',
-    marginTop: 1,
+  setting: {
+    flex: 0,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 5,
+    marginBottom: 5,
   },
 });
