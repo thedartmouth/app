@@ -1,33 +1,37 @@
-import { Ionicons } from '@expo/vector-icons';
-import * as WebBrowser from 'expo-web-browser';
 import * as React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Divider } from 'react-native-elements';
-import { RectButton, ScrollView } from 'react-native-gesture-handler';
+import { ScrollView } from 'react-native-gesture-handler';
 
 class PollsScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      polls: []
+      polls: [] // React component state
     }
   }
 
+  /**
+   * This function is called by React when the component begins to mount (render).
+   * Here, we use it to initialize a sample poll.
+   */
   componentDidMount = () => {
     const polls = []
     for (let i = 0; i < 10; i += 1) {
       const poll = {
+        _id: Math.random(),
         question: 'poll title',
         answers: [
-          {text: 'answer'},
-          {text: 'answer'},
-          {text: 'answer'},
-          {text: 'answer'}
+          {text: 'answer 1'},
+          {text: 'answer 2'},
+          {text: 'answer 3'},
+          {text: 'answer 4'}
         ]
       }
-      polls.push(JSON.parse(JSON.stringify(poll)))
+      const copyOfPoll = JSON.parse(JSON.stringify(poll));
+      polls.push(copyOfPoll) // copies the object so it's not referencing itself
     }
-    this.setState({polls: polls})
+    this.setState({polls: polls}) // sets this poll into the React component state
   }
 
   render() {
@@ -35,18 +39,18 @@ class PollsScreen extends React.Component {
       <ScrollView style={styles.container}>
         {this.state.polls.map(poll => {
           return (
-            <View style={styles.poll}>
+            <View key={poll._id} style={styles.poll}>
               <Text style={styles.pollQuestion}>{poll.question}</Text>
               <View>
                 {poll.answers.map(answer => {
-                  return (<Text>{answer.text}</Text>)
+                  return (<Text key={answer.text}>{answer.text}</Text>)
                 })}
               </View>
-            <Divider />
-          </View>
+              <Divider />
+              <Text>referencing article</Text>
+            </View>
           )
         })}
-        <View></View>
       </ScrollView>
     )
   }
@@ -61,30 +65,12 @@ const styles = StyleSheet.create({
   },
   poll: {
     display: 'flex',
+    flexDirection: 'column',
     paddingTop: 15,
     marginBottom: 15,
   },
   pollQuestion: {
     fontSize: 30,
-  },
-  optionIconContainer: {
-    marginRight: 12,
-  },
-  option: {
-    backgroundColor: '#fdfdfd',
-    paddingHorizontal: 15,
-    paddingVertical: 15,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderBottomWidth: 0,
-    borderColor: '#ededed',
-  },
-  lastOption: {
-    borderBottomWidth: StyleSheet.hairlineWidth,
-  },
-  optionText: {
-    fontSize: 15,
-    alignSelf: 'flex-start',
-    marginTop: 1,
   },
 });
 
