@@ -1,6 +1,8 @@
 import * as React from 'react';
-import { StyleSheet, Text, View, Switch } from 'react-native';
+import { StyleSheet, Text, View, Switch, TouchableOpacity } from 'react-native';
 import { Divider } from 'react-native-elements';
+import { Ionicons } from '@expo/vector-icons';
+import { Stack, Queue } from "react-native-spacing-system";
 import { Typography } from '../constants'; 
 
 export default function ProfileScreen() {
@@ -8,24 +10,57 @@ export default function ProfileScreen() {
     <View style={styles.screen}>
       <View style={styles.intro}>
         <Text style={styles.title}>Hello, Jessica.</Text>
+        <Stack size={36}></Stack>
         <View style={styles.reward}>
           <Text style={styles.rewardText}>coffee cups earned</Text>
         </View>
       </View>
       <Divider style={styles.divider} />
-      <View style={styles.settings}>
-        <Text style={styles.settingsHeading}>Notification settings</Text>
-        <View style={styles.setting}>
-          <Text style={Typography.p}>Trending articles</Text>
-          <Switch/>
+      <View style={styles.contentBoxes}>
+        <View style={styles.contentBox}>
+          <Text style={styles.heading}>Your stuff</Text>
+          <Stack size={12}></Stack>
+          <Divider style={styles.thinDivider} />
+          <Stack size={4}></Stack>
+          <TouchableOpacity style={styles.rowItem}>
+              <Text style={Typography.p}>Bookmarks</Text>
+              <Ionicons name='ios-arrow-forward' size={24} style={styles.rowItemIcon}></Ionicons>
+          </TouchableOpacity>
+          <Stack size={4}></Stack>
+          <Divider style={styles.thinDivider} />
+          <Stack size={4}></Stack>
+          <TouchableOpacity style={styles.rowItem}>
+              <Text style={Typography.p}>Followed authors</Text>
+              <Ionicons name='ios-arrow-forward' size={24} style={styles.rowItemIcon}></Ionicons>
+          </TouchableOpacity>
+          <Stack size={4}></Stack>
+          <Divider style={styles.thinDivider} />
+          <Stack size={4}></Stack>
+          <TouchableOpacity style={styles.rowItem}>
+                <Text style={Typography.p}>Completed polls</Text>
+                <Ionicons name='ios-arrow-forward' size={24} style={styles.rowItemIcon}></Ionicons>
+          </TouchableOpacity>
+          <Stack size={4}></Stack>
+          <Divider style={styles.thinDivider} />
         </View>
-        <View style={styles.setting}>
-          <Text style={Typography.p}>Followed tags</Text>
-          <Switch/>
-        </View>
-        <View style={styles.setting}>
-          <Text style={Typography.p}>Followed writers</Text>
-          <Switch/>
+        <Stack size={24}></Stack>
+        <View style={styles.contentBox}>
+          <Text style={styles.heading}>Notification settings</Text>
+          <Stack size={12}></Stack>
+          <View style={styles.rowItem}>
+            <Text style={Typography.p}>Trending articles</Text>
+            <Switch/>
+          </View>
+          <Stack size={8}></Stack>
+          <View style={styles.rowItem}>
+            <Text style={Typography.p}>Followed tags</Text>
+            <Switch/>
+          </View>
+          <Stack size={8}></Stack>
+          <View style={styles.rowItem}>
+            <Text style={Typography.p}>Followed writers</Text>
+            <Switch/>
+          </View>
         </View>
       </View>
     </View>
@@ -44,7 +79,6 @@ const styles = StyleSheet.create({
   },
   title: {
     ...Typography.h1,
-    marginBottom: 36,
   },
   reward: {
     
@@ -56,22 +90,24 @@ const styles = StyleSheet.create({
     height: 1,
     marginVertical: 36,
   },
-  settings: {
+  contentBoxes : {
   },
-  settingsHeading: {
+  contentBox: {
+  },
+  heading: {
     ...Typography.h2,
-    marginBottom: 18,
   },
-  setting: {
+  rowItem: {
     flex: 0,
+    height: 31,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginTop: 5,
-    marginBottom: 5,
   },
-  header2: {
-    marginTop: 24,
-    marginBottom: 24,
+  rowItemIcon: {
+    marginRight: 18,
+  },
+  thinDivider: {
+    height: 0,
   },
 });
