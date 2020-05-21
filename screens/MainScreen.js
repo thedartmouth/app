@@ -138,9 +138,6 @@ const styles = StyleSheet.create({
   },
   articleBox: {
     flex: 1,
-    borderStyle: 'solid',
-    borderColor: '#BDBDBD',
-    borderBottomWidth: 1,
   },
   articleImage: {
     width: 350,
@@ -153,6 +150,9 @@ const styles = StyleSheet.create({
   },
   articleContent: {
     padding: 30,
+    borderStyle: 'solid',
+    borderColor: '#BDBDBD',
+    borderBottomWidth: 0.5,
   },
   articleCategory: {
     fontSize: 15,
