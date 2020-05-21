@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { StyleSheet, Text, View, Switch, TouchableOpacity } from 'react-native';
 import { Divider } from 'react-native-elements';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, SimpleLineIcons } from '@expo/vector-icons';
 import { Stack, Queue } from "react-native-spacing-system";
 import { Typography } from '../constants'; 
 
@@ -12,7 +12,12 @@ export default function ProfileScreen() {
         <Text style={styles.title}>Hello, Jessica.</Text>
         <Stack size={36}></Stack>
         <View style={styles.reward}>
-          <Text style={styles.rewardText}>coffee cups earned</Text>
+          <View>
+            <SimpleLineIcons name="cup" size={24} color="black" />
+            <Text style={styles.coffeeCount}>16</Text>
+          </View>
+          <Queue size={18}></Queue>
+          <Text style={styles.rewardText}>coffee cups earned!</Text>
         </View>
       </View>
       <Divider style={styles.divider} />
@@ -81,7 +86,12 @@ const styles = StyleSheet.create({
     ...Typography.h1,
   },
   reward: {
-    
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  coffeeCount: {
+    marginLeft: 2, // because the coffee icon is slightly imbalanced
+    // alignItems: 'center',
   },
   rewardText: {
     ...Typography.p,
