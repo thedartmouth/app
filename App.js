@@ -33,7 +33,7 @@ export default function App(props) {
         });
       } catch (e) {
         // We might want to provide this error information to an error reporting service
-        console.warn(e);
+        // console.warn(e);
       } finally {
         setLoadingComplete(true);
         SplashScreen.hide();
