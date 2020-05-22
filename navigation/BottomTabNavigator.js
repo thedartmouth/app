@@ -5,6 +5,7 @@ import TabBarIcon from '../components/TabBarIcon';
 import MainScreen from '../screens/MainScreen';
 import HomeScreen from '../screens/HomeScreen';
 import LinksScreen from '../screens/LinksScreen';
+import PollsScreen from '../screens/PollsScreen';
 
 const BottomTab = createBottomTabNavigator();
 const INITIAL_ROUTE_NAME = 'Main';
@@ -31,10 +32,17 @@ export default function BottomTabNavigator({ navigation, route }) {
         name="Home"
         component={HomeScreen}
         options={{
-          title: 'Get Started',
-          tabBarIcon: ({ focused }) => (
-            <TabBarIcon focused={focused} name="ios-book" />
-          ),
+
+          title: 'Hello',
+          tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="ios-book" />,
+        }}
+      />
+      <BottomTab.Screen
+        name="Polls"
+        component={PollsScreen}
+        options={{
+          title: 'Polls',
+          tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="ios-book" />,
         }}
       />
       <BottomTab.Screen
@@ -58,6 +66,8 @@ function getHeaderTitle(route) {
   switch (routeName) {
     case 'Home':
       return 'The Dartmouth';
+    case 'Polls':
+      return 'Polls';
     case 'Me':
       return 'My Profile';
   }
