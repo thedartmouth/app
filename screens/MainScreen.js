@@ -67,7 +67,7 @@ export default function HomeScreen() {
         <ScrollView horizontal={true}>
           {topicBarItems.map((item) => {
             return (
-              <View style={styles.topicBarItem}>
+              <View key={item} style={styles.topicBarItem}>
                 <Text>{item}</Text>
               </View>
             );
