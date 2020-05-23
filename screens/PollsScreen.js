@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { StyleSheet, Text, View} from 'react-native';
+import { StyleSheet, Text, View, Image } from 'react-native';
 import { Divider } from 'react-native-elements';
 import { ScrollView, TouchableOpacity} from 'react-native-gesture-handler';
 
@@ -22,13 +22,14 @@ class PollsScreen extends React.Component {
     for (let i = 0; i < 10; i += 1) {
       const poll = {
         _id: Math.random(),
-        question: 'Poll question',
+        question: 'In your opinion, how responsive has the College administration been to student concerns during this time?',
         answers: [
-          {text: 'answer 1 answer 1 answer 1 answer 1'},
-          {text: 'answer 2'},
-          {text: 'answer 3'},
-          {text: 'answer 4'}
-        ]
+          {text: 'Very unresponsive'},
+          {text: 'Somewhat unresponsive'},
+          {text: 'Somewhat responsive'},
+          {text: 'Very responsive'}
+        ],
+        refArticle: 'Name of referencing article'
       }
       const copyOfPoll = JSON.parse(JSON.stringify(poll));
       polls.push(copyOfPoll) // copies the object so it's not referencing itself
@@ -38,36 +39,47 @@ class PollsScreen extends React.Component {
 
   render() {
     return (
-      <ScrollView style={styles.container}>
-        {this.state.polls.map(poll => {
-          return (
-            <View key={poll._id} style={styles.poll}>
-              <View style={styles.questionBox}>
-                <Text style={styles.pollQuestion}>{poll.question}</Text>
+      <View style={styles.container}>
+        <View style={styles.titleContainer}>
+          <Image
+            source={require('../assets/images/title.png')}
+            style={styles.titleImage}
+          />
+        </View>
+        <ScrollView>
+          {this.state.polls.map(poll => {
+            return (
+              <View key={poll._id} style={styles.poll}>
+                <View style={styles.questionBox}>
+                  <Text style={styles.pollQuestion}>{poll.question}</Text>
+                </View>
+                <View>
+                  {poll.answers.map(answer => {
+                    return (
+                        <TouchableOpacity onPress={() => handleAnswer(answer.text, poll._id)} key={answer.text}> 
+                          <View style={styles.answerBox}>
+                            <View style={styles.answerButton}></View>
+                            <Text style={styles.answerText}>{answer.text}</Text>
+                          </View>
+                        </TouchableOpacity>
+                  )})}
+                </View>
+                <Divider style={{height: 3 }}/>
+                {/* <Text style={{marginTop: 10}}> From article</Text> */}
+                <View style={styles.refArticleButton}>
+                  <Text style={{ textDecorationLine: 'underline' }}> From: {poll.refArticle}</Text>
+                </View>
               </View>
-              <View>
-                {poll.answers.map(answer => {
-                  return (
-                      <TouchableOpacity onPress={() => handleAnswer(answer.text, poll._id)} key={answer.text}> 
-                        <View style={styles.answerBox}>
-                          <View style={styles.answerButton}></View>
-                          <Text style={styles.answerText}>{answer.text} </Text>
-                        </View>
-                      </TouchableOpacity>
-                )})}
-              </View>
-              <Divider style={{height: 3 }}/>
-              <Text>referencing article</Text>
-            </View>
-          )
-        })}
-      </ScrollView>
+            )
+          })}
+        </ScrollView>
+      </View>
     )
   }
 }
 
 function handleAnswer(choice, question) {
-  alert("you picked " + choice + " from question " + question)
+  //alert("you picked " + choice + " from question " + question)
 }
 
 const styles = StyleSheet.create({
@@ -75,26 +87,31 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     flex: 1,
-    backgroundColor: '#fafafa',
+    backgroundColor: '#fff',
   },
+  titleContainer: {
+    alignItems: 'center',
+    padding: 10,
+    shadowOffset: { width: 1, height: 1 },
+    shadowColor: 'black',
+    shadowOpacity: 0.3,
+  },
+  titleImage: {},
   poll: {
     display: 'flex',
     flex: 1,
     flexDirection: 'column',
-    padding: 20,
+    padding: 15,
     margin: 15,
-    paddingLeft: 15,
-    paddingRight: 15,
-    backgroundColor: '#f7f7f7', 
+    borderWidth: 2,
+    borderColor: '#d9d9d9'
   },
   questionBox: {
     display: 'flex',
-    padding: 10,
-    backgroundColor: "#AEAEAE"
+    padding: 10
   },
   pollQuestion: {
-    fontSize: 25,
-    color: '#FFFFFF'
+    fontSize: 20,
   },
   answerBox: {
     display: 'flex',
@@ -113,11 +130,14 @@ const styles = StyleSheet.create({
     margin: 10
   },
   answerText: {
+    textAlignVertical: 'center',
+    fontSize: 15,
     paddingHorizontal: 5,
-    color: '#000000',
-    backgroundColor: "#c2c2c2",
-    justifyContent: 'center',
-    textAlignVertical: 'center'
+  },
+  refArticleButton: {
+    marginTop: 5,
+    alignSelf: 'center',
+    padding: 10,
   }
 });
 
