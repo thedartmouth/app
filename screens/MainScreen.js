@@ -13,8 +13,10 @@ import {
 } from 'react-native';
 import { Container, Header, Content, Tab, Tabs } from 'native-base';
 import { ScrollView } from 'react-native-gesture-handler';
-import Article from '../components/ArticleCard';
+import {Stack} from 'react-native-spacing-system';
+import ArticleCard from '../components/ArticleCard';
 import { MonoText } from '../components/StyledText';
+import { useSafeArea } from 'react-native-safe-area-context';
 
 const renderArticle = (articles) => {
 	articles.map();
@@ -32,36 +34,42 @@ export default function HomeScreen() {
 	];
 
 	const article1 = {
-		category: 'NEWS',
-		title: 'Q&A with CNN correspondent Jake Tapper ’91',
-		author: 'Lauren Adler',
-		publishDTG: '5/21/20 2:15am',
-		viewCount: 1,
+		CEOID: '1',
+		category: {name: 'NEWS'},
+		headline: 'Q&A with CNN correspondent Jake Tapper ’91',
+		authors: [{name: 'Lauren Adler'}],
+		publishedAt: '5/21/20 2:15am',
+		views: 1,
 		articleImageURL: '../assets/images/article1.jpg',
-		articleTextBrief:
+		content:
       'Before Jake Tapper ’91 became host of CNN’s “The Lead” and “State of the Union” and one of the nation’s most respected political correspondents, he got his start as a cartoonist for The Dartmouth. In an interview with The Dartmouth, Tapper discussed the COVID-19 pandemic and the current state of journalism in the U.S.',
 	};
 
 	const article2 = {
-		category: 'NEWS',
-		title: 'Q&A with CNN correspondent Jake Tapper ’91',
-		author: 'Lauren Adler',
-		publishDTG: '5/21/20 2:15am',
-		viewCount: 1,
-		articleImageURL: '../assets/images/article1.jpg',
-		articleTextBrief:
+		CEOID: '2',
+		category: {name: 'NEWS'},
+		headline: 'Q&A with CNN correspondent Jake Tapper ’91',
+		authors: [{name: 'Lauren Adler'}],
+		publishedAt: '5/21/20 2:15am',
+		views: 1,
+		imageURL: '../assets/images/article1.jpg',
+		content:
       'Before Jake Tapper ’91 became host of CNN’s “The Lead” and “State of the Union” and one of the nation’s most respected political correspondents, he got his start as a cartoonist for The Dartmouth. In an interview with The Dartmouth, Tapper discussed the COVID-19 pandemic and the current state of journalism in the U.S.',
 	};
 
 	const articles = [article1, article2];
 
+	const insets = useSafeArea();
+
 	return (
-		<View style={styles.mainContainer}>
-			<View style={styles.titleContainer}>
+		<View style={[styles.screenContainer, {paddingTop: insets.top}]}>
+			<View style={styles.bannerContainer}>
+				<Stack size={20}></Stack>
 				<Image
-					source={require('../assets/images/title.png')}
+					source={require('../assets/images/banner.png')}
 					style={styles.titleImage}
 				/>
+				<Stack size={20}></Stack>
 			</View>
 			<View style={styles.topicBar}>
 				<ScrollView horizontal={true}>
@@ -78,7 +86,9 @@ export default function HomeScreen() {
 				<ScrollView style={{ flex: 1 }} vertical={true}>
 					{articles.map((article) => {
 						return (
-							<ArticleCard key={article.ceo_id} article={article}></ArticleCard>
+							<View key={article.CEOID}>
+								<ArticleCard article={article}></ArticleCard>
+							</View>
 						);
 					})}
 				</ScrollView>
@@ -92,17 +102,21 @@ HomeScreen.navigationOptions = {
 };
 
 const styles = StyleSheet.create({
-	mainContainer: {
+	screenContainer: {
 		flex: 1,
-		flexDirection: 'column',
 		backgroundColor: '#fff',
 	},
-	titleContainer: {
+	bannerContainer: {
 		alignItems: 'center',
-		paddingVertical: 10,
-		// flex: 1,
 	},
-	titleImage: {},
+	titleImage: {
+		flex: 0,
+		// width: 200,
+		height: 30,
+		resizeMode: 'contain',
+		// borderColor: 'black',
+		// borderWidth: 1,
+	},
 	topicBar: {
 		height: 35,
 		shadowOffset: { width: 1, height: 1 },
