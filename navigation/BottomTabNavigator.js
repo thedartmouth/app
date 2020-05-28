@@ -2,13 +2,10 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import * as React from 'react';
 import { StyleSheet } from 'react-native';
 
-import TabBarIcon from '../components/TabBarIcon';
 import MainScreen from '../screens/MainScreen';
-import HomeScreen from '../screens/HomeScreen';
 import ProfileScreen from '../screens/ProfileScreen';
-
-// import LinksScreen from '../screens/LinksScreen';
 import PollsScreen from '../screens/PollsScreen';
+import TabBarIcon from '../components/TabBarIcon';
 
 const BottomTab = createBottomTabNavigator();
 const INITIAL_ROUTE_NAME = 'Main';
@@ -24,16 +21,6 @@ export default function BottomTabNavigator({ navigation, route }) {
       initialRouteName={INITIAL_ROUTE_NAME}
       tabBarOptions={{ style: styles.tabBar }}
     >
-      {/* <BottomTab.Screen
-        name="Home"
-        component={HomeScreen}
-        options={{
-          title: 'Get Started',
-          tabBarIcon: ({ focused }) => (
-            <TabBarIcon focused={focused} name="ios-book" />
-          ),
-        }}
-      /> */}
       <BottomTab.Screen
         name="Main"
         component={MainScreen}

@@ -8,6 +8,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import BottomTabNavigator from './navigation/BottomTabNavigator';
 import useLinking from './navigation/useLinking';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 const Stack = createStackNavigator();
 
@@ -47,14 +48,16 @@ export default function App(props) {
     return null;
   } else {
     return (
-      <View style={styles.container}>
-        {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
-        <NavigationContainer ref={containerRef} initialState={initialNavigationState}>
-          <Stack.Navigator>
-            <Stack.Screen name="Root" component={BottomTabNavigator} />
-          </Stack.Navigator>
-        </NavigationContainer>
-      </View>
+      <SafeAreaProvider>
+        <View style={styles.container}>
+          {Platform.OS === 'ios' && <StatusBar barStyle="dark-content" />}
+            <NavigationContainer ref={containerRef} initialState={initialNavigationState}>
+              <Stack.Navigator screenOptions={{headerShown: false}}>
+                  <Stack.Screen name="Root" component={BottomTabNavigator} />
+              </Stack.Navigator>
+            </NavigationContainer>
+        </View>
+      </SafeAreaProvider>
     );
   }
 }
