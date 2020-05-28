@@ -2,6 +2,7 @@ import * as React from 'react';
 import { StyleSheet, Text, View, Image } from 'react-native';
 import { Divider } from 'react-native-elements';
 import { ScrollView, TouchableOpacity} from 'react-native-gesture-handler';
+import { SafeAreaConsumer } from 'react-native-safe-area-context';
 
 class PollsScreen extends React.Component {
   constructor(props) {
@@ -39,41 +40,44 @@ class PollsScreen extends React.Component {
 
   render() {
     return (
-      <View style={styles.container}>
-        <View style={styles.titleContainer}>
-          <Image
-            source={require('../assets/images/title.png')}
-            style={styles.titleImage}
-          />
-        </View>
-        <ScrollView>
-          {this.state.polls.map(poll => {
-            return (
-              <View key={poll._id} style={styles.poll}>
-                <View style={styles.questionBox}>
-                  <Text style={styles.pollQuestion}>{poll.question}</Text>
-                </View>
-                <View>
-                  {poll.answers.map(answer => {
-                    return (
-                        <TouchableOpacity onPress={() => handleAnswer(answer.text, poll._id)} key={answer.text}> 
-                          <View style={styles.answerBox}>
-                            <View style={styles.answerButton}></View>
-                            <Text style={styles.answerText}>{answer.text}</Text>
-                          </View>
-                        </TouchableOpacity>
-                  )})}
-                </View>
-                <Divider style={{height: 3 }}/>
-                {/* <Text style={{marginTop: 10}}> From article</Text> */}
-                <View style={styles.refArticleButton}>
-                  <Text style={{ textDecorationLine: 'underline' }}> From: {poll.refArticle}</Text>
-                </View>
+      <SafeAreaConsumer>
+        {insets => (
+          <View style={[styles.pollsScreen, {marginTop: insets.top}]}>
+            <ScrollView>
+              <View style={styles.titleContainer}>
+                <Text>
+                  Polls
+                </Text>
               </View>
-            )
-          })}
-        </ScrollView>
-      </View>
+              {this.state.polls.map(poll => {
+                return (
+                  <View key={poll._id} style={styles.poll}>
+                    <View style={styles.questionBox}>
+                      <Text style={styles.pollQuestion}>{poll.question}</Text>
+                    </View>
+                    <View>
+                      {poll.answers.map(answer => {
+                        return (
+                            <TouchableOpacity onPress={() => handleAnswer(answer.text, poll._id)} key={answer.text}> 
+                              <View style={styles.answerBox}>
+                                <View style={styles.answerButton}></View>
+                                <Text style={styles.answerText}>{answer.text}</Text>
+                              </View>
+                            </TouchableOpacity>
+                      )})}
+                    </View>
+                    <Divider style={{height: 3 }}/>
+                    {/* <Text style={{marginTop: 10}}> From article</Text> */}
+                    <View style={styles.refArticleButton}>
+                      <Text style={{ textDecorationLine: 'underline' }}> From: {poll.refArticle}</Text>
+                    </View>
+                  </View>
+                )
+              })}
+            </ScrollView>
+          </View>
+        )}
+      </SafeAreaConsumer>
     )
   }
 }
@@ -83,12 +87,10 @@ function handleAnswer(choice, question) {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    display: 'flex',
-    flexDirection: 'column',
-    flex: 1,
-    backgroundColor: '#fff',
-  },
+	pollsScreen: {
+		flex: 1,
+		backgroundColor: 'white',
+	},
   titleContainer: {
     alignItems: 'center',
     padding: 10,

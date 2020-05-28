@@ -1,11 +1,11 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import * as React from 'react';
 import { StyleSheet } from 'react-native';
-
 import MainScreen from '../screens/MainScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import PollsScreen from '../screens/PollsScreen';
 import TabBarIcon from '../components/TabBarIcon';
+import { Foundation } from '@expo/vector-icons'; 
 
 const BottomTab = createBottomTabNavigator();
 const INITIAL_ROUTE_NAME = 'Main';
@@ -19,7 +19,7 @@ export default function BottomTabNavigator({ navigation, route }) {
   return (
     <BottomTab.Navigator
       initialRouteName={INITIAL_ROUTE_NAME}
-      tabBarOptions={{ style: styles.tabBar }}
+      tabBarOptions={{ style: styles.tabBar, showLabel: false }}
     >
       <BottomTab.Screen
         name="Main"
@@ -37,7 +37,7 @@ export default function BottomTabNavigator({ navigation, route }) {
         options={{
           title: 'Polls',
           tabBarIcon: ({ focused }) => (
-            <TabBarIcon focused={focused} name="ios-book" />
+            <TabBarIcon focused={focused} name="ios-podium" />
           ),
         }}
       />

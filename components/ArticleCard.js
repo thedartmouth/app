@@ -9,6 +9,7 @@ import {
 	TouchableOpacity,
 	View,
 } from 'react-native';
+import { Stack, Queue } from "react-native-spacing-system";
 
 export default function ArticleCard(props) {
   return (
@@ -16,16 +17,18 @@ export default function ArticleCard(props) {
       <View style={styles.articleContent}>
         <View style={styles.articleInfo}>
           <Text style={styles.articleCategory}>{props.article.category.name}</Text>
+          <Stack size={12}></Stack>
           <Text style={styles.articleTitle}>{props.article.headline}</Text>
+          <Stack size={12}></Stack>
           <Text style={styles.articleAuthor}>by {props.article.authors[0].name}</Text>
         </View>
-        <View style={styles.imageBox}>
-          <Image
-            source={require('../assets/images/article1.jpg')}
-            style={styles.articleImage}
-          />
-        </View>
-        <Text>{props.article.content}</Text>
+        <Stack size={18}></Stack>
+        <Image
+          source={require('../assets/images/article1.jpg')}
+          style={styles.articleImage}
+        />
+        <Stack size={18}></Stack>
+        <Text style={styles.articlePreview}>{props.article.content}</Text>
       </View>
     </TouchableOpacity>
   );
@@ -33,30 +36,25 @@ export default function ArticleCard(props) {
 
 const styles = StyleSheet.create({
   articleContent: {
-    padding: 30,
-    borderStyle: 'solid',
-    borderColor: '#BDBDBD',
-    borderBottomWidth: 0.5,
+
   },
   articleCategory: {
-    fontSize: 15,
+    fontSize: 18,
     fontWeight: 'bold',
     color: 'grey',
   },
   articleTitle: {
-    paddingVertical: 8,
-    fontSize: 25,
+    fontSize: 24,
   },
   articleAuthor: {
     color: 'grey',
   },
-  imageBox: {
-    alignItems: 'center',
-    paddingVertical: 8,
+  articlePreview: {
+    textAlign: 'justify',
   },
   articleImage: {
-    width: 350,
-    height: 200,
+    width: '100%',
+    maxHeight: 200,
     resizeMode: 'contain',
   },
 });
