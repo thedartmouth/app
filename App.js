@@ -50,9 +50,9 @@ export default function App(props) {
     return (
       <SafeAreaProvider>
         <View style={styles.container}>
-          {Platform.OS === 'ios' && <StatusBar barStyle="dark-content" />}
-            <NavigationContainer ref={containerRef} initialState={initialNavigationState}>
-              <Stack.Navigator screenOptions={{headerShown: false}}>
+          {Platform.OS === 'ios' && <StatusBar style={styles.statusBar} barStyle="dark-content" />}
+            <NavigationContainer ref={containerRef} initialState={initialNavigationState} >
+              <Stack.Navigator screenOptions={{headerShown: false}} >
                   <Stack.Screen name="Root" component={BottomTabNavigator} />
               </Stack.Navigator>
             </NavigationContainer>
@@ -65,6 +65,9 @@ export default function App(props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: 'white',
   },
+  statusBar: {
+    backgroundColor: 'white',
+  }
 });

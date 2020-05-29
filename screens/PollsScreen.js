@@ -1,13 +1,19 @@
 import * as React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, Image } from 'react-native';
 import { Divider } from 'react-native-elements';
-import { ScrollView } from 'react-native-gesture-handler';
+import { ScrollView, TouchableOpacity} from 'react-native-gesture-handler';
+import { SafeAreaConsumer } from 'react-native-safe-area-context';
+import {Stack, Queue} from 'react-native-spacing-system';
+import PollCard from '../components/PollCard';
+import { Typography, Colors } from '../constants';
 
 class PollsScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      polls: [] // React component state
+      polls: [], // React component state
+      pressed: false,
+      answerChosen: ''
     }
   }
 
@@ -20,13 +26,14 @@ class PollsScreen extends React.Component {
     for (let i = 0; i < 10; i += 1) {
       const poll = {
         _id: Math.random(),
-        question: 'poll title',
+        question: 'In your opinion, how responsive has the College administration been to student concerns during this time?',
         answers: [
-          {text: 'answer 1'},
-          {text: 'answer 2'},
-          {text: 'answer 3'},
-          {text: 'answer 4'}
-        ]
+          {text: 'Very unresponsive'},
+          {text: 'Somewhat unresponsive'},
+          {text: 'Somewhat responsive, but what if this answer was super long because there are just long answers'},
+          {text: 'Very responsive'}
+        ],
+        refArticle: 'Name of referencing article'
       }
       const copyOfPoll = JSON.parse(JSON.stringify(poll));
       polls.push(copyOfPoll) // copies the object so it's not referencing itself
@@ -36,42 +43,54 @@ class PollsScreen extends React.Component {
 
   render() {
     return (
-      <ScrollView style={styles.container}>
-        {this.state.polls.map(poll => {
-          return (
-            <View key={poll._id} style={styles.poll}>
-              <Text style={styles.pollQuestion}>{poll.question}</Text>
-              <View>
-                {poll.answers.map(answer => {
-                  return (<Text key={answer.text}>{answer.text}</Text>)
-                })}
+      <SafeAreaConsumer>
+        {insets => (
+          <View style={[styles.pollsScreen, {paddingTop: insets.top}]}>
+            <ScrollView style={styles.scroll}>
+              <View style={styles.titleArea}>
+                <Text style={styles.title}>
+                  Polls
+                </Text>
+                <Stack size={8}></Stack>
+                <Text style={styles.subtitle}>
+                  What's your opinion?
+                </Text>
               </View>
-              <Divider />
-              <Text>referencing article</Text>
-            </View>
-          )
-        })}
-      </ScrollView>
+              <Stack size={36}></Stack>
+              {this.state.polls.map((poll, idx) => {
+                return (
+                  <View key={poll._id} style={styles.poll}>
+                    <PollCard poll={poll}></PollCard>
+                    <Stack size={(idx === this.state.polls.length - 1) ? 0 : 36}></Stack>
+                  </View>
+                )
+              })}
+            </ScrollView>
+          </View>
+        )}
+      </SafeAreaConsumer>
     )
   }
 }
 
 const styles = StyleSheet.create({
-  container: {
-    display: 'flex',
-    flexDirection: 'column',
+	pollsScreen: {
     flex: 1,
-    backgroundColor: '#fafafa',
+    backgroundColor: 'white',
   },
-  poll: {
-    display: 'flex',
-    flexDirection: 'column',
-    paddingTop: 15,
-    marginBottom: 15,
+  scroll: {
+    padding: 36,
   },
-  pollQuestion: {
-    fontSize: 30,
+  titleArea: {
   },
+  title: {
+    fontSize: 42,
+    fontWeight: 'bold',
+  },
+  subtitle: {
+    ...Typography.h3,
+  },
+  titleImage: {},
 });
 
 export default PollsScreen;

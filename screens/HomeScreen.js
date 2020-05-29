@@ -214,7 +214,7 @@ const styles = StyleSheet.create({
     }),
     alignItems: 'center',
     backgroundColor: '#fbfbfb',
-    paddingVertical: 20,
+    paddingVertical: 15,
   },
   tabBarInfoText: {
     fontSize: 17,

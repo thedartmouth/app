@@ -6,11 +6,13 @@ import {
 	Button,
 	Image,
 	Platform,
+	RefreshControl,
 	StyleSheet,
 	Text,
 	TouchableOpacity,
 	View,
 } from 'react-native';
+import { Divider } from 'react-native-elements';
 import { Container, Header, Content, Tab, Tabs } from 'native-base';
 import { ScrollView } from 'react-native-gesture-handler';
 import {Stack} from 'react-native-spacing-system';
@@ -29,20 +31,20 @@ export default function HomeScreen() {
 		'OPINION',
 		'SPORTS',
 		'ARTS',
-		'MIROR',
+		'MIRROR',
 		'MULTIMEDIA',
 	];
 
 	const article1 = {
 		CEOID: '1',
 		category: {name: 'NEWS'},
-		headline: 'Q&A with CNN correspondent Jake Tapper ’91',
-		authors: [{name: 'Lauren Adler'}],
+		headline: 'Dartmouth to apply for $1.7 million in CARES Act funding',
+		authors: [{name: 'The Dartmouth Senior Staff'}],
 		publishedAt: '5/21/20 2:15am',
 		views: 1,
-		articleImageURL: '../assets/images/article1.jpg',
+		imageURL: 'https://snworksceo.imgix.net/drt/c4546441-fd5f-4798-ba71-0bffc946729f.sized-1000x1000.jpg',
 		content:
-      'Before Jake Tapper ’91 became host of CNN’s “The Lead” and “State of the Union” and one of the nation’s most respected political correspondents, he got his start as a cartoonist for The Dartmouth. In an interview with The Dartmouth, Tapper discussed the COVID-19 pandemic and the current state of journalism in the U.S.',
+      'Dartmouth will apply for the first half of its allotted funding from the Coronavirus Aid, Relief, and Economic Security Act, College President Phil Hanlon announced today. As required by the federal government, the funding will be used for emergency financial aid.			',
 	};
 
 	const article2 = {
@@ -59,10 +61,22 @@ export default function HomeScreen() {
 
 	const articles = [article1, article2];
 
-	const insets = useSafeArea();
+	const wait = (timeout) => {
+		return new Promise(resolve => {
+			setTimeout(resolve, timeout);
+		});
+	}
+
+	const [refreshing, setRefreshing] = React.useState(false);
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+
+    wait(2000).then(() => setRefreshing(false));
+  }, [refreshing]);
 
 	return (
-		<View style={[styles.screenContainer, {paddingTop: insets.top}]}>
+		<View style={[styles.mainScreen, {paddingTop: useSafeArea().top}]}>
 			<View style={styles.bannerContainer}>
 				<Stack size={20}></Stack>
 				<Image
@@ -72,7 +86,7 @@ export default function HomeScreen() {
 				<Stack size={20}></Stack>
 			</View>
 			<View style={styles.topicBar}>
-				<ScrollView horizontal={true}>
+				<ScrollView horizontal={true} showsHorizontalScrollIndicator={false} bounces={false}>
 					{topicBarItems.map((item) => {
 						return (
 							<View key={item} style={styles.topicBarItem}>
@@ -82,17 +96,20 @@ export default function HomeScreen() {
 					})}
 				</ScrollView>
 			</View>
-			<View style={styles.articleBox}>
-				<ScrollView style={{ flex: 1 }} vertical={true}>
-					{articles.map((article) => {
-						return (
-							<View key={article.CEOID}>
-								<ArticleCard article={article}></ArticleCard>
-							</View>
-						);
-					})}
-				</ScrollView>
-			</View>
+			<ScrollView style={styles.articleBox} vertical={true} refreshControl={
+				<RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>}>
+				<Stack size={18}></Stack>
+				{articles.map((article) => {
+					return (
+						<View key={article.CEOID}>
+							<Stack size={24}></Stack>
+							<ArticleCard article={article}></ArticleCard>
+							<Stack size={24}></Stack>
+							<Divider></Divider>
+						</View>
+					);
+				})}
+			</ScrollView>
 		</View>
 	);
 }
@@ -102,31 +119,29 @@ HomeScreen.navigationOptions = {
 };
 
 const styles = StyleSheet.create({
-	screenContainer: {
+	mainScreen: {
 		flex: 1,
-		backgroundColor: '#fff',
+		backgroundColor: 'white',
 	},
 	bannerContainer: {
+		backgroundColor: 'white',
+		zIndex: 1,
 		alignItems: 'center',
 	},
 	titleImage: {
-		flex: 0,
-		// width: 200,
 		height: 30,
 		resizeMode: 'contain',
-		// borderColor: 'black',
-		// borderWidth: 1,
 	},
 	topicBar: {
 		height: 35,
-		shadowOffset: { width: 1, height: 1 },
-		shadowColor: 'black',
+		shadowOffset: { height: 3 },
+		shadowRadius: 10,
+		shadowColor: 'gray',
 		shadowOpacity: 0.3,
 	},
 	topicBarItem: {
 		height: 35,
 		backgroundColor: 'white',
-		// flex: 1,
 		justifyContent: 'center',
 		alignItems: 'center',
 		borderStyle: 'solid',
@@ -139,5 +154,6 @@ const styles = StyleSheet.create({
 	},
 	articleBox: {
 		flex: 1,
+		paddingHorizontal: 36,
 	},
 });
