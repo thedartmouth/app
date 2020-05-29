@@ -3,6 +3,9 @@ import { StyleSheet, Text, View, Image } from 'react-native';
 import { Divider } from 'react-native-elements';
 import { ScrollView, TouchableOpacity} from 'react-native-gesture-handler';
 import { SafeAreaConsumer } from 'react-native-safe-area-context';
+import {Stack, Queue} from 'react-native-spacing-system';
+import PollCard from '../components/PollCard';
+import { Typography, Colors } from '../constants';
 
 class PollsScreen extends React.Component {
   constructor(props) {
@@ -27,7 +30,7 @@ class PollsScreen extends React.Component {
         answers: [
           {text: 'Very unresponsive'},
           {text: 'Somewhat unresponsive'},
-          {text: 'Somewhat responsive'},
+          {text: 'Somewhat responsive, but what if this answer was super long because there are just long answers'},
           {text: 'Very responsive'}
         ],
         refArticle: 'Name of referencing article'
@@ -42,35 +45,23 @@ class PollsScreen extends React.Component {
     return (
       <SafeAreaConsumer>
         {insets => (
-          <View style={[styles.pollsScreen, {marginTop: insets.top}]}>
-            <ScrollView>
-              <View style={styles.titleContainer}>
-                <Text>
+          <View style={[styles.pollsScreen, {paddingTop: insets.top}]}>
+            <ScrollView style={styles.scroll}>
+              <View style={styles.titleArea}>
+                <Text style={styles.title}>
                   Polls
                 </Text>
+                <Stack size={8}></Stack>
+                <Text style={styles.subtitle}>
+                  What's your opinion?
+                </Text>
               </View>
-              {this.state.polls.map(poll => {
+              <Stack size={36}></Stack>
+              {this.state.polls.map((poll, idx) => {
                 return (
                   <View key={poll._id} style={styles.poll}>
-                    <View style={styles.questionBox}>
-                      <Text style={styles.pollQuestion}>{poll.question}</Text>
-                    </View>
-                    <View>
-                      {poll.answers.map(answer => {
-                        return (
-                            <TouchableOpacity onPress={() => handleAnswer(answer.text, poll._id)} key={answer.text}> 
-                              <View style={styles.answerBox}>
-                                <View style={styles.answerButton}></View>
-                                <Text style={styles.answerText}>{answer.text}</Text>
-                              </View>
-                            </TouchableOpacity>
-                      )})}
-                    </View>
-                    <Divider style={{height: 3 }}/>
-                    {/* <Text style={{marginTop: 10}}> From article</Text> */}
-                    <View style={styles.refArticleButton}>
-                      <Text style={{ textDecorationLine: 'underline' }}> From: {poll.refArticle}</Text>
-                    </View>
+                    <PollCard poll={poll}></PollCard>
+                    <Stack size={(idx === this.state.polls.length - 1) ? 0 : 36}></Stack>
                   </View>
                 )
               })}
@@ -82,65 +73,24 @@ class PollsScreen extends React.Component {
   }
 }
 
-function handleAnswer(choice, question) {
-  //alert("you picked " + choice + " from question " + question)
-}
-
 const styles = StyleSheet.create({
 	pollsScreen: {
-		flex: 1,
-		backgroundColor: 'white',
-	},
-  titleContainer: {
-    alignItems: 'center',
-    padding: 10,
-    shadowOffset: { width: 1, height: 1 },
-    shadowColor: 'black',
-    shadowOpacity: 0.3,
+    flex: 1,
+    backgroundColor: 'white',
+  },
+  scroll: {
+    padding: 36,
+  },
+  titleArea: {
+  },
+  title: {
+    fontSize: 42,
+    fontWeight: 'bold',
+  },
+  subtitle: {
+    ...Typography.h3,
   },
   titleImage: {},
-  poll: {
-    display: 'flex',
-    flex: 1,
-    flexDirection: 'column',
-    padding: 15,
-    margin: 15,
-    borderWidth: 2,
-    borderColor: '#d9d9d9'
-  },
-  questionBox: {
-    display: 'flex',
-    padding: 10
-  },
-  pollQuestion: {
-    fontSize: 20,
-  },
-  answerBox: {
-    display: 'flex',
-    flexDirection: 'row',
-    marginVertical: 5
-  },
-  answerButton: {
-    borderWidth: 2,
-    borderColor:'rgba(0,0,0,0.2)',
-    alignItems:'center',
-    justifyContent:'center',
-    width: 25,
-    height: 25,
-    backgroundColor:'#fff',
-    borderRadius: 50,
-    margin: 10
-  },
-  answerText: {
-    textAlignVertical: 'center',
-    fontSize: 15,
-    paddingHorizontal: 5,
-  },
-  refArticleButton: {
-    marginTop: 5,
-    alignSelf: 'center',
-    padding: 10,
-  }
 });
 
 export default PollsScreen;

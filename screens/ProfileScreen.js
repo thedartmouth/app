@@ -10,68 +10,70 @@ export default function ProfileScreen() {
   return (
     <SafeAreaConsumer>
       {insets => (
-        <View style={[styles.profileScreen, {marginTop: insets.top}]}>
-        <View style={styles.intro}>
-          <Text style={styles.title}>Hello, Jessica.</Text>
-          <Stack size={36}></Stack>
-          <View style={styles.reward}>
-            <View>
-              <SimpleLineIcons name="cup" size={24} color="black" />
-              <Text style={styles.coffeeCount}>16</Text>
+          <View style={[styles.profileScreen, {paddingTop: 2*insets.top}]}>
+            <View style={styles.intro}>
+              <Text style={styles.title}>Hello, Jessica.</Text>
+              <Stack size={36}></Stack>
+              <View style={styles.reward}>
+                <View>
+                  <SimpleLineIcons name="cup" size={24} color="black" />
+                  <Text style={styles.coffeeCount}>16</Text>
+                </View>
+                <Queue size={18}></Queue>
+                <Text style={styles.rewardText}>coffee cups earned!</Text>
+              </View>
             </View>
-            <Queue size={18}></Queue>
-            <Text style={styles.rewardText}>coffee cups earned!</Text>
+            <Stack size={36}></Stack>
+            <Divider style={styles.divider} />
+            <Stack size={36}></Stack>
+            <View style={styles.contentBoxes}>
+              <View style={styles.contentBox}>
+                <Text style={styles.heading}>Your stuff</Text>
+                <Stack size={12}></Stack>
+                <Divider style={styles.thinDivider} />
+                <Stack size={4}></Stack>
+                <TouchableOpacity style={styles.rowItem}>
+                    <Text style={Typography.p}>Bookmarks</Text>
+                    <Ionicons name='ios-arrow-forward' size={24} style={styles.rowItemIcon}></Ionicons>
+                </TouchableOpacity>
+                <Stack size={4}></Stack>
+                <Divider style={styles.thinDivider} />
+                <Stack size={4}></Stack>
+                <TouchableOpacity style={styles.rowItem}>
+                    <Text style={Typography.p}>Followed authors</Text>
+                    <Ionicons name='ios-arrow-forward' size={24} style={styles.rowItemIcon}></Ionicons>
+                </TouchableOpacity>
+                <Stack size={4}></Stack>
+                <Divider style={styles.thinDivider} />
+                <Stack size={4}></Stack>
+                <TouchableOpacity style={styles.rowItem}>
+                      <Text style={Typography.p}>Completed polls</Text>
+                      <Ionicons name='ios-arrow-forward' size={24} style={styles.rowItemIcon}></Ionicons>
+                </TouchableOpacity>
+                <Stack size={4}></Stack>
+                <Divider style={styles.thinDivider} />
+              </View>
+              <Stack size={24}></Stack>
+              <View style={styles.contentBox}>
+                <Text style={styles.heading}>Notification settings</Text>
+                <Stack size={12}></Stack>
+                <View style={styles.rowItem}>
+                  <Text style={Typography.p}>Trending articles</Text>
+                  <Switch/>
+                </View>
+                <Stack size={8}></Stack>
+                <View style={styles.rowItem}>
+                  <Text style={Typography.p}>Followed tags</Text>
+                  <Switch/>
+                </View>
+                <Stack size={8}></Stack>
+                <View style={styles.rowItem}>
+                  <Text style={Typography.p}>Followed writers</Text>
+                  <Switch/>
+                </View>
+              </View>
+            </View>
           </View>
-        </View>
-        <Divider style={styles.divider} />
-        <View style={styles.contentBoxes}>
-          <View style={styles.contentBox}>
-            <Text style={styles.heading}>Your stuff</Text>
-            <Stack size={12}></Stack>
-            <Divider style={styles.thinDivider} />
-            <Stack size={4}></Stack>
-            <TouchableOpacity style={styles.rowItem}>
-                <Text style={Typography.p}>Bookmarks</Text>
-                <Ionicons name='ios-arrow-forward' size={24} style={styles.rowItemIcon}></Ionicons>
-            </TouchableOpacity>
-            <Stack size={4}></Stack>
-            <Divider style={styles.thinDivider} />
-            <Stack size={4}></Stack>
-            <TouchableOpacity style={styles.rowItem}>
-                <Text style={Typography.p}>Followed authors</Text>
-                <Ionicons name='ios-arrow-forward' size={24} style={styles.rowItemIcon}></Ionicons>
-            </TouchableOpacity>
-            <Stack size={4}></Stack>
-            <Divider style={styles.thinDivider} />
-            <Stack size={4}></Stack>
-            <TouchableOpacity style={styles.rowItem}>
-                  <Text style={Typography.p}>Completed polls</Text>
-                  <Ionicons name='ios-arrow-forward' size={24} style={styles.rowItemIcon}></Ionicons>
-            </TouchableOpacity>
-            <Stack size={4}></Stack>
-            <Divider style={styles.thinDivider} />
-          </View>
-          <Stack size={24}></Stack>
-          <View style={styles.contentBox}>
-            <Text style={styles.heading}>Notification settings</Text>
-            <Stack size={12}></Stack>
-            <View style={styles.rowItem}>
-              <Text style={Typography.p}>Trending articles</Text>
-              <Switch/>
-            </View>
-            <Stack size={8}></Stack>
-            <View style={styles.rowItem}>
-              <Text style={Typography.p}>Followed tags</Text>
-              <Switch/>
-            </View>
-            <Stack size={8}></Stack>
-            <View style={styles.rowItem}>
-              <Text style={Typography.p}>Followed writers</Text>
-              <Switch/>
-            </View>
-          </View>
-        </View>
-      </View>
       )}
     </SafeAreaConsumer>
 
@@ -105,7 +107,6 @@ const styles = StyleSheet.create({
   },
   divider: {
     height: 1,
-    marginVertical: 36,
   },
   contentBoxes : {
   },
