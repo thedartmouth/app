@@ -6,6 +6,7 @@ import ProfileScreen from '../screens/ProfileScreen';
 import PollsScreen from '../screens/PollsScreen';
 import TabBarIcon from '../components/TabBarIcon';
 import { Foundation } from '@expo/vector-icons'; 
+import { Colors } from '../constants';
 
 const BottomTab = createBottomTabNavigator();
 const INITIAL_ROUTE_NAME = 'Main';
@@ -72,5 +73,13 @@ function getHeaderTitle(route) {
 const styles = StyleSheet.create({
   tabBar: {
     height: 94,
+    shadowOffset: { height: -50 },
+		shadowRadius: 50,
+		shadowColor: 'white',
+    shadowOpacity: 1.0,
+		shadowOffset: { height: -3 },
+		shadowRadius: 10,
+		shadowColor: 'gray',
+		shadowOpacity: 0.3,
   },
 });

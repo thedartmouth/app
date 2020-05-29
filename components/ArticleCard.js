@@ -9,7 +9,9 @@ import {
 	TouchableOpacity,
 	View,
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons'; 
 import { Stack, Queue } from "react-native-spacing-system";
+import { Colors, Typography } from '../constants';
 
 export default function ArticleCard(props) {
   return (
@@ -20,15 +22,19 @@ export default function ArticleCard(props) {
           <Stack size={12}></Stack>
           <Text style={styles.articleTitle}>{props.article.headline}</Text>
           <Stack size={12}></Stack>
-          <Text style={styles.articleAuthor}>by {props.article.authors[0].name}</Text>
+          <View style={styles.authorArea}>
+            <Text style={styles.author}>by {props.article.authors[0].name}</Text>
+            <Queue size={8}></Queue>
+            <Ionicons style={styles.authorAdd} name="ios-add" size={16} color="gray" />
+          </View>
         </View>
-        <Stack size={18}></Stack>
+        <Stack size={12}></Stack>
         <Image
-          source={require('../assets/images/article1.jpg')}
+          source={require('../assets/images/article2.jpg')}
           style={styles.articleImage}
         />
-        <Stack size={18}></Stack>
-        <Text style={styles.articlePreview}>{props.article.content}</Text>
+        <Stack size={12}></Stack>
+        <Text style={styles.abstract}>{props.article.content}</Text>
       </View>
     </TouchableOpacity>
   );
@@ -39,22 +45,40 @@ const styles = StyleSheet.create({
 
   },
   articleCategory: {
-    fontSize: 18,
+    alignSelf: 'flex-start',
+    paddingVertical: 4,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    fontSize: 16,
     fontWeight: 'bold',
-    color: 'grey',
+    color: 'white',
+    backgroundColor: Colors.green,
+    overflow: 'hidden', // needed to show the borderRadius with backgroundColor
   },
   articleTitle: {
-    fontSize: 24,
+    ...Typography.h2,
+    ...Typography.serif,
   },
-  articleAuthor: {
+  authorArea: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  author: {
     color: 'grey',
+    ...Typography.p,
+    ...Typography.sans,
   },
-  articlePreview: {
+  authorAdd: {
+    marginTop: 2, // correction
+  },
+  abstract: {
     textAlign: 'justify',
+    ...Typography.p,
+    ...Typography.serif,
   },
   articleImage: {
     width: '100%',
     maxHeight: 200,
-    resizeMode: 'contain',
+    resizeMode: 'cover',
   },
 });

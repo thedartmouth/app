@@ -39,10 +39,10 @@ export default function HomeScreen() {
 		CEOID: '1',
 		category: {name: 'NEWS'},
 		headline: 'Dartmouth to apply for $1.7 million in CARES Act funding',
-		authors: [{name: 'Lauren Adler'}],
+		authors: [{name: 'The Dartmouth Senior Staff'}],
 		publishedAt: '5/21/20 2:15am',
 		views: 1,
-		articleImageURL: 'https://snworksceo.imgix.net/drt/c4546441-fd5f-4798-ba71-0bffc946729f.sized-1000x1000.jpg?w=800',
+		imageURL: 'https://snworksceo.imgix.net/drt/c4546441-fd5f-4798-ba71-0bffc946729f.sized-1000x1000.jpg',
 		content:
       'Dartmouth will apply for the first half of its allotted funding from the Coronavirus Aid, Relief, and Economic Security Act, College President Phil Hanlon announced today. As required by the federal government, the funding will be used for emergency financial aid.			',
 	};
@@ -102,9 +102,9 @@ export default function HomeScreen() {
 				{articles.map((article) => {
 					return (
 						<View key={article.CEOID}>
-							<Stack size={18}></Stack>
+							<Stack size={24}></Stack>
 							<ArticleCard article={article}></ArticleCard>
-							<Stack size={18}></Stack>
+							<Stack size={24}></Stack>
 							<Divider></Divider>
 						</View>
 					);
@@ -129,23 +129,19 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 	},
 	titleImage: {
-		flex: 0,
-		// width: 200,
 		height: 30,
 		resizeMode: 'contain',
-		// borderColor: 'black',
-		// borderWidth: 1,
 	},
 	topicBar: {
 		height: 35,
-		shadowOffset: { width: 1, height: 1 },
-		shadowColor: 'black',
+		shadowOffset: { height: 3 },
+		shadowRadius: 10,
+		shadowColor: 'gray',
 		shadowOpacity: 0.3,
 	},
 	topicBarItem: {
 		height: 35,
 		backgroundColor: 'white',
-		// flex: 1,
 		justifyContent: 'center',
 		alignItems: 'center',
 		borderStyle: 'solid',

@@ -6,10 +6,19 @@ export default StyleSheet.create({
   },
   h2: {
     fontSize: 24,
-    fontWeight: '500',
+    fontWeight: 'bold',
+  },
+  h3: {
+    fontSize: 20,
+    fontWeight: 'bold',
   },
   p: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '300',
   },
+  serif: {
+    fontFamily: 'Georgia',
+  },
+  sans: {
+  }
 });
