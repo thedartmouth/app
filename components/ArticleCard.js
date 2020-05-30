@@ -11,14 +11,15 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons'; 
 import { Stack, Queue } from "react-native-spacing-system";
-import { Colors, Typography } from '../constants';
+import { Colors, Typography, CMSImageUrl } from '../constants';
 
 export default function ArticleCard(props) {
+  console.log('imageURI', CMSImageUrl(props.article.dominantMedia.attachment_uuid, props.article.dominantMedia.preview_extension));
   return (
     <TouchableOpacity>
       <View style={styles.articleContent}>
         <View style={styles.articleInfo}>
-          <Text style={styles.articleCategory}>{props.article.category.name}</Text>
+          <Text style={styles.articleCategory}>{props.article.tags[0].name}</Text>
           <Stack size={12}></Stack>
           <Text style={styles.articleTitle}>{props.article.headline}</Text>
           <Stack size={12}></Stack>
@@ -30,11 +31,11 @@ export default function ArticleCard(props) {
         </View>
         <Stack size={12}></Stack>
         <Image
-          source={require('../assets/images/article2.jpg')}
+          source={{uri: CMSImageUrl(props.article.dominantMedia.attachment_uuid, props.article.dominantMedia.preview_extension)}}
           style={styles.articleImage}
         />
         <Stack size={12}></Stack>
-        <Text style={styles.abstract}>{props.article.content}</Text>
+        <Text style={styles.abstract}>{props.article.abstract}</Text>
       </View>
     </TouchableOpacity>
   );
