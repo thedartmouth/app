@@ -33,7 +33,10 @@
     "react-native-screens": "~2.2.0",
     "react-native-spacing-system": "^1.1.0",
     "react-native-web": "~0.11.7",
-    "react-router-dom": "^5.2.0"
+    "react-redux": "^7.2.0",
+    "react-router-dom": "^5.2.0",
+    "redux": "^4.0.5",
+    "redux-thunk": "^2.3.0"
   },
   "devDependencies": {
     "@babel/core": "^7.8.6",
