@@ -1,4 +1,5 @@
 import React from 'react';
+import { parse } from 'node-html-parser';
 import {
 	Alert,
 	Button,
@@ -14,10 +15,8 @@ import { Stack, Queue } from "react-native-spacing-system";
 import { Colors, Typography, CMSImageUrl } from '../constants';
 
 export default function ArticleCard(props) {
-  console.log('imageURI', CMSImageUrl(props.article.dominantMedia.attachment_uuid, props.article.dominantMedia.preview_extension));
   return (
     <TouchableOpacity>
-      <View style={styles.articleContent}>
         <View style={styles.articleInfo}>
           <Text style={styles.articleCategory}>{props.article.tags[0].name}</Text>
           <Stack size={12}></Stack>
@@ -35,16 +34,12 @@ export default function ArticleCard(props) {
           style={styles.articleImage}
         />
         <Stack size={12}></Stack>
-        <Text style={styles.abstract}>{props.article.abstract}</Text>
-      </View>
+        <Text style={styles.abstract}>{parse(props.article.abstract).innerHTML}</Text>
     </TouchableOpacity>
   );
 }
 
 const styles = StyleSheet.create({
-  articleContent: {
-
-  },
   articleCategory: {
     alignSelf: 'flex-start',
     paddingVertical: 4,
