@@ -34,7 +34,7 @@ export default function ArticleCard(props) {
           style={styles.articleImage}
         />
         <Stack size={12}></Stack>
-        <Text style={styles.abstract}>{parse(props.article.abstract).innerHTML}</Text>
+        <Text style={styles.abstract}>{parse(props.article.abstract).querySelector('p').childNodes[0].rawText}</Text>
     </TouchableOpacity>
   );
 }
