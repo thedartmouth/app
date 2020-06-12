@@ -6,12 +6,12 @@ import { SafeAreaConsumer } from 'react-native-safe-area-context';
 import { Stack, Queue } from "react-native-spacing-system";
 import { Typography, Colors } from '../constants';
 
-export default function ArticleScreen() {
+export default function ArticleScreen({navigation}) {
   return (
     <SafeAreaConsumer>
       {insets => (
           <View style={[styles.articleScreen, {paddingTop: 1.5*insets.top}]}>
-            <Ionicons name="ios-arrow-back" size={24} color="black" />
+            <Ionicons name="ios-arrow-back" size={24} color="black" onPress={navigation.goBack} />
             <Stack size={12}></Stack>
             <Text style={styles.category}>Sports</Text>
             <Stack size={12}></Stack>
@@ -38,7 +38,6 @@ export default function ArticleScreen() {
           </View>
       )}
     </SafeAreaConsumer>
-
   );
 }
 
