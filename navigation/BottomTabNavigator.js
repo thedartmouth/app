@@ -22,7 +22,7 @@ export default function BottomTabNavigator({ navigation, route }) {
       tabBarOptions={{ style: styles.tabBar, showLabel: false }}
     >
       <BottomTab.Screen
-        name='Feed'
+        name="Feed"
         component={FeedScreen}
         options={{
           title: 'Feed',
