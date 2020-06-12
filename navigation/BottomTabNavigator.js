@@ -1,7 +1,7 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import * as React from 'react';
 import { StyleSheet } from 'react-native';
-import MainScreen from '../screens/MainScreen';
+import FeedScreen from '../screens/FeedScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import PollsScreen from '../screens/PollsScreen';
 import TabBarIcon from '../components/TabBarIcon';
@@ -9,7 +9,7 @@ import { Foundation } from '@expo/vector-icons';
 import { Colors } from '../constants';
 
 const BottomTab = createBottomTabNavigator();
-const INITIAL_ROUTE_NAME = 'Main';
+const INITIAL_ROUTE_NAME = 'Feed';
 
 export default function BottomTabNavigator({ navigation, route }) {
   // Set the header title on the parent stack navigator depending on the
@@ -23,10 +23,10 @@ export default function BottomTabNavigator({ navigation, route }) {
       tabBarOptions={{ style: styles.tabBar, showLabel: false }}
     >
       <BottomTab.Screen
-        name="Main"
-        component={MainScreen}
+        name="Feed"
+        component={FeedScreen}
         options={{
-          title: 'Main',
+          title: 'Feed',
           tabBarIcon: ({ focused }) => (
             <TabBarIcon focused={focused} name="ios-book" />
           ),

@@ -1,16 +1,25 @@
 import * as React from 'react';
+import { createStore, applyMiddleware, compose } from 'redux';
+import { Provider } from 'react-redux';
+import thunk from 'redux-thunk';
+import reducers from './reducers';
 import { Platform, StatusBar, StyleSheet, View } from 'react-native';
 import { SplashScreen } from 'expo';
 import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-
 import BottomTabNavigator from './navigation/BottomTabNavigator';
 import useLinking from './navigation/useLinking';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import LoadingScreen from './screens/LoadingScreen';
 
 const Stack = createStackNavigator();
+
+export const store = createStore(reducers, {}, compose(
+  applyMiddleware(thunk),
+  window.__REDUX_DEVTOOLS_EXTENSION__ ? window.__REDUX_DEVTOOLS_EXTENSION__() : f => f,
+));
 
 export default function App(props) {
   const [isLoadingComplete, setLoadingComplete] = React.useState(false);
@@ -41,25 +50,27 @@ export default function App(props) {
       }
     }
 
-    loadResourcesAndDataAsync();
+    // loadResourcesAndDataAsync();
   }, []);
 
-  if (!isLoadingComplete && !props.skipLoadingScreen) {
-    return null;
-  } else {
-    return (
+  return (
+    <Provider store={store}>
       <SafeAreaProvider>
         <View style={styles.container}>
-          {Platform.OS === 'ios' && <StatusBar style={styles.statusBar} barStyle="dark-content" />}
-            <NavigationContainer ref={containerRef} initialState={initialNavigationState} >
-              <Stack.Navigator screenOptions={{headerShown: false}} >
-                  <Stack.Screen name="Root" component={BottomTabNavigator} />
-              </Stack.Navigator>
-            </NavigationContainer>
+        {Platform.OS === 'ios' && <StatusBar style={styles.statusBar} barStyle="dark-content" />}
+        {(!isLoadingComplete && !props.skipLoadingScreen) ?
+          <LoadingScreen completeLoading={() => setLoadingComplete(true)} />
+        :
+          <NavigationContainer ref={containerRef} initialState={initialNavigationState} >
+            <Stack.Navigator screenOptions={{headerShown: false}} >
+                <Stack.Screen name="Root" component={BottomTabNavigator} />
+            </Stack.Navigator>
+          </NavigationContainer>
+        }
         </View>
       </SafeAreaProvider>
-    );
-  }
+    </Provider>
+  )
 }
 
 const styles = StyleSheet.create({
