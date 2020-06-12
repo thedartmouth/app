@@ -15,6 +15,7 @@ import { Stack, Queue } from "react-native-spacing-system";
 import { Colors, Typography, CMSImageUrl } from '../constants';
 
 export default function ArticleCard(props) {
+  const { navigation } = props;
   return (
     <TouchableOpacity>
         <View style={styles.articleInfo}>
