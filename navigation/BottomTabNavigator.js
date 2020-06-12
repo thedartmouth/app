@@ -26,8 +26,8 @@ export default function BottomTabNavigator({ navigation, route }) {
     >
       <BottomTab.Screen
         name="Main"
-        component={StackNavigator}
-        // component={MainScreen}
+        // component={StackNavigator}
+        component={MainScreen}
         options={{
           title: 'Main',
           tabBarIcon: ({ focused }) => (
