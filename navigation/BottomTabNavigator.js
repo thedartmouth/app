@@ -1,17 +1,14 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import * as React from 'react';
 import { StyleSheet } from 'react-native';
-import StackNavigator from './MainArticle';
-import MainScreen from '../screens/MainScreen';
+import FeedScreen from '../screens/FeedScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import PollsScreen from '../screens/PollsScreen';
 import ArticleScreen from '../screens/ArticleScreen';
 import TabBarIcon from '../components/TabBarIcon';
-import { Foundation } from '@expo/vector-icons'; 
-import { Colors } from '../constants';
 
 const BottomTab = createBottomTabNavigator();
-const INITIAL_ROUTE_NAME = 'Main';
+const INITIAL_ROUTE_NAME = 'Feed';
 
 export default function BottomTabNavigator({ navigation, route }) {
   // Set the header title on the parent stack navigator depending on the
@@ -25,43 +22,42 @@ export default function BottomTabNavigator({ navigation, route }) {
       tabBarOptions={{ style: styles.tabBar, showLabel: false }}
     >
       <BottomTab.Screen
-        name="Main"
-        // component={StackNavigator}
-        component={MainScreen}
+        name='Feed'
+        component={FeedScreen}
         options={{
-          title: 'Main',
+          title: 'Feed',
           tabBarIcon: ({ focused }) => (
-            <TabBarIcon focused={focused} name="ios-book" />
+            <TabBarIcon focused={focused} name='ios-book' />
           ),
         }}
       />
       <BottomTab.Screen
-        name="Polls"
+        name='Polls'
         component={PollsScreen}
         options={{
           title: 'Polls',
           tabBarIcon: ({ focused }) => (
-            <TabBarIcon focused={focused} name="ios-podium" />
+            <TabBarIcon focused={focused} name='ios-podium' />
           ),
         }}
       />
       <BottomTab.Screen
-        name="Me"
+        name='Me'
         component={ProfileScreen}
         options={{
           title: 'My Profile',
           tabBarIcon: ({ focused }) => (
-            <TabBarIcon focused={focused} name="ios-person" />
+            <TabBarIcon focused={focused} name='ios-person' />
           ),
         }}
       />
       <BottomTab.Screen
-        name="Article"
+        name='Article'
         component={ArticleScreen}
         options={{
           title: 'Test Article Screen',
           tabBarIcon: ({ focused }) => (
-            <TabBarIcon focused={focused} name="ios-arrow-back" />
+            <TabBarIcon focused={focused} name='ios-arrow-back' />
           ),
         }}
       />
