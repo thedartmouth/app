@@ -1,6 +1,8 @@
 import * as WebBrowser from 'expo-web-browser';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
+import {connect} from 'react-redux';
+import actions from '../actions';
 import {
 	Alert,
 	Button,
@@ -17,14 +19,13 @@ import { Container, Header, Content, Tab, Tabs } from 'native-base';
 import { ScrollView } from 'react-native-gesture-handler';
 import {Stack} from 'react-native-spacing-system';
 import ArticleCard from '../components/ArticleCard';
-import { MonoText } from '../components/StyledText';
 import { useSafeArea } from 'react-native-safe-area-context';
 
 const renderArticle = (articles) => {
 	articles.map();
 };
 
-export default function HomeScreen() {
+const FeedScreen = (props) => {
 	const topicBarItems = [
 		'COVID-19',
 		'NEWS',
@@ -61,27 +62,34 @@ export default function HomeScreen() {
 
 	const articles = [article1, article2];
 
-	const wait = (timeout) => {
-		return new Promise(resolve => {
-			setTimeout(resolve, timeout);
-		});
-	}
+	// const wait = (timeout) => {
+	// 	return new Promise(resolve => {
+	// 		setTimeout(resolve, timeout);
+	// 	});
+	// }
 
 	const [refreshing, setRefreshing] = React.useState(false);
 
-  const onRefresh = React.useCallback(() => {
-    setRefreshing(true);
+	// React.useEffect(() => {
+	// 	props.refreshFeed('news');
+	// })
 
-    wait(2000).then(() => setRefreshing(false));
+  const onRefresh = React.useCallback(() => {
+		setRefreshing(true);
+		// axios.get('http://192.168.0.225:9090/').then(response => {
+		// 	alert(response.data);
+		// })
+		props.refreshFeed('news').then(() => setRefreshing(false))
+    // wait(2000).then(() => setRefreshing(false));
   }, [refreshing]);
 
 	return (
-		<View style={[styles.mainScreen, {paddingTop: useSafeArea().top}]}>
+		<View style={[styles.screen, {paddingTop: useSafeArea().top}]} >
 			<View style={styles.bannerContainer}>
 				<Stack size={20}></Stack>
 				<Image
 					source={require('../assets/images/banner.png')}
-					style={styles.titleImage}
+					style={styles.banner}
 				/>
 				<Stack size={20}></Stack>
 			</View>
@@ -99,9 +107,9 @@ export default function HomeScreen() {
 			<ScrollView style={styles.articleBox} vertical={true} refreshControl={
 				<RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>}>
 				<Stack size={18}></Stack>
-				{articles.map((article) => {
+				{props.articles.feed.map((article) => {
 					return (
-						<View key={article.CEOID}>
+						<View key={article.ceo_id}>
 							<Stack size={24}></Stack>
 							<ArticleCard article={article}></ArticleCard>
 							<Stack size={24}></Stack>
@@ -114,46 +122,49 @@ export default function HomeScreen() {
 	);
 }
 
-HomeScreen.navigationOptions = {
-	header: null,
-};
+export default connect(
+	reduxState => ({
+		loading: reduxState.loading, error: reduxState.error, articles: reduxState.articles,
+	}),
+	{refreshFeed: actions.refreshFeed}
+	)(FeedScreen);
 
 const styles = StyleSheet.create({
-	mainScreen: {
+	screen: {
 		flex: 1,
 		backgroundColor: 'white',
 	},
-	bannerContainer: {
-		backgroundColor: 'white',
-		zIndex: 1,
-		alignItems: 'center',
-	},
-	titleImage: {
-		height: 30,
-		resizeMode: 'contain',
-	},
-	topicBar: {
-		height: 35,
-		shadowOffset: { height: 3 },
-		shadowRadius: 10,
-		shadowColor: 'gray',
-		shadowOpacity: 0.3,
-	},
-	topicBarItem: {
-		height: 35,
-		backgroundColor: 'white',
-		justifyContent: 'center',
-		alignItems: 'center',
-		borderStyle: 'solid',
-		borderColor: '#BDBDBD',
-		borderLeftWidth: 0.5,
-		borderRightWidth: 0.5,
-		borderTopWidth: 1,
-		borderBottomWidth: 1,
-		paddingHorizontal: 15,
-	},
-	articleBox: {
-		flex: 1,
-		paddingHorizontal: 36,
-	},
+		bannerContainer: {
+			backgroundColor: 'white',
+			zIndex: 1,
+			alignItems: 'center',
+		},
+			banner: {
+				height: 30,
+				resizeMode: 'contain',
+			},
+		topicBar: {
+			height: 35,
+			shadowOffset: { height: 3 },
+			shadowRadius: 10,
+			shadowColor: 'gray',
+			shadowOpacity: 0.3,
+		},
+			topicBarItem: {
+				height: 35,
+				backgroundColor: 'white',
+				justifyContent: 'center',
+				alignItems: 'center',
+				borderStyle: 'solid',
+				borderColor: '#BDBDBD',
+				borderLeftWidth: 0.5,
+				borderRightWidth: 0.5,
+				borderTopWidth: 1,
+				borderBottomWidth: 1,
+				paddingHorizontal: 15,
+			},
+		articleBox: {
+			flex: 1,
+			paddingHorizontal: 36,
+		},
 });
