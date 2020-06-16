@@ -17,7 +17,7 @@ import { Colors, Typography, CMSImageUrl } from '../constants';
 export default function ArticleCard(props) {
   const { navigation } = props;
   return (
-    <TouchableOpacity>
+    <TouchableOpacity onPress={() => { navigation.push('Article'); }}>
         <View style={styles.articleInfo}>
           <Text style={styles.articleCategory}>{props.article.tags[0].name}</Text>
           <Stack size={12}></Stack>
