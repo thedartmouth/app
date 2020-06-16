@@ -6,8 +6,6 @@ import ProfileScreen from '../screens/ProfileScreen';
 import PollsScreen from '../screens/PollsScreen';
 import ArticleScreen from '../screens/ArticleScreen';
 import TabBarIcon from '../components/TabBarIcon';
-import { Foundation } from '@expo/vector-icons'; 
-import { Colors } from '../constants';
 
 const BottomTab = createBottomTabNavigator();
 const INITIAL_ROUTE_NAME = 'Feed';
@@ -29,37 +27,37 @@ export default function BottomTabNavigator({ navigation, route }) {
         options={{
           title: 'Feed',
           tabBarIcon: ({ focused }) => (
-            <TabBarIcon focused={focused} name="ios-book" />
+            <TabBarIcon focused={focused} name='ios-book' />
           ),
         }}
       />
       <BottomTab.Screen
-        name="Polls"
+        name='Polls'
         component={PollsScreen}
         options={{
           title: 'Polls',
           tabBarIcon: ({ focused }) => (
-            <TabBarIcon focused={focused} name="ios-podium" />
+            <TabBarIcon focused={focused} name='ios-podium' />
           ),
         }}
       />
       <BottomTab.Screen
-        name="Me"
+        name='Me'
         component={ProfileScreen}
         options={{
           title: 'My Profile',
           tabBarIcon: ({ focused }) => (
-            <TabBarIcon focused={focused} name="ios-person" />
+            <TabBarIcon focused={focused} name='ios-person' />
           ),
         }}
       />
       <BottomTab.Screen
-        name="Article"
+        name='Article'
         component={ArticleScreen}
         options={{
           title: 'Test Article Screen',
           tabBarIcon: ({ focused }) => (
-            <TabBarIcon focused={focused} name="ios-arrow-back" />
+            <TabBarIcon focused={focused} name='ios-arrow-back' />
           ),
         }}
       />
