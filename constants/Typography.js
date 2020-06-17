@@ -17,7 +17,7 @@ export default StyleSheet.create({
     fontWeight: '300',
   },
   serif: {
-    fontFamily: 'Georgia',
+    fontFamily: 'libre-regular',
   },
   sans: {
   }

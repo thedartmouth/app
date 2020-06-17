@@ -54,7 +54,8 @@ const styles = StyleSheet.create({
   },
   articleTitle: {
     ...Typography.h2,
-    ...Typography.serif,
+    // ...Typography.serif,
+    fontFamily: 'libre-regular'
   },
   authorArea: {
     flexDirection: 'row',

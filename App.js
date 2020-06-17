@@ -28,6 +28,8 @@ export default function App(props) {
   const { getInitialState } = useLinking(containerRef);
 
   // Load any resources or data that we need prior to rendering the app
+
+
   React.useEffect(() => {
     async function loadResourcesAndDataAsync() {
       try {
@@ -38,7 +40,11 @@ export default function App(props) {
 
         // Load fonts
         await Font.loadAsync({
-          ...Ionicons.font,
+          Ionicons: require('@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/Ionicons.ttf'),
+          // ...Ionicons.font,
+          'libre-bold': require('./assets/fonts/Libre_Baskerville/LibreBaskerville-Bold.ttf'),
+          'libre-regular': require('./assets/fonts/Libre_Baskerville/LibreBaskerville-Regular.ttf'),
+          'libre-italic': require('./assets/fonts/Libre_Baskerville/LibreBaskerville-Italic.ttf'),
           'space-mono': require('./assets/fonts/SpaceMono-Regular.ttf'),
         });
       } catch (e) {
@@ -50,7 +56,7 @@ export default function App(props) {
       }
     }
 
-    // loadResourcesAndDataAsync();
+    loadResourcesAndDataAsync();
   }, []);
 
   return (

@@ -8,6 +8,7 @@ import ArticleScreen from '../screens/ArticleScreen';
 import TabBarIcon from '../components/TabBarIcon';
 import { Foundation } from '@expo/vector-icons'; 
 import { Colors } from '../constants';
+import AuthorScreen from '../screens/AuthorScreen';
 
 const BottomTab = createBottomTabNavigator();
 const INITIAL_ROUTE_NAME = 'Feed';
@@ -55,9 +56,9 @@ export default function BottomTabNavigator({ navigation, route }) {
       />
       <BottomTab.Screen
         name="Article"
-        component={ArticleScreen}
+        component={AuthorScreen}
         options={{
-          title: 'Test Article Screen',
+          title: 'Test Author Screen',
           tabBarIcon: ({ focused }) => (
             <TabBarIcon focused={focused} name="ios-arrow-back" />
           ),
@@ -78,6 +79,8 @@ function getHeaderTitle(route) {
       return 'Polls';
     case 'Me':
       return 'My Profile';
+    case 'Article':
+      return 'Test Author Screen';
   }
 }
 
