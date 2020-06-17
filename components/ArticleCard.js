@@ -51,6 +51,7 @@ const styles = StyleSheet.create({
     color: 'white',
     backgroundColor: Colors.green,
     overflow: 'hidden', // needed to show the borderRadius with backgroundColor
+    textTransform: 'uppercase',
   },
   articleTitle: {
     ...Typography.h2,
