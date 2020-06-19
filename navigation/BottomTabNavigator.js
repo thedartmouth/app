@@ -51,16 +51,6 @@ export default function BottomTabNavigator({ navigation, route }) {
           ),
         }}
       />
-      <BottomTab.Screen
-        name='Article'
-        component={ArticleScreen}
-        options={{
-          title: 'Test Article Screen',
-          tabBarIcon: ({ focused }) => (
-            <TabBarIcon focused={focused} name='ios-arrow-back' />
-          ),
-        }}
-      />
     </BottomTab.Navigator>
   );
 }
