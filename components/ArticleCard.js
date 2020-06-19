@@ -17,7 +17,7 @@ import { Colors, Typography, CMSImageUrl } from '../constants';
 export default function ArticleCard(props) {
   const { navigation } = props;
   return (
-    <TouchableOpacity>
+    <TouchableOpacity onPress={() => { navigation.push('Article'); }}>
         <View style={styles.articleInfo}>
           <Text style={styles.articleCategory}>{props.article.tags[0].name}</Text>
           <Stack size={12}></Stack>
@@ -51,6 +51,7 @@ const styles = StyleSheet.create({
     color: 'white',
     backgroundColor: Colors.green,
     overflow: 'hidden', // needed to show the borderRadius with backgroundColor
+    textTransform: 'uppercase',
   },
   articleTitle: {
     ...Typography.h2,

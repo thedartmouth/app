@@ -111,7 +111,7 @@ const FeedScreen = (props) => {
 					return (
 						<View key={article.ceo_id}>
 							<Stack size={24}></Stack>
-							<ArticleCard article={article}></ArticleCard>
+							<ArticleCard article={article} navigation={props.navigation}></ArticleCard>
 							<Stack size={24}></Stack>
 							<Divider></Divider>
 						</View>
@@ -122,6 +122,9 @@ const FeedScreen = (props) => {
 	);
 }
 
+FeedScreen.navigationOptions = {
+	header: null,
+};
 export default connect(
 	reduxState => ({
 		loading: reduxState.loading, error: reduxState.error, articles: reduxState.articles,

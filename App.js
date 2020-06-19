@@ -12,6 +12,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import BottomTabNavigator from './navigation/BottomTabNavigator';
 import useLinking from './navigation/useLinking';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import ArticleScreen from './screens/ArticleScreen';
 import LoadingScreen from './screens/LoadingScreen';
 
 const Stack = createStackNavigator();
@@ -69,7 +70,8 @@ export default function App(props) {
         :
           <NavigationContainer ref={containerRef} initialState={initialNavigationState} >
             <Stack.Navigator screenOptions={{headerShown: false}} >
-                <Stack.Screen name="Root" component={BottomTabNavigator} />
+              <Stack.Screen name="Root" component={BottomTabNavigator} />
+              <Stack.Screen name="Article" component={ArticleScreen} />            
             </Stack.Navigator>
           </NavigationContainer>
         }
