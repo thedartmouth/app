@@ -66,6 +66,8 @@ function getHeaderTitle(route) {
       return 'Polls';
     case 'Me':
       return 'My Profile';
+    case 'Article':
+      return 'Test Author Screen';
   }
 }
 
