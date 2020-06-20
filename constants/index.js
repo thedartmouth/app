@@ -8,4 +8,19 @@ export const CMSImageUrl = (imageUUID, extension) => {
   return `https://snworksceo.imgix.net/drt/${imageUUID}.sized-1000x1000.${extension}`;
 }
 
-export { Colors, Layout, Typography, CMS_URL }
+const wait = (timeout) => {
+  return new Promise(resolve => {
+    setTimeout(resolve, timeout);
+  });
+}
+
+const SECTIONS = [
+  'covid',
+  'news',
+  'opinion',
+  'sports',
+  'arts',
+  'mirror',
+];
+
+export { Colors, Layout, Typography, CMS_URL, SECTIONS, wait }
