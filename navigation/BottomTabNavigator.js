@@ -4,7 +4,7 @@ import { StyleSheet } from 'react-native';
 import FeedScreen from '../screens/FeedScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import PollsScreen from '../screens/PollsScreen';
-import ArticleScreen from '../screens/ArticleScreen';
+import AuthorScreen from '../screens/AuthorScreen';
 import TabBarIcon from '../components/TabBarIcon';
 
 const BottomTab = createBottomTabNavigator();
@@ -48,16 +48,6 @@ export default function BottomTabNavigator({ navigation, route }) {
           title: 'My Profile',
           tabBarIcon: ({ focused }) => (
             <TabBarIcon focused={focused} name='ios-person' />
-          ),
-        }}
-      />
-      <BottomTab.Screen
-        name='Article'
-        component={ArticleScreen}
-        options={{
-          title: 'Test Author Screen',
-          tabBarIcon: ({ focused }) => (
-            <TabBarIcon focused={focused} name='ios-arrow-back' />
           ),
         }}
       />
