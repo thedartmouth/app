@@ -1,12 +1,12 @@
 import * as WebBrowser from 'expo-web-browser';
 import * as React from 'react';
-import { Alert, Button, Image, Platform, StyleSheet, Text, TouchableOpacity, View, flex } from 'react-native';
+import {
+  Alert, Button, Image, Platform, StyleSheet, Text, TouchableOpacity, View, flex,
+} from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { MonoText } from '../components/StyledText';
 
-
 export default function HomeScreen() {
-
   return (
     <View style={styles.container}>
       <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
@@ -31,7 +31,7 @@ export default function HomeScreen() {
           </View>
 
           <Text style={styles.getStartedText}>
-            Change any of the text, save the file, and your app will automatically reload. 
+            Change any of the text, save the file, and your app will automatically reload.
           </Text>
 
           <Button
@@ -41,22 +41,30 @@ export default function HomeScreen() {
           />
         </View>
 
-        <View style = {styles.buttonDemo}>
-          <Button color="#ff5c5c"
+        <View style={styles.buttonDemo}>
+          <Button
+            color="#ff5c5c"
             title="Button 1"
-            onPress={() => Alert.alert('Cannot press this one')}/>
-          
-          <Button color = "#00008b"
+            onPress={() => Alert.alert('Cannot press this one')}
+          />
+
+          <Button
+            color="#00008b"
             title="Button 2"
-            onPress={() => Alert.alert('Cannot press this one')}/>
+            onPress={() => Alert.alert('Cannot press this one')}
+          />
 
-          <Button color = "#a52a2a"
+          <Button
+            color="#a52a2a"
             title="Button 3"
-            onPress={() => Alert.alert('Cannot press this one')}/>
+            onPress={() => Alert.alert('Cannot press this one')}
+          />
 
-          <Button color = "#8a2be2"
+          <Button
+            color="#8a2be2"
             title="Button 4"
-            onPress={() => Alert.alert('Cannot press this one')}/>
+            onPress={() => Alert.alert('Cannot press this one')}
+          />
 
         </View>
 
@@ -65,31 +73,29 @@ export default function HomeScreen() {
             <Text style={styles.helpLinkText}>Help, it didn’t automatically reload!</Text>
           </TouchableOpacity>
         </View>
-          
+
         <View style={styles.buttonContainer}>
-            <View style={styles.button}>
-                <TouchableOpacity onPress={handleFirstButton}>
-                <Text style={styles.getStartedText}>This is a button </Text>
-                </TouchableOpacity>
-            </View>
           <View style={styles.button}>
-              <TouchableOpacity onPress={handleFirstButton}>
+            <TouchableOpacity onPress={handleFirstButton}>
+              <Text style={styles.getStartedText}>This is a button </Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.button}>
+            <TouchableOpacity onPress={handleFirstButton}>
               <Text style={styles.buttonText}>This is a larger button </Text>
-              </TouchableOpacity>
+            </TouchableOpacity>
           </View>
         </View>
-          
+
       </ScrollView>
-          
-    
-     
+
       <View style={styles.tabBarInfoContainer}>
         <Text style={styles.tabBarInfoText}>This is a tab bar. You can edit it in:</Text>
 
         <View style={[styles.codeHighlightContainer, styles.navigationFilename]}>
           <MonoText style={styles.codeHighlightText}>navigation/BottomTabNavigator.js</MonoText>
         </View>
-          </View>
+      </View>
     </View>
   );
 }
@@ -108,16 +114,17 @@ function DevelopmentModeNotice() {
 
     return (
       <Text style={styles.developmentModeText}>
-        Welcome to the React Native + Expo development space for The Dartmouth's mobile app. {learnMoreButton}
-      </Text>
-    );
-  } else {
-    return (
-      <Text style={styles.developmentModeText}>
-        You are not in development mode: your app will run at full speed.
+        Welcome to the React Native + Expo development space for The Dartmouth's mobile app.
+        {' '}
+        {learnMoreButton}
       </Text>
     );
   }
+  return (
+    <Text style={styles.developmentModeText}>
+      You are not in development mode: your app will run at full speed.
+    </Text>
+  );
 }
 
 function handleLearnMorePress() {
@@ -126,12 +133,12 @@ function handleLearnMorePress() {
 
 function handleHelpPress() {
   WebBrowser.openBrowserAsync(
-    'https://docs.expo.io/versions/latest/get-started/create-a-new-app/#making-your-first-change'
+    'https://docs.expo.io/versions/latest/get-started/create-a-new-app/#making-your-first-change',
   );
 }
 
 function handleFirstButton() {
-    alert("button pressed")
+  alert('button pressed');
 }
 
 const styles = StyleSheet.create({
@@ -182,20 +189,20 @@ const styles = StyleSheet.create({
     lineHeight: 24,
     textAlign: 'center',
   },
-    buttonContainer: {
-        display: flex
-    },
-    button: {
-        alignItems: 'center',
-        marginBottom: 10,
-        alignSelf: 'center',
-        backgroundColor: '#DDDDDD',
-        padding: 10
-    },
-    buttonText: {
-        color: '#4c4baf',
-        fontSize: 20
-    },
+  buttonContainer: {
+    display: flex,
+  },
+  button: {
+    alignItems: 'center',
+    marginBottom: 10,
+    alignSelf: 'center',
+    backgroundColor: '#DDDDDD',
+    padding: 10,
+  },
+  buttonText: {
+    color: '#4c4baf',
+    fontSize: 20,
+  },
   tabBarInfoContainer: {
     position: 'absolute',
     bottom: 0,
@@ -237,7 +244,7 @@ const styles = StyleSheet.create({
   },
   buttonDemo: {
     flexDirection: 'row',
-    justifyContent: 'space-evenly'
+    justifyContent: 'space-evenly',
   },
   button1: {
 
@@ -247,5 +254,5 @@ const styles = StyleSheet.create({
   },
   button3: {
 
-  }
+  },
 });

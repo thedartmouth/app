@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {connect} from 'react-redux';
-import actions from '../actions';
+import {actions} from '../store';
 import { Animated, Button, Image, Platform, StyleSheet, Text, TouchableOpacity, View, flex, requireNativeComponent } from 'react-native';
 import {Stack} from 'react-native-spacing-system';
 import { Typography } from '../constants';

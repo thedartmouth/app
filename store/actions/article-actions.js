@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { CMS_URL } from '../constants';
+import { CMS_URL, SECTIONS } from '../../constants';
 
 export const ActionTypes = {
   REFRESH_FEED: {
