@@ -6,6 +6,7 @@ import { SafeAreaConsumer } from 'react-native-safe-area-context';
 import {Stack, Queue} from 'react-native-spacing-system';
 import PollCard from '../components/PollCard';
 import { Typography, Colors } from '../constants';
+import axios from 'axios';
 
 class PollsScreen extends React.Component {
   constructor(props) {
@@ -21,24 +22,37 @@ class PollsScreen extends React.Component {
    * This function is called by React when the component begins to mount (render).
    * Here, we use it to initialize a sample poll.
    */
+
   componentDidMount = () => {
-    const polls = []
-    for (let i = 0; i < 10; i += 1) {
-      const poll = {
-        _id: Math.random(),
-        question: 'In your opinion, how responsive has the College administration been to student concerns during this time?',
-        answers: [
-          {text: 'Very unresponsive'},
-          {text: 'Somewhat unresponsive'},
-          {text: 'Somewhat responsive, but what if this answer was super long because there are just long answers'},
-          {text: 'Very responsive'}
-        ],
-        refArticle: 'Name of referencing article'
-      }
-      const copyOfPoll = JSON.parse(JSON.stringify(poll));
-      polls.push(copyOfPoll) // copies the object so it's not referencing itself
+    const axios = require('axios');
+    const polls = []; 
+    // gets poll from backend 
+    axios.get("http://localhost:9090/polls/").then(response => {
+      let allPolls = new Array(); 
+      allPolls = response.data; 
+      // iterate through all polls 
+      for (let i = 0; i < allPolls.length; i++) {
+        thisPoll = allPolls[i];
+        const allAnswers = Object.keys(thisPoll.answers); 
+        answersList = new Array(); 
+       // iterate through list of answer choices and make key/value pair for each choice
+        for (var j = 0; j < allAnswers.length; j++) {
+          var obj = {}
+          obj.text = allAnswers[j];
+          answersList.push(obj);
+        }
+        const poll = {
+        _id: Math.random(), 
+        question: thisPoll.question, 
+        answers: answersList, 
+        refArticle: thisPoll.associatedArticle
+        }
+        const copyOfPoll = JSON.parse(JSON.stringify(poll));
+        polls.push(copyOfPoll) // copies the object so it's not referencing itself
     }
-    this.setState({polls: polls}) // sets this poll into the React component state
+    this.setState({polls: polls});
+    })
+
   }
 
   render() {
@@ -57,6 +71,7 @@ class PollsScreen extends React.Component {
                 </Text>
               </View>
               <Stack size={36}></Stack>
+              {/* What's this ID thing do again? */}
               {this.state.polls.map((poll, idx) => {
                 return (
                   <View key={poll._id} style={styles.poll}>
