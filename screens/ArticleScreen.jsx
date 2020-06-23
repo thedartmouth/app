@@ -7,9 +7,13 @@ import { SafeAreaConsumer } from 'react-native-safe-area-context';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Box, Stack, Queue } from '../components/layout';
 import { Typography, Colors } from '../constants';
+import HTML from 'react-native-render-html';
+import { Linking } from 'expo';
 
-export default function ArticleScreen({ navigation }) {
+export default function ArticleScreen({ route, navigation }) {
   const scrollY = new Animated.Value(0);
+  const { article } = route.params;
+  const authorString = article.authors.map((e) => { return e.name }).join(", ");
   const translateYTop = (step) => Animated.diffClamp(scrollY, 0, step).interpolate({
     inputRange: [0, step],
     outputRange: [0, -step],
@@ -22,6 +26,7 @@ export default function ArticleScreen({ navigation }) {
     inputRange: [0, 40],
     outputRange: [1, 0],
   });
+
   return (
     <SafeAreaConsumer>
       {(insets) => (
@@ -51,13 +56,13 @@ export default function ArticleScreen({ navigation }) {
           >
             <Stack size={120} />
             <Stack size={12} />
-            <Text style={styles.category}>Sports</Text>
+            <Text style={styles.category}>{article.tags[0].name}</Text>
             <Stack size={12} />
-            <Text style={styles.articleTitle}>Sample Article Title</Text>
+            <Text style={styles.articleTitle}>{article.headline}</Text>
             <Stack size={12} />
             <View style={styles.authorCountArea}>
               <View style={styles.authorArea}>
-                <Text style={styles.author}>by Ziray Hao</Text>
+                <Text style={styles.author}>by {authorString}</Text>
                 <Queue size={8} />
                 <Ionicons style={styles.authorAdd} name="ios-add" size={16} color="gray" />
               </View>
@@ -69,12 +74,13 @@ export default function ArticleScreen({ navigation }) {
               style={styles.articleImage}
             />
             <Stack size={12} />
-            <Text style={styles.abstract}>
-              Dartmouth will apply for the first half of its alloted
-              funding from the Coronavirus Aid, Relief, and Economic Security Act, College President
-              Phil Hanlon announced today. As required by the federal government, the funding will
-              be used for emergency financial aid.
-            </Text>
+            <HTML
+              tagsStyles={{ p: styles.content, a: styles.links}}  // heads up, styles do not trigger autorefresh on expo
+              html={article.content}
+              onLinkPress={(event, href)=>{
+                Linking.openURL(href);
+              }}
+            />
           </ScrollView>
           <Animated.View style={{
             transform: [
@@ -101,6 +107,7 @@ export default function ArticleScreen({ navigation }) {
 const styles = StyleSheet.create({
   screen: {
     backgroundColor: 'white',
+    flex: 1,
   },
   articleScroll: {
     paddingHorizontal: 30,
@@ -162,8 +169,13 @@ const styles = StyleSheet.create({
     maxHeight: 200,
     resizeMode: 'cover',
   },
-  abstract: {
-    textAlign: 'justify',
+  content: {
+    textAlign: 'left',
+    ...Typography.p,
+    ...Typography.serif,
+    marginBottom: 18,
+  },
+  links: {
     ...Typography.p,
     ...Typography.serif,
   },
