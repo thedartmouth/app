@@ -5,8 +5,8 @@ const INITIAL_STATE = {
   feed: [],
 };
 
-export default articleReducer = (state = INITIAL_STATE, action) => {
-  prevState = JSON.parse(JSON.stringify(state));
+const articleReducer = (state = INITIAL_STATE, action) => {
+  const prevState = JSON.parse(JSON.stringify(state));
   switch (action.type) {
     case ActionTypes.REFRESH_FEED.SUCCESS:
       return {...prevState, feed: action.payload};
@@ -14,3 +14,5 @@ export default articleReducer = (state = INITIAL_STATE, action) => {
       return state
   }
 };
+
+export default articleReducer;
