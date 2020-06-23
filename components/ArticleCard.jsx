@@ -13,8 +13,14 @@ import { Colors, Typography, CMSImageUrl } from '../constants';
 
 export default function ArticleCard(props) {
   const { navigation } = props;
+  const authorString = props.article.authors.map((e) => { return e.name }).join(", ");
   return (
-    <TouchableOpacity onPress={() => { navigation.push('Article'); }}>
+    <TouchableOpacity
+      onPress={() => {
+        navigation.push('Article', {
+          article: props.article
+      });
+    }}>
       <View style={styles.articleInfo}>
         <Text style={styles.articleCategory}>{props.article.tags[0].name}</Text>
         <Stack size={12} />
@@ -22,8 +28,7 @@ export default function ArticleCard(props) {
         <Stack size={12} />
         <View style={styles.authorArea}>
           <Text style={styles.author}>
-            by
-            {props.article.authors[0].name}
+            by {authorString}
           </Text>
           <Queue size={8} />
           <Ionicons style={styles.authorAdd} name="ios-add" size={16} color="gray" />
