@@ -4,7 +4,7 @@ import {
 } from 'react-native';
 import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import { SafeAreaConsumer } from 'react-native-safe-area-context';
-import { ScrollView } from 'react-native-gesture-handler';
+import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import { Box, Stack, Queue } from '../components/layout';
 import { Typography, Colors } from '../constants';
 
@@ -33,7 +33,7 @@ export default function ArticleScreen({ navigation }) {
             zIndex: 1,
           }}
           >
-            <Box dir="col" style={styles.topTab} pad={[insets.top, 0, 0, 0]}>
+            <Box dir="column" style={styles.topTab} pad={[insets.top, 0, 0, 0]}>
               <Box dir="row">
                 <Queue size={30} />
                 <Animated.View style={{ opacity: opacityButton }}>
@@ -57,7 +57,10 @@ export default function ArticleScreen({ navigation }) {
             <Stack size={12} />
             <View style={styles.authorCountArea}>
               <View style={styles.authorArea}>
-                <Text style={styles.author}>by Ziray Hao</Text>
+                <Text style={styles.author}>by </Text>
+                <TouchableOpacity navigation={navigation} onPress={() => { navigation.push('Author'); }}>
+                  <Text style={styles.author}>Ziray Hao</Text>
+                </TouchableOpacity>
                 <Queue size={8} />
                 <Ionicons style={styles.authorAdd} name="ios-add" size={16} color="gray" />
               </View>

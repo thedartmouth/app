@@ -20,5 +20,5 @@ export default StyleSheet.create({
     fontFamily: 'libre-regular',
   },
   sans: {
-  }
+  },
 });

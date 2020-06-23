@@ -5,7 +5,8 @@ import { ScrollView, TouchableOpacity} from 'react-native-gesture-handler';
 import { SafeAreaConsumer } from 'react-native-safe-area-context';
 import {Stack, Queue} from 'react-native-spacing-system';
 import { Typography, Colors } from '../constants';
-import { PreviewCard } from '../components/PreviewCard';
+import { Ionicons } from '@expo/vector-icons';
+import PreviewCard from '../components/PreviewCard';
 
 class AuthorScreen extends React.Component {
   constructor(props) {
@@ -23,7 +24,7 @@ class AuthorScreen extends React.Component {
 
   /**
    * This function is called by React when the component begins to mount (render).
-   * Here, we use it to initialize a sample poll.
+   * Here, we use it to initialize sample previews.
    */
   componentDidMount = () => {
     const author = {
@@ -38,7 +39,7 @@ class AuthorScreen extends React.Component {
       const preview = {
         articleID: 98345, // random number for now
         category: 'CATEGORY',
-        image: require('../assets/images/article1.jpg'),  
+        image: require('../assets/images/article2.jpg'),  
         content: 'Name of article about news or sports or art or opinion or ', // title of article only
       }
       const copyOfPreview = JSON.parse(JSON.stringify(preview));
@@ -54,6 +55,7 @@ class AuthorScreen extends React.Component {
         {insets => (
           <View style={[styles.authorScreen, {paddingTop: insets.top}]}>
             <ScrollView style={styles.scroll}>
+                <Ionicons name="ios-arrow-back" size={30} color="black" onPress={this.props.navigation.goBack} />
                 <Stack size={18}></Stack>
                 <View style={styles.authorInfo}>
                     <View style={styles.authorPhoto}>
@@ -83,7 +85,7 @@ class AuthorScreen extends React.Component {
                   return (
                     <View>
                       <TouchableOpacity>
-                        <PreviewCard preview={preview}></PreviewCard>
+                        <PreviewCard preview={preview} navigation={this.props.navigation}></PreviewCard>
                       </TouchableOpacity>
                       <Stack size={(index == this.state.previews.length - 1) ? 0 : 28}></Stack>
                     </View>
