@@ -18,7 +18,7 @@ const FeedScreen = (props) => {
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
-    props.refreshFeed('news').then(() => setRefreshing(false));
+    props.refreshFeed().then(() => setRefreshing(false));
   }, [refreshing]);
 
   return (

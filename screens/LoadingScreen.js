@@ -13,7 +13,7 @@ class LoadingScreen extends React.Component {
   }
 
   componentDidMount() {
-    this.props.refreshFeed('news').then(() => {
+    this.props.refreshFeed().then(() => {
       setTimeout(() => {
         this.props.completeLoading();
       }, 2000);
