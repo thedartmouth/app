@@ -1016,13 +1016,6 @@
   dependencies:
     lodash "^4.17.4"
 
-"@expo/vector-icons@^10.2.0":
-  version "10.2.0"
-  resolved "https://registry.yarnpkg.com/@expo/vector-icons/-/vector-icons-10.2.0.tgz#3c70656683a6a873e18efc00bc61fc160a80dc55"
-  integrity sha512-dYe0SW/xbzWRtWG7i1pc3QPMGMbdReVgP02XlwMkS4srAAjF0cZQVa3ZgZ6qzxI+OzKudpDXZRmENNth/b263g==
-  dependencies:
-    lodash "^4.17.4"
-
 "@expo/websql@^1.0.1":
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@expo/websql/-/websql-1.0.1.tgz#fff0cf9c1baa1f70f9e1d658b7c39a420d9b10a9"
@@ -6369,6 +6362,11 @@ range-parser@~1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/range-parser/-/range-parser-1.2.1.tgz#3cf37023d199e1c24d1a55b84800c2f3e6468031"
   integrity sha512-Hrgsx+orqoygnmhFbKaHE6c296J+HTAQXoxEF6gNupROmmGJRoyzfG3ccAveqCBrwr/2yxQ5BVd/GTl5agOwSg==
+
+react-axios@^2.0.3:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/react-axios/-/react-axios-2.0.3.tgz#9aeb75a2db07cebaf0ff710f666a2932ce024af5"
+  integrity sha512-63kY2iupdRgbvPq9G8xmM0NWUnt2Q5YmpotMoLQsxKOzKXKZg2Lo6CzF/bcZvtmv3WnfjBU6Bg8nZQO28eIAZw==
 
 react-devtools-core@^3.6.3:
   version "3.6.3"

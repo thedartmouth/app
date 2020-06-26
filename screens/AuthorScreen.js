@@ -7,6 +7,7 @@ import {Stack, Queue} from 'react-native-spacing-system';
 import { Typography, Colors } from '../constants';
 import { Ionicons } from '@expo/vector-icons';
 import PreviewCard from '../components/PreviewCard';
+import axios from 'axios';
 
 class AuthorScreen extends React.Component {
   constructor(props) {
@@ -19,6 +20,7 @@ class AuthorScreen extends React.Component {
   }
 
   follow = () => { 
+    axios.put("http://192.168.1.9:9090/author/profile/andrew-sasser", this.state.followed)
     this.setState({ followed: !this.state.followed })
   }
 
@@ -27,26 +29,46 @@ class AuthorScreen extends React.Component {
    * Here, we use it to initialize sample previews.
    */
   componentDidMount = () => {
-    const author = {
-      name: "Author Name",
-      readers: '10,329', //if we want commas this should be cast as a string 
-      followers: 24,
-      numArticles: 15,
-      bio: 'Author bio here. Fun facts, the section they write in, what have you. Etc etc etc. The border should adjust height to account for the length of the bio.',
-    }
-    const previews = []
-    for (let i = 0; i < author.numArticles; i += 1) {
-      const preview = {
-        articleID: 98345, // random number for now
-        category: 'CATEGORY',
-        image: require('../assets/images/article2.jpg'),  
-        content: 'Name of article about news or sports or art or opinion or ', // title of article only
-      }
-      const copyOfPreview = JSON.parse(JSON.stringify(preview));
-      previews.push(copyOfPreview) // copies the object so it's not referencing itself
-    }
-    this.setState({previews: previews}) // sets this poll into the React component state
-    this.setState({author: author})
+    const axios = require('axios');
+    
+    axios.get("http://192.168.1.9:9090/author/search?AuthorName=andrew s",).then(
+      axios.get("http://192.168.1.9:9090/author/profile/andrew-sasser").then(response => { 
+
+        const author = {
+          name: response.data.author.name,
+          initials: response.data.author.name.split(' ').map(function(word, idx){
+            return ((idx == 0) ? ' ' + word[0] + '.' : word[0] + '.')
+          }).join(''), 
+          readers: response.data.totalViews.toLocaleString(), // known issue, doesn't work on Android. hopefully works on ioS
+          followers: response.data.author.followers.length,
+          numArticles: response.data.totalArticles,
+          bio: '',
+        } 
+
+        const previews = []
+        for (let i = 0; i < author.numArticles; i+=1) {
+          const currPreview = response.data.articles[i]
+          let index = 0
+          for (let j = 0; j < currPreview.metadata.length; j++) {
+            if (currPreview.metadata[j].label == "kicker") {
+              index = j
+            }
+          }
+          const preview = {
+            articleID: currPreview.id,
+            category: currPreview.metadata[index].value.toUpperCase(),
+            // image: currPreview.dominantMedia.uuid,
+            content: currPreview.headline,
+          }
+          const copyOfPreview = JSON.parse(JSON.stringify(preview));
+          previews.push(copyOfPreview) // copies the object so it's not referencing itself
+        }
+
+        this.setState({ previews: previews})
+        this.setState({ author: author })
+
+      })
+    );
   }
 
   render() {
@@ -59,7 +81,7 @@ class AuthorScreen extends React.Component {
                 <Stack size={18}></Stack>
                 <View style={styles.authorInfo}>
                     <View style={styles.authorPhoto}>
-                      <Text style={styles.initials}> A.N.</Text>
+                      <Text style={styles.initials}>{this.state.author.initials} </Text>
                     </View>
                     <Stack size={18}></Stack>
                     <Text style={styles.authorName}>{this.state.author.name}</Text>
@@ -69,7 +91,7 @@ class AuthorScreen extends React.Component {
                         <Queue size={10}></Queue>
                         <Text style={styles.followersText}>{this.state.author.followers} followers</Text>
                     </View> 
-                    <Stack size={25}></Stack>
+                    {(this.state.author.bio == '') ? <Stack size={0}></Stack> : <Stack size={25}></Stack>} 
                     <Text style={styles.bio}>{this.state.author.bio}</Text>
                     <Stack size={25}></Stack>
                     <TouchableOpacity style={styles.followButton} onPress={this.follow}>
@@ -83,7 +105,7 @@ class AuthorScreen extends React.Component {
                 <Stack size={24}></Stack> 
                 {this.state.previews.map((preview, index) => {
                   return (
-                    <View>
+                    <View key={preview.articleID}>
                       <TouchableOpacity>
                         <PreviewCard preview={preview} navigation={this.props.navigation}></PreviewCard>
                       </TouchableOpacity>

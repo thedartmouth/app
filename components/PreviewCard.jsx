@@ -14,7 +14,6 @@ export default function PreviewCard(props) { // couldn't get image to display --
   return (
     <TouchableOpacity onPress={() => props.navigation.push('Article')}>
       <View style={styles.infoBox}>
-        {/* <View style={styles.temp}></View> */}
         <View style={styles.textBox}>
           <Text style={styles.category}>{props.preview.category}</Text>
           <View style={styles.textBoxAgain}>
@@ -22,10 +21,11 @@ export default function PreviewCard(props) { // couldn't get image to display --
           </View>
         </View>
         <Queue size={10} />
-        <Image
+        {/* <Image
           source={props.preview.image}
           style={{ flex: 1, width: '100%', maxHeight: 65 }} // this is not a great way to handle image dimensions
-        />
+        /> */}
+        <View style={styles.temp} />
       </View>
     </TouchableOpacity>
   );
