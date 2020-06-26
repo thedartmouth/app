@@ -1,12 +1,15 @@
 import axios from 'axios';
-import { CMS_URL, SECTIONS } from '../../constants';
+import { CMS_URL, SECTIONS, ROOT_URL } from '../../constants';
 
 export const ActionTypes = {
   REFRESH_FEED: {
     REQUEST: 'REFRESH_FEED_REQUEST',
     SUCCESS: 'REFRESH_FEED_SUCCESS',
     FAILURE: 'REFRESH_FEED_FAILURE',
-  }
+  },
+  READ_ARTICLE: 'READ_ARTICLE',
+  LEAVE_ARTICLE: 'LEAVE_ARTICLE',
+  ERROR_SET: 'ERROR_SET',
 }
 
 /**
@@ -24,4 +27,30 @@ export const refreshFeed = (section) => {
       reject(error);
     })
   })
+}
+
+/**
+ * Sends to backend the current article and receives an object back containing data like views.
+ * @param {String} article The article to send backend (current article).
+ */
+export const readArticle = (article) => {
+  return (dispatch) => {
+    axios.post(`${ROOT_URL}/articles/read`, article)
+      .then((response) => {
+        console.log(response.data);
+        dispatch({ type: ActionTypes.READ_ARTICLE, payload: response.data });
+      })
+      .catch((error) => {
+        dispatch({ type: ActionTypes.ERROR_SET, error });
+      });
+  };
+}
+
+/**
+ * Clears current article once user goes back to feed.
+ */
+export const leaveArticle = () => {
+  return (dispatch) => {
+    dispatch({ type: ActionTypes.LEAVE_ARTICLE }); 
+  };
 }

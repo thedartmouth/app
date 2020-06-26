@@ -10,16 +10,20 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { Stack, Queue } from 'react-native-spacing-system';
 import { Colors, Typography, CMSImageUrl } from '../constants';
+import { connect } from 'react-redux';
+import { readArticle } from '../store/actions/article-actions';
 
-export default function ArticleCard(props) {
+function ArticleCard(props) {
   const { navigation } = props;
   const authorString = props.article.authors.map((e) => { return e.name }).join(", ");
   return (
     <TouchableOpacity
       onPress={() => {
-        navigation.push('Article', {
-          article: props.article
-      });
+      props.readArticle({ article: props.article });
+      
+      navigation.push('Article', {
+        article: props.article
+    });
     }}>
       <View style={styles.articleInfo}>
         <Text style={styles.articleCategory}>{props.article.tags[0].name}</Text>
@@ -44,6 +48,8 @@ export default function ArticleCard(props) {
     </TouchableOpacity>
   );
 }
+
+export default connect(null, { readArticle })(ArticleCard);
 
 const styles = StyleSheet.create({
   articleCategory: {

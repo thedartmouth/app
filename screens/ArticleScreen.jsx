@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  StyleSheet, Text, View, Image, Animated,
+  StyleSheet, Text, View, Image, Animated, Dimensions
 } from 'react-native';
 import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import { SafeAreaConsumer } from 'react-native-safe-area-context';
@@ -9,10 +9,24 @@ import { Box, Stack, Queue } from '../components/layout';
 import { Typography, Colors } from '../constants';
 import HTML from 'react-native-render-html';
 import { Linking } from 'expo';
+import { connect } from 'react-redux';
+import { leaveArticle } from '../store/actions/article-actions';
 
-export default function ArticleScreen({ route, navigation }) {
+function ArticleScreen(props) {
+  function back() {
+    props.navigation.goBack();
+    props.leaveArticle();
+  }
+
+  function renderViews(views) {
+    if (views) {
+      return <Text style={styles.views}>{views} view(s)</Text>;
+    }
+    return;
+  }
+
   const scrollY = new Animated.Value(0);
-  const { article } = route.params;
+  const { article } = props.route.params;
   const authorString = article.authors.map((e) => { return e.name }).join(", ");
   const translateYTop = (step) => Animated.diffClamp(scrollY, 0, step).interpolate({
     inputRange: [0, step],
@@ -42,7 +56,7 @@ export default function ArticleScreen({ route, navigation }) {
               <Box dir="row">
                 <Queue size={30} />
                 <Animated.View style={{ opacity: opacityButton }}>
-                  <Ionicons name="ios-arrow-back" size={30} color="black" onPress={navigation.goBack} />
+                  <Ionicons name="ios-arrow-back" size={30} color="black" onPress={back} />
                 </Animated.View>
               </Box>
               <Stack size={10} />
@@ -60,13 +74,14 @@ export default function ArticleScreen({ route, navigation }) {
             <Stack size={12} />
             <Text style={styles.articleTitle}>{article.headline}</Text>
             <Stack size={12} />
-            <View style={styles.authorCountArea}>
+            <View style={styles.authorViewsArea}>
               <View style={styles.authorArea}>
                 <Text style={styles.author}>by {authorString}</Text>
                 <Queue size={8} />
                 <Ionicons style={styles.authorAdd} name="ios-add" size={16} color="gray" />
               </View>
-              <Text style={styles.count}># view cnt.</Text>
+              <Queue size={8} />
+              {renderViews(props.currentArticle.views)}
             </View>
             <Stack size={12} />
             <Image
@@ -80,6 +95,7 @@ export default function ArticleScreen({ route, navigation }) {
               onLinkPress={(event, href)=>{
                 Linking.openURL(href);
               }}
+              imagesMaxWidth={Dimensions.get('window').width - 60} // adjust based on horizontal padding
             />
           </ScrollView>
           <Animated.View style={{
@@ -103,6 +119,14 @@ export default function ArticleScreen({ route, navigation }) {
     </SafeAreaConsumer>
   );
 }
+
+function mapStateToProps(reduxState) {
+  return {
+    currentArticle: reduxState.articles.current,
+  };
+}
+
+export default connect(mapStateToProps, { leaveArticle })(ArticleScreen);
 
 const styles = StyleSheet.create({
   screen: {
@@ -144,22 +168,26 @@ const styles = StyleSheet.create({
     overflow: 'hidden', // needed to show the borderRadius with backgroundColor
     textTransform: 'uppercase',
   },
-  authorCountArea: {
+  authorViewsArea: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    // justifyContent: 'space-between',
+    flexWrap: 'wrap',
   },
   authorArea: {
     flexDirection: 'row',
     alignItems: 'center',
+    flex: 3,
   },
-  count: {
+  views: {
     ...Typography.sans,
+    flex: 1,
   },
   author: {
     color: 'grey',
     ...Typography.p,
     ...Typography.sans,
+    // flexWrap: 'wrap',
   },
   authorAdd: {
     marginTop: 2, // correction

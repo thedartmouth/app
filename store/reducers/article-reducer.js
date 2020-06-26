@@ -10,6 +10,10 @@ const articleReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case ActionTypes.REFRESH_FEED.SUCCESS:
       return {...prevState, feed: action.payload};
+    case ActionTypes.READ_ARTICLE:
+      return {...prevState, current: action.payload};
+    case ActionTypes.LEAVE_ARTICLE:
+      return {...prevState, current: {}};
     default:
       return state
   }
