@@ -44,7 +44,9 @@ export const refreshFeed = () => {
         return a.created_at < b.created_at;
       });
       articles.forEach((article) => console.log(article.created_at));
-      dispatch({type: ActionTypes.REFRESH_FEED.SUCCESS, payload: articles});
+      uniqueArticles = articles.filter((articleA, index, self) =>
+      self.findIndex((articleB) => articleA.ceo_id === articleB.ceo_id) === index); // filter unique articles
+      dispatch({type: ActionTypes.REFRESH_FEED.SUCCESS, payload: uniqueArticles});
 
     }).catch((error) => {
       dispatch({type: ActionTypes.REFRESH_FEED.FAILURE});
