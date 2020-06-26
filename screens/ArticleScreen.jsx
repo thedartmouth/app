@@ -18,9 +18,9 @@ function ArticleScreen(props) {
     props.leaveArticle();
   }
 
-  function renderViews(views) {
-    if (views) {
-      return <Text style={styles.views}>{views} view(s)</Text>;
+  function renderViews() {
+    if (props.currentArticle.views) {
+      return <Text style={styles.views}>{props.currentArticle.views} view(s)</Text>;
     }
     return;
   }
@@ -80,8 +80,7 @@ function ArticleScreen(props) {
                 <Queue size={8} />
                 <Ionicons style={styles.authorAdd} name="ios-add" size={16} color="gray" />
               </View>
-              <Queue size={8} />
-              {renderViews(props.currentArticle.views)}
+              {renderViews()}
             </View>
             <Stack size={12} />
             <Image
@@ -177,11 +176,14 @@ const styles = StyleSheet.create({
   authorArea: {
     flexDirection: 'row',
     alignItems: 'center',
-    flex: 3,
+    flexWrap: 'wrap',
+    // flex: 3,
   },
   views: {
     ...Typography.sans,
-    flex: 1,
+    position: 'absolute',
+    right: 0,
+    // flex: 1,
   },
   author: {
     color: 'grey',

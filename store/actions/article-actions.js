@@ -16,17 +16,42 @@ export const ActionTypes = {
  * Pulls the most recent set of articles from a certain section and saves to redux store.
  * @param {String} section The section to fill the newsfeed with. Should be one of [].
  */
-export const refreshFeed = (section) => {
+// export const refreshFeed = (section) => {
+//   return dispatch => new Promise((resolve, reject) => {
+//     dispatch({type: ActionTypes.REFRESH_FEED.REQUEST});
+//     axios.get(`${CMS_URL}/section/${section}.json`).then(response => {
+//       dispatch({type: ActionTypes.REFRESH_FEED.SUCCESS, payload: response.data.articles});
+//       resolve();
+//     }).catch(error => {
+//       dispatch({type: ActionTypes.REFRESH_FEED.FAILURE});
+//       reject(error);
+//     })
+//   })
+// }
+
+export const refreshFeed = () => {
   return dispatch => new Promise((resolve, reject) => {
     dispatch({type: ActionTypes.REFRESH_FEED.REQUEST});
-    axios.get(`${CMS_URL}/section/${section}.json`).then(response => {
-      dispatch({type: ActionTypes.REFRESH_FEED.SUCCESS, payload: response.data.articles});
-      resolve();
-    }).catch(error => {
+    const requests = SECTIONS.map((section) => {
+      return axios.get(`${CMS_URL}/section/${section}.json`);
+    });
+    Promise.all(requests).then((responses) => {
+      const results = responses.map((response) => {
+        return response.data.articles; // clean up results
+      });
+      const articles = [].concat.apply([], results); // merge subarrays in results into 1 array
+      articles.sort(function(a,b){
+        return a.created_at < b.created_at;
+      });
+      articles.forEach((article) => console.log(article.created_at));
+      dispatch({type: ActionTypes.REFRESH_FEED.SUCCESS, payload: articles});
+
+    }).catch((error) => {
       dispatch({type: ActionTypes.REFRESH_FEED.FAILURE});
       reject(error);
-    })
-  })
+    });
+
+  });
 }
 
 /**
