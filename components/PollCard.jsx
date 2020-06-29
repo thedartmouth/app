@@ -8,6 +8,7 @@ import {
 import { Divider } from 'react-native-elements';
 import { Stack, Queue } from 'react-native-spacing-system';
 import { Typography } from '../constants';
+import axios from 'axios';
 
 export default function PollCard(props) {
   return (
@@ -17,9 +18,10 @@ export default function PollCard(props) {
       <View>
         {props.poll.answers.map((answer, idx) => (
           <View key={idx}>
-            <TouchableOpacity style={styles.answerArea} onPress={() => handleAnswer(answer.text, props.poll.question)} key={answer.text}>
+            <TouchableOpacity style={styles.answerArea} onPress={() => handleAnswer(props.poll.pollID, props.userID, answer.text)} key={answer.text}>
               <Queue size={12} />
-              <View style={styles.answerButton} />
+              {displayVotes(props.poll.isUnanswered, answer.value)}
+              {/* <View style={styles.answerButton} /> */}
               <Queue size={18} />
               <Text style={styles.answerText}>{answer.text}</Text>
             </TouchableOpacity>
@@ -42,8 +44,25 @@ export default function PollCard(props) {
   );
 }
 
-function handleAnswer(choice, question) {
-  alert(`You picked:\n${choice}\nfrom question:\n${question}`);
+// when the user votes in poll 
+function handleAnswer(pollID, userID, choice) {
+  const axios = require('axios'); 
+  axios.put('http://localhost:9090/polls/', {
+    pollID: pollID,
+    userID: userID,
+    answerChoice: choice
+  }).then((response) => console.log(response));
+
+  alert(`You picked:\n${choice}\n`); // tells user their choice 
+}
+
+function displayVotes(isUnanswered, numVotes) {
+  if (!isUnanswered) {
+    return <Text>{numVotes}</Text>
+  }
+  else {
+    return <View style={styles.answerButton} />
+  }
 }
 
 const styles = StyleSheet.create({

@@ -14,8 +14,31 @@ class PollsScreen extends React.Component {
     this.state = {
       polls: [], // React component state
       pressed: false,
-      answerChosen: ''
+      answerChosen: '',
+      userID: "5eec226839d28f457a64c71a", 
+      // 5eec226839d28f457a64c71a voted in both 
+      // 5eebf36a6b0688362623ece6 voted in bread but not in sports
+      // 5eebebb249096e34b05a4d50 voted in neither
+      unanswered: true, // to change between unanswered polls and answered polls toggling
+      fetchType: "fetchUnanswered", // for the URL
+      text: "Go to Answered Polls", // for the button
+      headerText: "What is your opinion?"
     }
+  }
+
+  changePollsFunction = () => {
+    this.state.unanswered = !this.state.unanswered; 
+    if (this.state.unanswered) {
+      this.state.fetchType = "fetchUnanswered";
+      this.state.text = "Go to Answered Polls"; 
+      this.state.headerText = "What is your opinion?";
+    }
+    else{
+      this.state.fetchType = "fetchAnswered";
+      this.state.text = "Go to Unanswered Polls";
+      this.state.headerText = "Polls you have answered";
+    }
+    this.componentDidMount(); 
   }
 
   /**
@@ -24,28 +47,33 @@ class PollsScreen extends React.Component {
    */
 
   componentDidMount = () => {
-    const axios = require('axios');
+
+    const axios = require('axios'); 
     const polls = []; 
-    // gets poll from backend 
-    axios.get("http://localhost:9090/polls/").then(response => {
+
+    axios.get("http://localhost:9090/polls/" + this.state.fetchType + "/" + this.state.userID).then(response => {
       let allPolls = new Array(); 
       allPolls = response.data; 
       // iterate through all polls 
       for (let i = 0; i < allPolls.length; i++) {
         thisPoll = allPolls[i];
         const allAnswers = Object.keys(thisPoll.answers); 
+        const allVotes = Object.values(thisPoll.answers);
         answersList = new Array(); 
        // iterate through list of answer choices and make key/value pair for each choice
         for (var j = 0; j < allAnswers.length; j++) {
           var obj = {}
           obj.text = allAnswers[j];
+          obj.value = allVotes[j];
           answersList.push(obj);
         }
         const poll = {
         _id: Math.random(), 
+        pollID: thisPoll._id,
         question: thisPoll.question, 
         answers: answersList, 
-        refArticle: thisPoll.associatedArticle
+        refArticle: thisPoll.associatedArticle,
+        isUnanswered: this.state.unanswered // tags poll as whether it is answered or not 
         }
         const copyOfPoll = JSON.parse(JSON.stringify(poll));
         polls.push(copyOfPoll) // copies the object so it's not referencing itself
@@ -65,9 +93,17 @@ class PollsScreen extends React.Component {
                 <Text style={styles.title}>
                   Polls
                 </Text>
+
+                <TouchableOpacity onPress = {this.changePollsFunction}>
+                  <View style = {{backgroundColor: 'green', alignItems: 'center', 
+                    justifyContent: 'center', borderRadius: 5}}>
+                    <Text style = {{color: 'white'}}>{this.state.text}</Text>
+                  </View>
+                </TouchableOpacity>
+
                 <Stack size={8}></Stack>
                 <Text style={styles.subtitle}>
-                  What's your opinion?
+                  {this.state.headerText}
                 </Text>
               </View>
               <Stack size={36}></Stack>
@@ -75,7 +111,7 @@ class PollsScreen extends React.Component {
               {this.state.polls.map((poll, idx) => {
                 return (
                   <View key={poll._id} style={styles.poll}>
-                    <PollCard poll={poll}></PollCard>
+                    <PollCard poll={poll} userID={this.state.userID}></PollCard>
                     <Stack size={(idx === this.state.polls.length - 1) ? 0 : 36}></Stack>
                   </View>
                 )
