@@ -6,7 +6,7 @@ export const ActionTypes = {
     REQUEST: 'REFRESH_FEED_REQUEST',
     SUCCESS: 'REFRESH_FEED_SUCCESS',
     FAILURE: 'REFRESH_FEED_FAILURE',
-  }
+  },
 }
 
 /**
