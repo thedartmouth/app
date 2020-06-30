@@ -1,15 +1,33 @@
 import React from 'react';
 import {
-  StyleSheet, Text, View, Image, Animated,
+  StyleSheet, Text, View, Image, Animated, Dimensions
 } from 'react-native';
 import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import { SafeAreaConsumer } from 'react-native-safe-area-context';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import { Box, Stack, Queue } from '../components/layout';
 import { Typography, Colors } from '../constants';
+import HTML from 'react-native-render-html';
+import { Linking } from 'expo';
+import { connect } from 'react-redux';
+import { leaveArticle } from '../store/actions/article-actions';
 
-export default function ArticleScreen({ navigation }) {
+function ArticleScreen(props) {
+  function back() {
+    props.navigation.goBack();
+    props.leaveArticle();
+  }
+
+  function renderViews() {
+    if (props.currentArticle.views) {
+      return <Text style={styles.views}>{props.currentArticle.views} view(s)</Text>;
+    }
+    return;
+  }
+
   const scrollY = new Animated.Value(0);
+  const { article } = props.route.params;
+  const authorString = article.authors.map((e) => { return e.name }).join(", ");
   const translateYTop = (step) => Animated.diffClamp(scrollY, 0, step).interpolate({
     inputRange: [0, step],
     outputRange: [0, -step],
@@ -22,6 +40,7 @@ export default function ArticleScreen({ navigation }) {
     inputRange: [0, 40],
     outputRange: [1, 0],
   });
+
   return (
     <SafeAreaConsumer>
       {(insets) => (
@@ -37,7 +56,7 @@ export default function ArticleScreen({ navigation }) {
               <Box dir="row">
                 <Queue size={30} />
                 <Animated.View style={{ opacity: opacityButton }}>
-                  <Ionicons name="ios-arrow-back" size={30} color="black" onPress={navigation.goBack} />
+                  <Ionicons name="ios-arrow-back" size={30} color="black" onPress={back} />
                 </Animated.View>
               </Box>
               <Stack size={10} />
@@ -51,20 +70,17 @@ export default function ArticleScreen({ navigation }) {
           >
             <Stack size={120} />
             <Stack size={12} />
-            <Text style={styles.category}>Sports</Text>
+            <Text style={styles.category}>{article.tags[0].name}</Text>
             <Stack size={12} />
-            <Text style={styles.articleTitle}>Sample Article Title</Text>
+            <Text style={styles.articleTitle}>{article.headline}</Text>
             <Stack size={12} />
-            <View style={styles.authorCountArea}>
+            <View style={styles.authorViewsArea}>
               <View style={styles.authorArea}>
-                <Text style={styles.author}>by </Text>
-                <TouchableOpacity navigation={navigation} onPress={() => { navigation.push('Author'); }}>
-                  <Text style={styles.author}>Ziray Hao</Text>
-                </TouchableOpacity>
+                <Text style={styles.author}>by {authorString}</Text>
                 <Queue size={8} />
                 <Ionicons style={styles.authorAdd} name="ios-add" size={16} color="gray" />
               </View>
-              <Text style={styles.count}># view cnt.</Text>
+              {renderViews()}
             </View>
             <Stack size={12} />
             <Image
@@ -72,12 +88,14 @@ export default function ArticleScreen({ navigation }) {
               style={styles.articleImage}
             />
             <Stack size={12} />
-            <Text style={styles.abstract}>
-              Dartmouth will apply for the first half of its alloted
-              funding from the Coronavirus Aid, Relief, and Economic Security Act, College President
-              Phil Hanlon announced today. As required by the federal government, the funding will
-              be used for emergency financial aid.
-            </Text>
+            <HTML
+              tagsStyles={{ p: styles.content, a: styles.links}}  // heads up, styles do not trigger autorefresh on expo
+              html={article.content}
+              onLinkPress={(event, href)=>{
+                Linking.openURL(href);
+              }}
+              imagesMaxWidth={Dimensions.get('window').width - 60} // adjust based on horizontal padding
+            />
           </ScrollView>
           <Animated.View style={{
             transform: [
@@ -101,9 +119,18 @@ export default function ArticleScreen({ navigation }) {
   );
 }
 
+function mapStateToProps(reduxState) {
+  return {
+    currentArticle: reduxState.articles.current,
+  };
+}
+
+export default connect(mapStateToProps, { leaveArticle })(ArticleScreen);
+
 const styles = StyleSheet.create({
   screen: {
     backgroundColor: 'white',
+    flex: 1,
   },
   articleScroll: {
     paddingHorizontal: 30,
@@ -140,22 +167,29 @@ const styles = StyleSheet.create({
     overflow: 'hidden', // needed to show the borderRadius with backgroundColor
     textTransform: 'uppercase',
   },
-  authorCountArea: {
+  authorViewsArea: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    // justifyContent: 'space-between',
+    flexWrap: 'wrap',
   },
   authorArea: {
     flexDirection: 'row',
     alignItems: 'center',
+    flexWrap: 'wrap',
+    // flex: 3,
   },
-  count: {
+  views: {
     ...Typography.sans,
+    position: 'absolute',
+    right: 0,
+    // flex: 1,
   },
   author: {
     color: 'grey',
     ...Typography.p,
     ...Typography.sans,
+    // flexWrap: 'wrap',
   },
   authorAdd: {
     marginTop: 2, // correction
@@ -165,8 +199,13 @@ const styles = StyleSheet.create({
     maxHeight: 200,
     resizeMode: 'cover',
   },
-  abstract: {
-    textAlign: 'justify',
+  content: {
+    textAlign: 'left',
+    ...Typography.p,
+    ...Typography.serif,
+    marginBottom: 18,
+  },
+  links: {
     ...Typography.p,
     ...Typography.serif,
   },

@@ -1,7 +1,7 @@
 // Reference:
 // https://medium.com/stashaway-engineering/react-redux-tips-better-way-to-handle-loading-flags-in-your-reducers-afda42a804c6
 
-export default loadingReducer = (state = {}, action) => {
+const loadingReducer = (state = {}, action) => {
   /**
    * Check if the action name ends in "REQUEST", "SUCCESS", or "FAILURE"
    */
@@ -29,3 +29,5 @@ export default loadingReducer = (state = {}, action) => {
    */
   return Object.assign({}, state, { [requestName]: requestState === 'REQUEST' && requestState !== 'CLEAR_ERR' });
 };
+
+export default loadingReducer;

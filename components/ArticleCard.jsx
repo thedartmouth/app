@@ -10,11 +10,21 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { Stack, Queue } from 'react-native-spacing-system';
 import { Colors, Typography, CMSImageUrl } from '../constants';
+import { connect } from 'react-redux';
+import { readArticle } from '../store/actions/article-actions';
 
-export default function ArticleCard(props) {
+function ArticleCard(props) {
   const { navigation } = props;
+  const authorString = props.article.authors.map((e) => { return e.name }).join(", ");
   return (
-    <TouchableOpacity onPress={() => { navigation.push('Article'); }}>
+    <TouchableOpacity
+      onPress={() => {
+      props.readArticle({ article: props.article });
+      
+      navigation.push('Article', {
+        article: props.article
+    });
+    }}>
       <View style={styles.articleInfo}>
         <Text style={styles.articleCategory}>{props.article.tags[0].name}</Text>
         <Stack size={12} />
@@ -22,9 +32,7 @@ export default function ArticleCard(props) {
         <Stack size={12} />
         <View style={styles.authorArea}>
           <Text style={styles.author}>
-            by
-            {' '}
-            {props.article.authors[0].name}
+            by {authorString}
           </Text>
           <Queue size={8} />
           <Ionicons style={styles.authorAdd} name="ios-add" size={16} color="gray" />
@@ -36,10 +44,12 @@ export default function ArticleCard(props) {
         style={styles.articleImage}
       />
       <Stack size={12} />
-      <Text style={styles.abstract}>{parse(props.article.abstract).querySelector('p').childNodes[0].rawText}</Text>
+      {/* <Text style={styles.abstract}>{parse(props.article.abstract).querySelector('p').childNodes[0].rawText}</Text> */}
     </TouchableOpacity>
   );
 }
+
+export default connect(null, { readArticle })(ArticleCard);
 
 const styles = StyleSheet.create({
   articleCategory: {
@@ -56,7 +66,8 @@ const styles = StyleSheet.create({
   },
   articleTitle: {
     ...Typography.h2,
-    ...Typography.serif,
+    // ...Typography.serif,
+    fontFamily: 'libre-regular',
   },
   authorArea: {
     flexDirection: 'row',

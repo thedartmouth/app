@@ -3,6 +3,7 @@ import Layout from './Layout';
 import Typography from './Typography';
 
 const CMS_URL = 'https://www.thedartmouth.com';
+const ROOT_URL = 'http://localhost:9090';
 
 export const CMSImageUrl = (imageUUID, extension) => `https://snworksceo.imgix.net/drt/${imageUUID}.sized-1000x1000.${extension}`;
 
@@ -20,5 +21,5 @@ const SECTIONS = [
 ];
 
 export {
-  Colors, Layout, Typography, CMS_URL, SECTIONS, wait,
+  Colors, Layout, Typography, CMS_URL, SECTIONS, wait, ROOT_URL,
 };
