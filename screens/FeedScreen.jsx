@@ -6,6 +6,7 @@ import {
   StyleSheet,
   View,
   FlatList,
+  ActivityIndicator,
 } from 'react-native';
 import { Divider } from 'react-native-elements';
 import { Stack } from 'react-native-spacing-system';
@@ -43,6 +44,13 @@ const FeedScreen = (props) => {
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         onEndReached={() => setPage(page + 1)} // set page to adding
         ItemSeparatorComponent={Divider}
+        ListFooterComponent={(
+          <View>
+            <Divider />
+            <Stack size={20} />
+            <ActivityIndicator animating size="large" />
+          </View>
+)}
         renderItem={({ item }) => (
           <View key={item.ceo_id}>
             <Stack size={24} />
