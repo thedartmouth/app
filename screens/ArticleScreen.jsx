@@ -30,7 +30,7 @@ function ArticleScreen(props) {
         </Text>
       );
     }
-    return <View />;
+    return null;
   }
 
   function renderHTML() {
