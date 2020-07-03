@@ -1,18 +1,20 @@
 import React from 'react';
 import {
-  StyleSheet, Text, View, Image, Animated, Dimensions
+  StyleSheet, Text, View, Image, Animated, Dimensions,
 } from 'react-native';
 import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import { SafeAreaConsumer } from 'react-native-safe-area-context';
 import { ScrollView } from 'react-native-gesture-handler';
-import { Box, Stack, Queue } from '../components/layout';
-import { Typography, Colors } from '../constants';
 import HTML from 'react-native-render-html';
 import { Linking } from 'expo';
 import { connect } from 'react-redux';
+import { Typography, Colors } from '../constants';
+import { Box, Stack, Queue } from '../components/layout';
 import { leaveArticle } from '../store/actions/article-actions';
 
 function ArticleScreen(props) {
+  const { article } = props.route.params;
+
   function back() {
     props.navigation.goBack();
     props.leaveArticle();
@@ -20,14 +22,35 @@ function ArticleScreen(props) {
 
   function renderViews() {
     if (props.currentArticle.views) {
-      return <Text style={styles.views}>{props.currentArticle.views} view(s)</Text>;
+      return (
+        <Text style={styles.views}>
+          {props.currentArticle.views}
+          {' '}
+          view(s)
+        </Text>
+      );
     }
-    return;
+    return <View />;
+  }
+
+  function renderHTML() {
+    if (article.content) {
+      return (
+        <HTML
+          tagsStyles={{ p: styles.content, a: styles.links }} // heads up, styles do not trigger autorefresh on expo
+          html={article.content}
+          onLinkPress={(event, href) => {
+            Linking.openURL(href);
+          }}
+          imagesMaxWidth={Dimensions.get('window').width - 60}
+        />
+      );
+    }
+    return <View />;
   }
 
   const scrollY = new Animated.Value(0);
-  const { article } = props.route.params;
-  const authorString = article.authors.map((e) => { return e.name }).join(", ");
+  const authorString = article.authors.map((e) => e.name).join(', ');
   const translateYTop = (step) => Animated.diffClamp(scrollY, 0, step).interpolate({
     inputRange: [0, step],
     outputRange: [0, -step],
@@ -70,13 +93,25 @@ function ArticleScreen(props) {
           >
             <Stack size={120} />
             <Stack size={12} />
-            <Text style={styles.category}>{article.tags[0].name}</Text>
+            <View style={styles.tagsArea}>
+              {article.tags.map((tag) => (
+                <View key={tag.name} style={styles.tag}>
+                  <Text style={styles.articleCategory}>{tag.name}</Text>
+                  <Queue size={8} />
+                  <Stack size={32} />
+                </View>
+              ))}
+            </View>
             <Stack size={12} />
             <Text style={styles.articleTitle}>{article.headline}</Text>
             <Stack size={12} />
             <View style={styles.authorViewsArea}>
               <View style={styles.authorArea}>
-                <Text style={styles.author}>by {authorString}</Text>
+                <Text style={styles.author}>
+                  by
+                  {' '}
+                  {authorString}
+                </Text>
                 <Queue size={8} />
                 <Ionicons style={styles.authorAdd} name="ios-add" size={16} color="gray" />
               </View>
@@ -88,14 +123,7 @@ function ArticleScreen(props) {
               style={styles.articleImage}
             />
             <Stack size={12} />
-            <HTML
-              tagsStyles={{ p: styles.content, a: styles.links}}  // heads up, styles do not trigger autorefresh on expo
-              html={article.content}
-              onLinkPress={(event, href)=>{
-                Linking.openURL(href);
-              }}
-              imagesMaxWidth={Dimensions.get('window').width - 60} // adjust based on horizontal padding
-            />
+            {renderHTML()}
           </ScrollView>
           <Animated.View style={{
             transform: [
@@ -155,7 +183,14 @@ const styles = StyleSheet.create({
     ...Typography.h2,
     ...Typography.serif,
   },
-  category: {
+  tag: {
+    flexDirection: 'row',
+  },
+  tagsArea: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
+  articleCategory: {
     alignSelf: 'flex-start',
     paddingVertical: 4,
     paddingHorizontal: 12,
