@@ -21,6 +21,7 @@ export const refreshFeed = () => (dispatch) => new Promise((resolve, reject) => 
   dispatch({ type: ActionTypes.REFRESH_FEED.REQUEST });
   console.log('refreshing feed');
   axios.get(`${CMS_URL}/search.json?a=1&ty=article&per_page=20&page=1`).then((response) => {
+    console.log('feed refreshed');
     dispatch({ type: ActionTypes.REFRESH_FEED.SUCCESS, payload: response.data.items });
     resolve();
   }).catch((error) => {
@@ -48,7 +49,6 @@ export const addFeed = (page) => (dispatch) => new Promise((resolve) => {
 export const readArticle = (article) => (dispatch) => {
   axios.post(`${ROOT_URL}/articles/read`, article)
     .then((response) => {
-      console.log(response.data);
       dispatch({ type: ActionTypes.READ_ARTICLE, payload: response.data });
     })
     .catch((error) => {
