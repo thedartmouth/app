@@ -19,12 +19,12 @@ const FeedScreen = (props) => {
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
-    setPage(1); // set page to refreshing
+    setPage(1); // set page to refreshing (page 1 is always for refreshing)
+    props.refreshFeed().then(() => setRefreshing(false));
   }, [refreshing]);
 
   React.useEffect(() => {
-    if (page === 1) props.refreshFeed().then(() => setRefreshing(false)); // if refreshing page, refresh the feed
-    else props.addFeed(page); // if adding pages, add to the feed
+    if (page !== 1) props.addFeed(page); // if not refreshing page, add to the feed
   }, [page]);
 
   return (
