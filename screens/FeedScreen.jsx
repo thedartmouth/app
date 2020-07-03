@@ -50,7 +50,7 @@ const FeedScreen = (props) => {
             <Stack size={20} />
             <ActivityIndicator animating size="large" />
           </View>
-)}
+        )}
         renderItem={({ item }) => (
           <View key={item.ceo_id}>
             <Stack size={24} />
