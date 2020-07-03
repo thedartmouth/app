@@ -26,7 +26,7 @@ function ArticleCard(props) {
         />
       );
     }
-    return <View />;
+    return null;
   }
 
   return (

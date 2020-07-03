@@ -46,7 +46,7 @@ function ArticleScreen(props) {
         />
       );
     }
-    return <View />;
+    return null;
   }
 
   const scrollY = new Animated.Value(0);
