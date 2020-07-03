@@ -5,9 +5,9 @@ import {
   RefreshControl,
   StyleSheet,
   View,
+  FlatList,
 } from 'react-native';
 import { Divider } from 'react-native-elements';
-import { ScrollView } from 'react-native-gesture-handler';
 import { Stack } from 'react-native-spacing-system';
 import { useSafeArea } from 'react-native-safe-area-context';
 import ArticleCard from '../components/ArticleCard';
@@ -15,11 +15,17 @@ import { actions } from '../store';
 
 const FeedScreen = (props) => {
   const [refreshing, setRefreshing] = React.useState(false);
+  const [page, setPage] = React.useState(1);
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
-    props.refreshFeed().then(() => setRefreshing(false));
+    setPage(1); // set page to refreshing
   }, [refreshing]);
+
+  React.useEffect(() => {
+    if (page === 1) props.refreshFeed().then(() => setRefreshing(false)); // if refreshing page, refresh the feed
+    else props.addFeed(page); // if adding pages, add to the feed
+  }, [page]);
 
   return (
     <View style={[styles.screen]}>
@@ -31,34 +37,20 @@ const FeedScreen = (props) => {
         />
         <Stack size={20} />
       </View>
-      {/* <View style={styles.topicBar}>
-  <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} bounces={false}>
-    {topicBarItems.map((item) => {
-      return (
-        <View key={item} style={styles.topicBarItem}>
-          <Text>{item}</Text>
-        </View>
-      );
-    })}
-  </ScrollView>
-</View> */}
-      <ScrollView
+      <FlatList
         style={styles.articleBox}
-        vertical
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-}
-      >
-        <Stack size={18} />
-        {props.articles.feed.map((article) => (
-          <View key={article.ceo_id}>
+        data={props.articles.feed}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+        onEndReached={() => setPage(page + 1)} // set page to adding
+        ItemSeparatorComponent={Divider}
+        renderItem={({ item }) => (
+          <View key={item.ceo_id}>
             <Stack size={24} />
-            <ArticleCard article={article} navigation={props.navigation} />
+            <ArticleCard article={item} navigation={props.navigation} />
             <Stack size={24} />
-            <Divider />
           </View>
-        ))}
-      </ScrollView>
+        )}
+      />
     </View>
   );
 };
@@ -71,7 +63,7 @@ export default connect(
   (reduxState) => ({
     loading: reduxState.loading, error: reduxState.error, articles: reduxState.articles,
   }),
-  { refreshFeed: actions.refreshFeed },
+  { refreshFeed: actions.refreshFeed, addFeed: actions.addFeed },
 )(FeedScreen);
 
 const styles = StyleSheet.create({
