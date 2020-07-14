@@ -11,7 +11,9 @@ export const ActionTypes = {
   READ_ARTICLE: 'READ_ARTICLE',
   LEAVE_ARTICLE: 'LEAVE_ARTICLE',
   SET_PAGE: 'SET_PAGE',
+  BOOKMARK_ARTICLE: 'BOOKMARK_ARTICLE',
   ERROR_SET: 'ERROR_SET',
+  GET_USER: 'GET_USER',
 };
 
 /**
@@ -61,4 +63,59 @@ export const readArticle = (article) => (dispatch) => {
  */
 export const leaveArticle = () => (dispatch) => {
   dispatch({ type: ActionTypes.LEAVE_ARTICLE });
+};
+
+/**
+ * Bookmarks an article
+ * @param {Integer} userID The current user
+ * @param {String} articleID The article being bookmarked
+ * @param {Array} bookmarkedArticles The current list of bookmarked articles
+ */
+export const bookmarkArticle = (userID, articleID, bookmarkedArticles) => (dispatch) => {
+  const bookmarked = [...bookmarkedArticles, articleID];
+  dispatch({ type: ActionTypes.BOOKMARK_ARTICLE, payload: bookmarked });
+  axios.put(`${ROOT_URL}/articles/${userID}/${articleID}`)
+    .then((response) => {
+      dispatch({ type: ActionTypes.BOOKMARK_ARTICLE, payload: response.data.user.bookmarkedArticles });
+    })
+    .catch((error) => {
+      dispatch({ type: ActionTypes.ERROR_SET, error });
+    });
+};
+
+/**
+ * Unbookmarks an article
+ * @param {Integer} userID The current user
+ * @param {String} articleID The article being unbookmarked
+ * @param {Array} bookmarkedArticles The current list of bookmarked articles
+ */
+export const unbookmarkArticle = (userID, articleID, bookmarkedArticles) => (dispatch) => {
+  const bookmarked = [...bookmarkedArticles];
+  const index = bookmarked.indexOf(articleID);
+  if (index > -1) {
+    bookmarked.splice(index);
+  }
+  dispatch({ type: ActionTypes.BOOKMARK_ARTICLE, payload: bookmarked });
+  axios.put(`${ROOT_URL}/articles/${userID}/${articleID}`)
+    .then((response) => {
+      dispatch({ type: ActionTypes.BOOKMARK_ARTICLE, payload: response.data.user.bookmarkedArticles });
+    })
+    .catch((error) => {
+      dispatch({ type: ActionTypes.ERROR_SET, error });
+    });
+};
+
+/**
+ * Gets information pertaining to a user
+ * @param {Integer} userID The current user
+ */
+export const getUser = (userID) => (dispatch) => {
+  axios.get(`${ROOT_URL}/users/${userID}`)
+    .then((response) => {
+      console.log(response.data);
+      dispatch({ type: ActionTypes.GET_USER, payload: response.data });
+    })
+    .catch((error) => {
+      dispatch({ type: ActionTypes.ERROR_SET, error });
+    });
 };

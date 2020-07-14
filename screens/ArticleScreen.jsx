@@ -1,8 +1,9 @@
+/* eslint-disable no-underscore-dangle */
 import React from 'react';
 import {
   StyleSheet, Text, View, Image, Animated, Dimensions,
 } from 'react-native';
-import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
+import { Ionicons, FontAwesome5, MaterialIcons } from '@expo/vector-icons';
 import { SafeAreaConsumer } from 'react-native-safe-area-context';
 import { ScrollView } from 'react-native-gesture-handler';
 import HTML from 'react-native-render-html';
@@ -10,21 +11,24 @@ import { Linking } from 'expo';
 import { connect } from 'react-redux';
 import { Typography, Colors } from '../constants';
 import { Box, Stack, Queue } from '../components/layout';
-import { leaveArticle } from '../store/actions/article-actions';
+import { actions } from '../store';
 
 function ArticleScreen(props) {
   const { article } = props.route.params;
+  const {
+    currentArticle, leaveArticle, navigation, bookmarkArticle, unbookmarkArticle, bookmarkedArticles,
+  } = props;
 
   function back() {
-    props.navigation.goBack();
-    props.leaveArticle();
+    navigation.goBack();
+    leaveArticle();
   }
 
   function renderViews() {
-    if (props.currentArticle.views) {
+    if (currentArticle.views) {
       return (
         <Text style={styles.views}>
-          {props.currentArticle.views}
+          {currentArticle.views}
           {' '}
           view(s)
         </Text>
@@ -136,7 +140,9 @@ function ArticleScreen(props) {
               <Stack size={10} />
               <View style={styles.bottomTabButtons}>
                 <FontAwesome5 name="praying-hands" size={25} color="gray" />
-                <FontAwesome5 name="bookmark" size={25} color="gray" />
+                {bookmarkedArticles.includes(currentArticle._id)
+                  ? <MaterialIcons name="bookmark" size={35} color="gray" onPress={() => unbookmarkArticle('5f08d289904d6614d951a501', currentArticle._id, bookmarkedArticles)} />
+                  : <MaterialIcons name="bookmark-border" size={35} color="gray" onPress={() => bookmarkArticle('5f08d289904d6614d951a501', currentArticle._id, bookmarkedArticles)} />}
                 <Ionicons name="ios-share" size={35} color="gray" />
               </View>
             </View>
@@ -150,10 +156,12 @@ function ArticleScreen(props) {
 function mapStateToProps(reduxState) {
   return {
     currentArticle: reduxState.articles.current,
+    bookmarkedArticles: reduxState.articles.bookmarkedArticles,
   };
 }
 
-export default connect(mapStateToProps, { leaveArticle })(ArticleScreen);
+export default connect(mapStateToProps,
+  { leaveArticle: actions.leaveArticle, bookmarkArticle: actions.bookmarkArticle, unbookmarkArticle: actions.unbookmarkArticle })(ArticleScreen);
 
 const styles = StyleSheet.create({
   screen: {

@@ -4,6 +4,7 @@ const INITIAL_STATE = {
   current: {},
   feed: [],
   page: 1,
+  bookmarkedArticles: [],
 };
 
 const articleReducer = (state = INITIAL_STATE, action) => {
@@ -17,6 +18,10 @@ const articleReducer = (state = INITIAL_STATE, action) => {
       return { ...prevState, current: action.payload };
     case ActionTypes.LEAVE_ARTICLE:
       return { ...prevState, current: {} };
+    case ActionTypes.BOOKMARK_ARTICLE:
+      return { ...prevState, bookmarkedArticles: action.payload };
+    case ActionTypes.GET_USER:
+      return { ...prevState, bookmarkedArticles: action.payload.bookmarkedArticles };
     default:
       return state;
   }

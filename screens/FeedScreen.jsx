@@ -15,14 +15,12 @@ import ArticleCard from '../components/ArticleCard';
 import { actions } from '../store';
 
 const FeedScreen = (props) => {
-  const [refreshing, setRefreshing] = React.useState(false);
   const [page, setPage] = React.useState(1);
+  const { loading } = props;
 
   const onRefresh = React.useCallback(() => {
-    setRefreshing(true);
     setPage(1); // set page to refreshing (page 1 is always for refreshing)
-    props.refreshFeed().then(() => setRefreshing(false));
-  }, [refreshing]);
+  }, [loading.REFRESH_FEED]);
 
   React.useEffect(() => {
     if (page !== 1) props.addFeed(page); // if not refreshing page, add to the feed
@@ -41,10 +39,10 @@ const FeedScreen = (props) => {
       <FlatList
         style={styles.articleBox}
         data={props.articles.feed}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+        refreshControl={<RefreshControl refreshing={loading.REFRESH_FEED} onRefresh={onRefresh} />}
         onEndReached={() => setPage(page + 1)} // set page to adding
         ItemSeparatorComponent={Divider}
-        ListFooterComponent={(
+        ListFooterComponent={loading.REFRESH_FEED ? null : (
           <View>
             <Divider />
             <Stack size={20} />
