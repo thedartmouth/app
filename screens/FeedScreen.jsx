@@ -5,21 +5,26 @@ import {
   RefreshControl,
   StyleSheet,
   View,
+  FlatList,
+  ActivityIndicator,
 } from 'react-native';
 import { Divider } from 'react-native-elements';
-import { ScrollView } from 'react-native-gesture-handler';
 import { Stack } from 'react-native-spacing-system';
 import { useSafeArea } from 'react-native-safe-area-context';
 import ArticleCard from '../components/ArticleCard';
 import { actions } from '../store';
 
 const FeedScreen = (props) => {
-  const [refreshing, setRefreshing] = React.useState(false);
+  const [page, setPage] = React.useState(1);
+  const { loading } = props;
 
   const onRefresh = React.useCallback(() => {
-    setRefreshing(true);
-    props.refreshFeed('news').then(() => setRefreshing(false));
-  }, [refreshing]);
+    setPage(1); // set page to refreshing (page 1 is always for refreshing)
+  }, [loading.REFRESH_FEED]);
+
+  React.useEffect(() => {
+    if (page !== 1) props.addFeed(page); // if not refreshing page, add to the feed
+  }, [page]);
 
   return (
     <View style={[styles.screen]}>
@@ -31,34 +36,27 @@ const FeedScreen = (props) => {
         />
         <Stack size={20} />
       </View>
-      {/* <View style={styles.topicBar}>
-  <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} bounces={false}>
-    {topicBarItems.map((item) => {
-      return (
-        <View key={item} style={styles.topicBarItem}>
-          <Text>{item}</Text>
-        </View>
-      );
-    })}
-  </ScrollView>
-</View> */}
-      <ScrollView
+      <FlatList
         style={styles.articleBox}
-        vertical
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-}
-      >
-        <Stack size={18} />
-        {props.articles.feed.map((article) => (
-          <View key={article.ceo_id}>
-            <Stack size={24} />
-            <ArticleCard article={article} navigation={props.navigation} />
-            <Stack size={24} />
+        data={props.articles.feed}
+        refreshControl={<RefreshControl refreshing={loading.REFRESH_FEED} onRefresh={onRefresh} />}
+        onEndReached={() => setPage(page + 1)} // set page to adding
+        ItemSeparatorComponent={Divider}
+        ListFooterComponent={loading.REFRESH_FEED ? null : (
+          <View>
             <Divider />
+            <Stack size={20} />
+            <ActivityIndicator animating size="large" />
           </View>
-        ))}
-      </ScrollView>
+        )}
+        renderItem={({ item }) => (
+          <View key={item.ceo_id}>
+            <Stack size={24} />
+            <ArticleCard article={item} navigation={props.navigation} />
+            <Stack size={24} />
+          </View>
+        )}
+      />
     </View>
   );
 };
@@ -71,7 +69,7 @@ export default connect(
   (reduxState) => ({
     loading: reduxState.loading, error: reduxState.error, articles: reduxState.articles,
   }),
-  { refreshFeed: actions.refreshFeed },
+  { refreshFeed: actions.refreshFeed, addFeed: actions.addFeed },
 )(FeedScreen);
 
 const styles = StyleSheet.create({
