@@ -1,5 +1,5 @@
 /* eslint-disable no-underscore-dangle */
-import React from 'react';
+import * as React from 'react';
 import {
   StyleSheet, Text, View, Image, Animated, Dimensions,
 } from 'react-native';
@@ -16,26 +16,19 @@ import { actions } from '../store';
 function ArticleScreen(props) {
   const { article } = props.route.params;
   const {
-    currentArticle, leaveArticle, navigation, bookmarkArticle, unbookmarkArticle, bookmarkedArticles,
+    readArticle, navigation, bookmarkArticle, unbookmarkArticle, bookmarkedArticles,
   } = props;
+  const [articleID, setArticleID] = React.useState('');
+  const [articleViews, setArticleViews] = React.useState('');
 
-  function back() {
-    navigation.goBack();
-    leaveArticle();
-  }
-
-  function renderViews() {
-    if (currentArticle.views) {
-      return (
-        <Text style={styles.views}>
-          {currentArticle.views}
-          {' '}
-          view(s)
-        </Text>
-      );
-    }
-    return null;
-  }
+  React.useEffect(() => {
+    readArticle({ article }).then((response) => {
+      if (!articleID) {
+        setArticleID(response._id);
+        setArticleViews(response.views);
+      }
+    });
+  }, []);
 
   function renderHTML() {
     if (article.content) {
@@ -83,7 +76,7 @@ function ArticleScreen(props) {
               <Box dir="row">
                 <Queue size={30} />
                 <Animated.View style={{ opacity: opacityButton }}>
-                  <Ionicons name="ios-arrow-back" size={30} color="black" onPress={back} />
+                  <Ionicons name="ios-arrow-back" size={30} color="black" onPress={() => navigation.goBack()} />
                 </Animated.View>
               </Box>
               <Stack size={10} />
@@ -119,7 +112,11 @@ function ArticleScreen(props) {
                 <Queue size={8} />
                 <Ionicons style={styles.authorAdd} name="ios-add" size={16} color="gray" />
               </View>
-              {renderViews()}
+              <Text style={styles.views}>
+                {articleViews}
+                {' '}
+                view(s)
+              </Text>
             </View>
             <Stack size={12} />
             <Image
@@ -140,9 +137,9 @@ function ArticleScreen(props) {
               <Stack size={10} />
               <View style={styles.bottomTabButtons}>
                 <FontAwesome5 name="praying-hands" size={25} color="gray" />
-                {bookmarkedArticles.includes(currentArticle._id)
-                  ? <MaterialIcons name="bookmark" size={35} color="gray" onPress={() => unbookmarkArticle('5f08d289904d6614d951a501', currentArticle._id, bookmarkedArticles)} />
-                  : <MaterialIcons name="bookmark-border" size={35} color="gray" onPress={() => bookmarkArticle('5f08d289904d6614d951a501', currentArticle._id, bookmarkedArticles)} />}
+                {bookmarkedArticles.includes(articleID)
+                  ? <MaterialIcons name="bookmark" size={35} color="gray" onPress={() => unbookmarkArticle('5f08d289904d6614d951a501', articleID, bookmarkedArticles)} />
+                  : <MaterialIcons name="bookmark-border" size={35} color="gray" onPress={() => bookmarkArticle('5f08d289904d6614d951a501', articleID, bookmarkedArticles)} />}
                 <Ionicons name="ios-share" size={35} color="gray" />
               </View>
             </View>
@@ -161,7 +158,12 @@ function mapStateToProps(reduxState) {
 }
 
 export default connect(mapStateToProps,
-  { leaveArticle: actions.leaveArticle, bookmarkArticle: actions.bookmarkArticle, unbookmarkArticle: actions.unbookmarkArticle })(ArticleScreen);
+  {
+    readArticle: actions.readArticle,
+    // leaveArticle: actions.leaveArticle,
+    bookmarkArticle: actions.bookmarkArticle,
+    unbookmarkArticle: actions.unbookmarkArticle,
+  })(ArticleScreen);
 
 const styles = StyleSheet.create({
   screen: {
