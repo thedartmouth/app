@@ -1,5 +1,4 @@
 import React from 'react';
-import { parse } from 'node-html-parser';
 import {
   Image,
   StyleSheet,
@@ -9,30 +8,55 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Stack, Queue } from 'react-native-spacing-system';
-import { Colors, Typography, CMSImageUrl } from '../constants';
+import HTML from 'react-native-render-html';
 import { connect } from 'react-redux';
+import { Colors, Typography, CMSImageUrl } from '../constants';
 import { readArticle } from '../store/actions/article-actions';
 
 function ArticleCard(props) {
   const { navigation } = props;
-  const authorString = props.article.authors.map((e) => { return e.name }).join(", ");
+  const authorString = props.article.authors.map((e) => e.name).join(', ');
+  function renderHTML() {
+    if (props.article.abstract) {
+      return (
+        <HTML
+          tagsStyles={{ p: styles.abstract, a: styles.links }} // heads up, styles do not trigger autorefresh on expo
+          html={props.article.abstract}
+          ignoredTags={['u']}
+        />
+      );
+    }
+    return null;
+  }
+
   return (
     <TouchableOpacity
       onPress={() => {
-      props.readArticle({ article: props.article });
-      
-      navigation.push('Article', {
-        article: props.article
-    });
-    }}>
+        // props.readArticle({ article: props.article });
+
+        navigation.push('Article', {
+          article: props.article,
+        });
+      }}
+    >
       <View style={styles.articleInfo}>
-        <Text style={styles.articleCategory}>{props.article.tags[0].name}</Text>
+        <View style={styles.tagsArea}>
+          {props.article.tags.map((tag) => (
+            <View key={tag.name} style={styles.tag}>
+              <Text style={styles.articleCategory}>{tag.name}</Text>
+              <Queue size={8} />
+              <Stack size={32} />
+            </View>
+          ))}
+        </View>
         <Stack size={12} />
         <Text style={styles.articleTitle}>{props.article.headline}</Text>
         <Stack size={12} />
         <View style={styles.authorArea}>
           <Text style={styles.author}>
-            by {authorString}
+            by
+            {' '}
+            {authorString}
           </Text>
           <Queue size={8} />
           <Ionicons style={styles.authorAdd} name="ios-add" size={16} color="gray" />
@@ -44,7 +68,7 @@ function ArticleCard(props) {
         style={styles.articleImage}
       />
       <Stack size={12} />
-      {/* <Text style={styles.abstract}>{parse(props.article.abstract).querySelector('p').childNodes[0].rawText}</Text> */}
+      {renderHTML()}
     </TouchableOpacity>
   );
 }
@@ -63,6 +87,13 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.green,
     overflow: 'hidden', // needed to show the borderRadius with backgroundColor
     textTransform: 'uppercase',
+  },
+  tag: {
+    flexDirection: 'row',
+  },
+  tagsArea: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
   },
   articleTitle: {
     ...Typography.h2,
@@ -83,6 +114,10 @@ const styles = StyleSheet.create({
   },
   abstract: {
     textAlign: 'justify',
+    ...Typography.p,
+    ...Typography.serif,
+  },
+  links: {
     ...Typography.p,
     ...Typography.serif,
   },

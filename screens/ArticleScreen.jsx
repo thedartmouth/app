@@ -1,33 +1,53 @@
-import React from 'react';
+/* eslint-disable no-underscore-dangle */
+import * as React from 'react';
 import {
-  StyleSheet, Text, View, Image, Animated, Dimensions
+  StyleSheet, Text, View, Image, Animated, Dimensions,
 } from 'react-native';
-import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
+import { Ionicons, FontAwesome5, MaterialIcons } from '@expo/vector-icons';
 import { SafeAreaConsumer } from 'react-native-safe-area-context';
-import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
-import { Box, Stack, Queue } from '../components/layout';
-import { Typography, Colors } from '../constants';
+import { ScrollView } from 'react-native-gesture-handler';
 import HTML from 'react-native-render-html';
 import { Linking } from 'expo';
 import { connect } from 'react-redux';
-import { leaveArticle } from '../store/actions/article-actions';
+import { Typography, Colors } from '../constants';
+import { Box, Stack, Queue } from '../components/layout';
+import { actions } from '../store';
 
 function ArticleScreen(props) {
-  function back() {
-    props.navigation.goBack();
-    props.leaveArticle();
-  }
+  const { article } = props.route.params;
+  const {
+    readArticle, navigation, bookmarkArticle, unbookmarkArticle, bookmarkedArticles,
+  } = props;
+  const [articleID, setArticleID] = React.useState('');
+  const [articleViews, setArticleViews] = React.useState('');
 
-  function renderViews() {
-    // if (props.currentArticle.views) {
-    //   return <Text style={styles.views}>{props.currentArticle.views} view(s)</Text>;
-    // }
-    return;
+  React.useEffect(() => {
+    readArticle({ article }).then((response) => {
+      if (!articleID) {
+        setArticleID(response._id);
+        setArticleViews(response.views);
+      }
+    });
+  }, []);
+
+  function renderHTML() {
+    if (article.content) {
+      return (
+        <HTML
+          tagsStyles={{ p: styles.content, a: styles.links }} // heads up, styles do not trigger autorefresh on expo
+          html={article.content}
+          onLinkPress={(event, href) => {
+            Linking.openURL(href);
+          }}
+          imagesMaxWidth={Dimensions.get('window').width - 60}
+        />
+      );
+    }
+    return null;
   }
 
   const scrollY = new Animated.Value(0);
-  const { article } = props.route.params;
-  const authorString = article.authors.map((e) => { return e.name }).join(", ");
+  const authorString = article.authors.map((e) => e.name).join(', ');
   const translateYTop = (step) => Animated.diffClamp(scrollY, 0, step).interpolate({
     inputRange: [0, step],
     outputRange: [0, -step],
@@ -56,7 +76,7 @@ function ArticleScreen(props) {
               <Box dir="row">
                 <Queue size={30} />
                 <Animated.View style={{ opacity: opacityButton }}>
-                  <Ionicons name="ios-arrow-back" size={30} color="black" onPress={back} />
+                  <Ionicons name="ios-arrow-back" size={30} color="black" onPress={() => navigation.goBack()} />
                 </Animated.View>
               </Box>
               <Stack size={10} />
@@ -70,7 +90,15 @@ function ArticleScreen(props) {
           >
             <Stack size={120} />
             <Stack size={12} />
-            <Text style={styles.category}>{article.tags[0].name}</Text>
+            <View style={styles.tagsArea}>
+              {article.tags.map((tag) => (
+                <View key={tag.name} style={styles.tag}>
+                  <Text style={styles.articleCategory}>{tag.name}</Text>
+                  <Queue size={8} />
+                  <Stack size={32} />
+                </View>
+              ))}
+            </View>
             <Stack size={12} />
             <Text style={styles.articleTitle}>{article.headline}</Text>
             <Stack size={12} />
@@ -85,7 +113,11 @@ function ArticleScreen(props) {
                 <Queue size={8} />
                 <Ionicons style={styles.authorAdd} name="ios-add" size={16} color="gray" />
               </View>
-              {renderViews()}
+              <Text style={styles.views}>
+                {articleViews}
+                {' '}
+                view(s)
+              </Text>
             </View>
             <Stack size={12} />
             <Image
@@ -93,14 +125,7 @@ function ArticleScreen(props) {
               style={styles.articleImage}
             />
             <Stack size={12} />
-            <HTML
-              tagsStyles={{ p: styles.content, a: styles.links}}  // heads up, styles do not trigger autorefresh on expo
-              html={article.content}
-              onLinkPress={(event, href)=>{
-                Linking.openURL(href);
-              }}
-              imagesMaxWidth={Dimensions.get('window').width - 60} // adjust based on horizontal padding
-            />
+            {renderHTML()}
           </ScrollView>
           <Animated.View style={{
             transform: [
@@ -113,7 +138,9 @@ function ArticleScreen(props) {
               <Stack size={10} />
               <View style={styles.bottomTabButtons}>
                 <FontAwesome5 name="praying-hands" size={25} color="gray" />
-                <FontAwesome5 name="bookmark" size={25} color="gray" />
+                {bookmarkedArticles.includes(articleID)
+                  ? <MaterialIcons name="bookmark" size={35} color="gray" onPress={() => unbookmarkArticle('5f08d289904d6614d951a501', articleID, bookmarkedArticles)} />
+                  : <MaterialIcons name="bookmark-border" size={35} color="gray" onPress={() => bookmarkArticle('5f08d289904d6614d951a501', articleID, bookmarkedArticles)} />}
                 <Ionicons name="ios-share" size={35} color="gray" />
               </View>
             </View>
@@ -127,10 +154,17 @@ function ArticleScreen(props) {
 function mapStateToProps(reduxState) {
   return {
     currentArticle: reduxState.articles.current,
+    bookmarkedArticles: reduxState.articles.bookmarkedArticles,
   };
 }
 
-export default connect(mapStateToProps, { leaveArticle })(ArticleScreen);
+export default connect(mapStateToProps,
+  {
+    readArticle: actions.readArticle,
+    // leaveArticle: actions.leaveArticle,
+    bookmarkArticle: actions.bookmarkArticle,
+    unbookmarkArticle: actions.unbookmarkArticle,
+  })(ArticleScreen);
 
 const styles = StyleSheet.create({
   screen: {
@@ -160,7 +194,14 @@ const styles = StyleSheet.create({
     ...Typography.h2,
     ...Typography.serif,
   },
-  category: {
+  tag: {
+    flexDirection: 'row',
+  },
+  tagsArea: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
+  articleCategory: {
     alignSelf: 'flex-start',
     paddingVertical: 4,
     paddingHorizontal: 12,

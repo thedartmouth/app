@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { CMS_URL, SECTIONS, ROOT_URL } from '../../constants';
+import { CMS_URL, ROOT_URL } from '../../constants';
 
 export const ActionTypes = {
   REFRESH_FEED: {
@@ -7,77 +7,111 @@ export const ActionTypes = {
     SUCCESS: 'REFRESH_FEED_SUCCESS',
     FAILURE: 'REFRESH_FEED_FAILURE',
   },
+  ADD_FEED: 'ADD_FEED',
   READ_ARTICLE: 'READ_ARTICLE',
-  LEAVE_ARTICLE: 'LEAVE_ARTICLE',
+  // LEAVE_ARTICLE: 'LEAVE_ARTICLE',
+  SET_PAGE: 'SET_PAGE',
+  BOOKMARK_ARTICLE: 'BOOKMARK_ARTICLE',
   ERROR_SET: 'ERROR_SET',
-}
+  GET_USER: 'GET_USER',
+};
 
 /**
- * Pulls the most recent set of articles from a certain section and saves to redux store.
- * @param {String} section The section to fill the newsfeed with. Should be one of [].
+ * Pulls the most recent set of articles from all sections on a page 1 and saves to redux store.
  */
-// export const refreshFeed = (section) => {
-//   return dispatch => new Promise((resolve, reject) => {
-//     dispatch({type: ActionTypes.REFRESH_FEED.REQUEST});
-//     axios.get(`${CMS_URL}/section/${section}.json`).then(response => {
-//       dispatch({type: ActionTypes.REFRESH_FEED.SUCCESS, payload: response.data.articles});
-//       resolve();
-//     }).catch(error => {
-//       dispatch({type: ActionTypes.REFRESH_FEED.FAILURE});
-//       reject(error);
-//     })
-//   })
-// }
-
-export const refreshFeed = () => {
-  return dispatch => new Promise((resolve, reject) => {
-    dispatch({type: ActionTypes.REFRESH_FEED.REQUEST});
-    const requests = SECTIONS.map((section) => {
-      return axios.get(`${CMS_URL}/section/${section}.json`);
-    });
-    Promise.all(requests).then((responses) => {
-      const results = responses.map((response) => {
-        return response.data.articles; // clean up results
-      });
-      const articles = [].concat.apply([], results); // merge subarrays in results into 1 array
-      articles.sort(function(a,b){
-        return a.created_at < b.created_at;
-      });
-      articles.forEach((article) => console.log(article.created_at));
-      uniqueArticles = articles.filter((articleA, index, self) =>
-      self.findIndex((articleB) => articleA.ceo_id === articleB.ceo_id) === index); // filter unique articles
-      dispatch({type: ActionTypes.REFRESH_FEED.SUCCESS, payload: uniqueArticles});
-
-    }).catch((error) => {
-      dispatch({type: ActionTypes.REFRESH_FEED.FAILURE});
-      reject(error);
-    });
-
+export const refreshFeed = () => (dispatch) => new Promise((resolve, reject) => {
+  dispatch({ type: ActionTypes.REFRESH_FEED.REQUEST });
+  console.log('refreshing feed');
+  axios.get(`${CMS_URL}/search.json?a=1&ty=article&per_page=20&page=1`).then((response) => {
+    console.log('feed refreshed');
+    dispatch({ type: ActionTypes.REFRESH_FEED.SUCCESS, payload: response.data.items });
+    resolve();
+  }).catch((error) => {
+    dispatch({ type: ActionTypes.REFRESH_FEED.FAILURE });
+    reject(error);
   });
-}
+});
+
+/**
+ * Pulls the most recent set of articles from all sections on a given page and adds to redux store.
+ * @param {Integer} page The current page to fill the newsfeed with.
+ */
+export const addFeed = (page) => (dispatch) => new Promise((resolve) => {
+  console.log(`adding page ${page} to feed`);
+  axios.get(`${CMS_URL}/search.json?a=1&ty=article&per_page=20&page=${page}`).then((response) => {
+    dispatch({ type: ActionTypes.ADD_FEED, payload: response.data.items });
+    resolve();
+  });
+});
 
 /**
  * Sends to backend the current article and receives an object back containing data like views.
  * @param {String} article The article to send backend (current article).
  */
-export const readArticle = (article) => {
-  return (dispatch) => {
-    axios.post(`${ROOT_URL}/articles/read`, article)
-      .then((response) => {
-        console.log(response.data);
-        dispatch({ type: ActionTypes.READ_ARTICLE, payload: response.data });
-      })
-      .catch((error) => {
-        dispatch({ type: ActionTypes.ERROR_SET, error });
-      });
-  };
-}
+export const readArticle = (article) => (dispatch) => new Promise((resolve) => {
+  axios.post(`${ROOT_URL}/articles/read`, article)
+    .then((response) => {
+      resolve(response.data);
+    });
+});
 
 /**
  * Clears current article once user goes back to feed.
  */
-export const leaveArticle = () => {
-  return (dispatch) => {
-    dispatch({ type: ActionTypes.LEAVE_ARTICLE }); 
-  };
-}
+export const leaveArticle = () => (dispatch) => {
+  dispatch({ type: ActionTypes.LEAVE_ARTICLE });
+};
+
+/**
+ * Bookmarks an article
+ * @param {Integer} userID The current user
+ * @param {String} articleID The article being bookmarked
+ * @param {Array} bookmarkedArticles The current list of bookmarked articles
+ */
+export const bookmarkArticle = (userID, articleID, bookmarkedArticles) => (dispatch) => {
+  const bookmarked = [...bookmarkedArticles, articleID];
+  dispatch({ type: ActionTypes.BOOKMARK_ARTICLE, payload: bookmarked });
+  axios.put(`${ROOT_URL}/articles/${userID}/${articleID}`)
+    .then((response) => {
+      dispatch({ type: ActionTypes.BOOKMARK_ARTICLE, payload: response.data.user.bookmarkedArticles });
+    })
+    .catch((error) => {
+      dispatch({ type: ActionTypes.ERROR_SET, error });
+    });
+};
+
+/**
+ * Unbookmarks an article
+ * @param {Integer} userID The current user
+ * @param {String} articleID The article being unbookmarked
+ * @param {Array} bookmarkedArticles The current list of bookmarked articles
+ */
+export const unbookmarkArticle = (userID, articleID, bookmarkedArticles) => (dispatch) => {
+  const bookmarked = [...bookmarkedArticles];
+  const index = bookmarked.indexOf(articleID);
+  if (index > -1) {
+    bookmarked.splice(index);
+  }
+  dispatch({ type: ActionTypes.BOOKMARK_ARTICLE, payload: bookmarked });
+  axios.put(`${ROOT_URL}/articles/${userID}/${articleID}`)
+    .then((response) => {
+      dispatch({ type: ActionTypes.BOOKMARK_ARTICLE, payload: response.data.user.bookmarkedArticles });
+    })
+    .catch((error) => {
+      dispatch({ type: ActionTypes.ERROR_SET, error });
+    });
+};
+
+/**
+ * Gets information pertaining to a user
+ * @param {Integer} userID The current user
+ */
+export const getUser = (userID) => (dispatch) => {
+  axios.get(`${ROOT_URL}/users/${userID}`)
+    .then((response) => {
+      dispatch({ type: ActionTypes.GET_USER, payload: response.data });
+    })
+    .catch((error) => {
+      dispatch({ type: ActionTypes.ERROR_SET, error });
+    });
+};
