@@ -32,7 +32,7 @@ function ArticleCard(props) {
   return (
     <TouchableOpacity
       onPress={() => {
-        props.readArticle({ article: props.article });
+        // props.readArticle({ article: props.article });
 
         navigation.push('Article', {
           article: props.article,

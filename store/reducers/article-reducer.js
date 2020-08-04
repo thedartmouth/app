@@ -14,10 +14,10 @@ const articleReducer = (state = INITIAL_STATE, action) => {
       return { ...prevState, feed: action.payload };
     case ActionTypes.ADD_FEED:
       return { ...prevState, feed: [...prevState.feed, ...action.payload] };
-    case ActionTypes.READ_ARTICLE:
-      return { ...prevState, current: action.payload };
-    case ActionTypes.LEAVE_ARTICLE:
-      return { ...prevState, current: {} };
+    // case ActionTypes.READ_ARTICLE:
+    //   return { ...prevState, current: action.payload };
+    // case ActionTypes.LEAVE_ARTICLE:
+    //   return { ...prevState, current: {} };
     case ActionTypes.BOOKMARK_ARTICLE:
       return { ...prevState, bookmarkedArticles: action.payload };
     case ActionTypes.GET_USER:

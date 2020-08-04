@@ -16,11 +16,12 @@ import { actions } from '../store';
 
 const FeedScreen = (props) => {
   const [page, setPage] = React.useState(1);
-  const { loading } = props;
+  const { loading, refreshFeed } = props;
 
   const onRefresh = React.useCallback(() => {
+    refreshFeed();
     setPage(1); // set page to refreshing (page 1 is always for refreshing)
-  }, [loading.REFRESH_FEED]);
+  }, []);
 
   React.useEffect(() => {
     if (page !== 1) props.addFeed(page); // if not refreshing page, add to the feed
