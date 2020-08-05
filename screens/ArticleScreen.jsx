@@ -141,8 +141,8 @@ function ArticleScreen(props) {
               <View style={styles.bottomTabButtons}>
                 <FontAwesome5 name="praying-hands" size={25} color="gray" />
                 {bookmarkedArticles.includes(currentArticle._id)
-                  ? <MaterialIcons name="bookmark" size={35} color="gray" onPress={() => unbookmarkArticle('5f08d289904d6614d951a501', currentArticle._id, bookmarkedArticles)} />
-                  : <MaterialIcons name="bookmark-border" size={35} color="gray" onPress={() => bookmarkArticle('5f08d289904d6614d951a501', currentArticle._id, bookmarkedArticles)} />}
+                  ? <MaterialIcons name="bookmark" size={35} color="gray" onPress={() => unbookmarkArticle('5eeaedc31ba9cb48805ded95', currentArticle._id, bookmarkedArticles)} />
+                  : <MaterialIcons name="bookmark-border" size={35} color="gray" onPress={() => bookmarkArticle('5eeaedc31ba9cb48805ded95', currentArticle._id, bookmarkedArticles)} />}
                 <Ionicons name="ios-share" size={35} color="gray" />
               </View>
             </View>

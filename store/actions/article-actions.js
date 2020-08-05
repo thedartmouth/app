@@ -49,6 +49,7 @@ export const addFeed = (page) => (dispatch) => new Promise((resolve) => {
  * @param {String} article The article to send backend (current article).
  */
 export const readArticle = (article) => (dispatch) => {
+  console.log(article);
   axios.post(`${ROOT_URL}/articles/read`, article)
     .then((response) => {
       console.log('read successful');
@@ -118,6 +119,7 @@ export const getUser = (userID) => (dispatch) => {
       dispatch({ type: ActionTypes.GET_USER, payload: response.data });
     })
     .catch((error) => {
+      console.log(error);
       dispatch({ type: ActionTypes.ERROR_SET, error });
     });
 };
