@@ -51,9 +51,11 @@ export const addFeed = (page) => (dispatch) => new Promise((resolve) => {
 export const readArticle = (article) => (dispatch) => {
   axios.post(`${ROOT_URL}/articles/read`, article)
     .then((response) => {
+      console.log('read successful');
       dispatch({ type: ActionTypes.READ_ARTICLE, payload: response.data });
     })
     .catch((error) => {
+      console.log("read unsuccessful");
       dispatch({ type: ActionTypes.ERROR_SET, error });
     });
 };
