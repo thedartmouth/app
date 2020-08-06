@@ -1,13 +1,13 @@
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import * as React from "react";
-import { StyleSheet } from "react-native";
-import FeedScreen from "../screens/FeedScreen";
-import { ProfileStackScreen } from "../screens/ProfileScreen";
-import PollsScreen from "../screens/PollsScreen";
-import TabBarIcon from "../components/TabBarIcon";
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import * as React from 'react';
+import { StyleSheet } from 'react-native';
+import FeedScreen from '../screens/FeedScreen';
+import { ProfileStackScreen } from '../screens/ProfileScreen';
+import PollsScreen from '../screens/PollsScreen';
+import TabBarIcon from '../components/TabBarIcon';
 
 const BottomTab = createBottomTabNavigator();
-const INITIAL_ROUTE_NAME = "Feed";
+const INITIAL_ROUTE_NAME = 'Feed';
 
 export default function BottomTabNavigator({ navigation, route }) {
   // Set the header title on the parent stack navigator depending on the
@@ -24,7 +24,7 @@ export default function BottomTabNavigator({ navigation, route }) {
         name="Feed"
         component={FeedScreen}
         options={{
-          title: "Feed",
+          title: 'Feed',
           tabBarIcon: ({ focused }) => (
             <TabBarIcon focused={focused} name="ios-book" />
           ),
@@ -34,7 +34,7 @@ export default function BottomTabNavigator({ navigation, route }) {
         name="Polls"
         component={PollsScreen}
         options={{
-          title: "Polls",
+          title: 'Polls',
           tabBarIcon: ({ focused }) => (
             <TabBarIcon focused={focused} name="ios-podium" />
           ),
@@ -44,7 +44,7 @@ export default function BottomTabNavigator({ navigation, route }) {
         name="Me"
         component={ProfileStackScreen}
         options={{
-          title: "My Profile",
+          title: 'My Profile',
           tabBarIcon: ({ focused }) => (
             <TabBarIcon focused={focused} name="ios-person" />
           ),
@@ -55,31 +55,26 @@ export default function BottomTabNavigator({ navigation, route }) {
 }
 
 function getHeaderTitle(route) {
-  const routeName =
-    route.state?.routes[route.state.index]?.name ?? INITIAL_ROUTE_NAME;
+  const routeName = route.state?.routes[route.state.index]?.name ?? INITIAL_ROUTE_NAME;
 
   switch (routeName) {
-    case "Home":
-      return "The Dartmouth";
-    case "Polls":
-      return "Polls";
-    case "Me":
-      return "My Profile";
-    case "Article":
-      return "Test Author Screen";
+    case 'Home':
+      return 'The Dartmouth';
+    case 'Polls':
+      return 'Polls';
+    case 'Me':
+      return 'My Profile';
+    case 'Article':
+      return 'Test Author Screen';
   }
 }
 
 const styles = StyleSheet.create({
   tabBar: {
     height: 94,
-    shadowOffset: { height: -50 },
-    shadowRadius: 50,
-    shadowColor: "white",
-    shadowOpacity: 1.0,
     shadowOffset: { height: -3 },
     shadowRadius: 10,
-    shadowColor: "gray",
+    shadowColor: 'gray',
     shadowOpacity: 0.3,
   },
 });
