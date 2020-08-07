@@ -3,7 +3,7 @@ import Layout from './Layout';
 import Typography from './Typography';
 
 const CMS_URL = 'https://www.thedartmouth.com';
-const ROOT_URL = 'http://10.0.0.87:9090'; //change back to localhost
+const ROOT_URL = 'http://localhost:9090';
 
 export const CMSImageUrl = (imageUUID, extension) => `https://snworksceo.imgix.net/drt/${imageUUID}.sized-1000x1000.${extension}`;
 
