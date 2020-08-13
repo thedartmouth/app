@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import {
+  ActivityIndicator,
   Image,
   RefreshControl,
   StyleSheet,
   View,
   FlatList,
-  ActivityIndicator,
 } from 'react-native';
 import { Divider } from 'react-native-elements';
 import { Stack } from 'react-native-spacing-system';

@@ -1,20 +1,14 @@
-import { ActionTypes } from "../actions";
+import { ActionTypes } from '../actions';
 
-const INITIAL_STATE = {
-  user: {
-  },
-};
+const INITIAL_STATE = {};
 
-export default userReducer = (state = INITIAL_STATE, action) => {
-  prevState = JSON.parse(JSON.stringify(state));
+const userReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
-    case ActionTypes.GET_USER:
-      return ;
-    case ActionTypes.SIGN_IN:
-      return Object.assign({}, state, {user: action.user});
-    case ActionTypes.SIGN_UP:
-      return Object.assign({}, state, {user: action.user});
+    case ActionTypes.GET_USER.SUCCESS:
+      return action.payload;
     default:
-      return state
+      return state;
   }
 };
+
+export default userReducer;
