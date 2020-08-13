@@ -1,7 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 import * as React from 'react';
 import {
-  StyleSheet, Text, View, Image, Animated, Dimensions,
+  StyleSheet, Text, TouchableOpacity, View, Image, Animated, Dimensions,
 } from 'react-native';
 import { Ionicons, FontAwesome5, MaterialIcons } from '@expo/vector-icons';
 import { SafeAreaConsumer } from 'react-native-safe-area-context';

@@ -7,7 +7,6 @@ import {
 } from 'react-native';
 import { SplashScreen } from 'expo';
 import * as Font from 'expo-font';
-import { Ionicons } from '@expo/vector-icons';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -27,14 +26,15 @@ export const store = createStore(reducers, {}, compose(
 ));
 
 export default function App(props) {
-  const [isLoadingComplete, setLoadingComplete] = React.useState(false);
+  const [isFontLoadingComplete, setFontLoadingComplete] = React.useState(false);
+  const [isFeedLoadingComplete, setFeedLoadingComplete] = React.useState(false);
   const [initialNavigationState, setInitialNavigationState] = React.useState();
   const containerRef = React.useRef();
   const { getInitialState } = useLinking(containerRef);
 
   // Load any resources or data that we need prior to rendering the app
 
-  React.useEffect(async () => {
+  React.useEffect(() => {
     async function loadResourcesAndDataAsync() {
       try {
         SplashScreen.preventAutoHide();
@@ -45,16 +45,16 @@ export default function App(props) {
         // Load fonts
         await Font.loadAsync({
           Ionicons: require('@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/Ionicons.ttf'),
-          // 'libre-bold': require('./assets/fonts/Libre_Baskerville/LibreBaskerville-Bold.ttf'),
+          'libre-bold': require('./assets/fonts/Libre_Baskerville/LibreBaskerville-Bold.ttf'),
           'libre-regular': require('./assets/fonts/Libre_Baskerville/LibreBaskerville-Regular.ttf'),
-          // 'libre-italic': require('./assets/fonts/Libre_Baskerville/LibreBaskerville-Italic.ttf'),
+          'libre-italic': require('./assets/fonts/Libre_Baskerville/LibreBaskerville-Italic.ttf'),
           'space-mono': require('./assets/fonts/SpaceMono-Regular.ttf'),
         });
       } catch (e) {
         // We might want to provide this error information to an error reporting service
-        // console.warn(e);
+        console.warn(e);
       } finally {
-        // setLoadingComplete(true);
+        setFontLoadingComplete(true);
         SplashScreen.hide();
       }
     }
@@ -62,13 +62,14 @@ export default function App(props) {
     loadResourcesAndDataAsync();
   }, []);
 
+  if (!isFontLoadingComplete) return null;
   return (
     <Provider store={store}>
       <SafeAreaProvider>
         <View style={styles.container}>
           {Platform.OS === 'ios' && <StatusBar style={styles.statusBar} barStyle="dark-content" />}
-          {(!isLoadingComplete && !props.skipLoadingScreen)
-            ? <LoadingScreen completeLoading={() => setLoadingComplete(true)} />
+          {(!isFeedLoadingComplete && !props.skipLoadingScreen)
+            ? <LoadingScreen completeLoading={() => setFeedLoadingComplete(true)} />
             : (
               <NavigationContainer ref={containerRef} initialState={initialNavigationState}>
                 <Stack.Navigator screenOptions={{ headerShown: false }}>
