@@ -33,7 +33,7 @@ class AuthorScreen extends React.Component {
   }
 
 
-  follow = async() => {
+  follow = async () => {
     this.props.signIn({ email: "email@gmail.com", password: "password" }); //needed to make sure SecureStore has token
 
     let token = await getUser();

@@ -105,11 +105,14 @@ function ArticleScreen(props) {
             <View style={styles.authorViewsArea}>
               <View style={styles.authorArea}>
                 {/* <Text style={styles.author}>by {authorString}</Text> */}
-                {article.authors.map((author, idx) => { return (
-                  <TouchableOpacity key={idx} navigation = {props.navigation} onPress={() => { props.navigation.push('Author', { name: author.name});}}>
-                    <Text style={styles.author}>{author.name}{idx == article.authors.length - 1 ? "" : ", "}</Text>
+                {article.authors.map((author, idx) => (
+                  <TouchableOpacity key={idx} navigation={props.navigation} onPress={() => { props.navigation.push('Author', { name: author.name }); }}>
+                    <Text style={styles.author}>
+                      {author.name}
+                      {idx === article.authors.length - 1 ? '' : ', '}
+                    </Text>
                   </TouchableOpacity>
-                )})}
+                ))}
                 <Queue size={8} />
                 <Ionicons style={styles.authorAdd} name="ios-add" size={16} color="gray" />
               </View>

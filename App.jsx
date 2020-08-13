@@ -34,7 +34,7 @@ export default function App(props) {
 
   // Load any resources or data that we need prior to rendering the app
 
-  React.useEffect(() => {
+  React.useEffect(async () => {
     async function loadResourcesAndDataAsync() {
       try {
         SplashScreen.preventAutoHide();
