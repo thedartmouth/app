@@ -13,7 +13,6 @@ class LoadingScreen extends React.Component {
   }
 
   componentDidMount() {
-    this.props.getUser("5f08d289904d6614d951a501");
     this.props.refreshFeed().then(() => {
       setTimeout(() => {
         this.props.completeLoading();
