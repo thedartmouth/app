@@ -1,7 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 import * as React from 'react';
 import {
-  StyleSheet, Text, View, Image, Animated, Dimensions, Share,
+  StyleSheet, Text, View, Image, Animated, Dimensions, Share, TouchableOpacity
 } from 'react-native';
 import { Ionicons, FontAwesome5, MaterialIcons } from '@expo/vector-icons';
 import { SafeAreaConsumer } from 'react-native-safe-area-context';
@@ -80,7 +80,7 @@ function ArticleScreen(props) {
             zIndex: 1,
           }}
           >
-            <Box dir="col" style={styles.topTab} pad={[insets.top, 0, 0, 0]}>
+            <Box dir="column" style={styles.topTab} pad={[insets.top, 0, 0, 0]}>
               <Box dir="row">
                 <Queue size={30} />
                 <Animated.View style={{ opacity: opacityButton }}>
@@ -112,11 +112,15 @@ function ArticleScreen(props) {
             <Stack size={12} />
             <View style={styles.authorViewsArea}>
               <View style={styles.authorArea}>
-                <Text style={styles.author}>
-                  by
-                  {' '}
-                  {authorString}
-                </Text>
+                {/* <Text style={styles.author}>by {authorString}</Text> */}
+                {article.authors.map((author, idx) => (
+                  <TouchableOpacity key={idx} navigation={props.navigation} onPress={() => { props.navigation.push('Author', { name: author.name }); }}>
+                    <Text style={styles.author}>
+                      {author.name}
+                      {idx === article.authors.length - 1 ? '' : ', '}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
                 <Queue size={8} />
                 <Ionicons style={styles.authorAdd} name="ios-add" size={16} color="gray" />
               </View>
