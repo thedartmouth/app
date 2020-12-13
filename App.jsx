@@ -10,8 +10,6 @@ import * as Font from 'expo-font';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import * as SecureStore from 'expo-secure-store';
-import axios from 'axios';
 import BottomTabNavigator from './navigation/BottomTabNavigator';
 import useLinking from './navigation/useLinking';
 import { reducers, actions } from './store';
@@ -56,8 +54,6 @@ export default function App(props) {
           'space-mono': require('./assets/fonts/SpaceMono-Regular.ttf'),
         });
 
-        const token = await SecureStore.getItemAsync('token');
-        if (token) store.dispatch(actions.getUser(token));
       } catch (e) {
         // We might want to provide this error information to an error reporting service
         console.warn(e);
