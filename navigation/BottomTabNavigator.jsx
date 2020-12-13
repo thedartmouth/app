@@ -2,7 +2,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import * as React from 'react';
 import { StyleSheet } from 'react-native';
 import FeedScreen from '../screens/FeedScreen';
-import ProfileScreen from '../screens/ProfileScreen';
+import { ProfileStackScreen } from '../screens/ProfileScreen';
 import PollsScreen from '../screens/PollsScreen';
 import AuthorScreen from '../screens/AuthorScreen';
 import TabBarIcon from '../components/TabBarIcon';
@@ -27,27 +27,27 @@ export default function BottomTabNavigator({ navigation, route }) {
         options={{
           title: 'Feed',
           tabBarIcon: ({ focused }) => (
-            <TabBarIcon focused={focused} name='ios-book' />
+            <TabBarIcon focused={focused} name="ios-book" />
           ),
         }}
       />
       <BottomTab.Screen
-        name='Polls'
+        name="Polls"
         component={PollsScreen}
         options={{
           title: 'Polls',
           tabBarIcon: ({ focused }) => (
-            <TabBarIcon focused={focused} name='ios-podium' />
+            <TabBarIcon focused={focused} name="ios-podium" />
           ),
         }}
       />
       <BottomTab.Screen
-        name='Me'
-        component={ProfileScreen}
+        name="Me"
+        component={ProfileStackScreen}
         options={{
           title: 'My Profile',
           tabBarIcon: ({ focused }) => (
-            <TabBarIcon focused={focused} name='ios-person' />
+            <TabBarIcon focused={focused} name="ios-person" />
           ),
         }}
       />
@@ -56,8 +56,7 @@ export default function BottomTabNavigator({ navigation, route }) {
 }
 
 function getHeaderTitle(route) {
-  const routeName =
-    route.state?.routes[route.state.index]?.name ?? INITIAL_ROUTE_NAME;
+  const routeName = route.state?.routes[route.state.index]?.name ?? INITIAL_ROUTE_NAME;
 
   switch (routeName) {
     case 'Home':
@@ -74,13 +73,9 @@ function getHeaderTitle(route) {
 const styles = StyleSheet.create({
   tabBar: {
     height: 94,
-    shadowOffset: { height: -50 },
-		shadowRadius: 50,
-		shadowColor: 'white',
-    shadowOpacity: 1.0,
-		shadowOffset: { height: -3 },
-		shadowRadius: 10,
-		shadowColor: 'gray',
-		shadowOpacity: 0.3,
+    shadowOffset: { height: -3 },
+    shadowRadius: 10,
+    shadowColor: 'gray',
+    shadowOpacity: 0.3,
   },
 });
