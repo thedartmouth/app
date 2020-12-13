@@ -23,7 +23,8 @@ export default StyleSheet.create({
     fontFamily: 'libre-italic',
   },
   sansBold: {
-    fontFamily: 'poppins-bold',
+    fontWeight: 'bold',
+    // fontFamily: 'poppins-bold',
   },
   mono: {
     fontFamily: 'space-mono'
