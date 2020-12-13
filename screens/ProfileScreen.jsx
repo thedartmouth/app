@@ -1,4 +1,6 @@
 import * as React from 'react';
+import { connect } from 'react-redux';
+import { actions } from '../store';
 import {
   StyleSheet, Text, View, Switch, TouchableOpacity,
 } from 'react-native';
@@ -6,40 +8,40 @@ import { Divider } from 'react-native-elements';
 import { Ionicons, SimpleLineIcons } from '@expo/vector-icons';
 import { SafeAreaConsumer } from 'react-native-safe-area-context';
 import { Stack, Queue } from 'react-native-spacing-system';
-import { Typography } from '../constants';
+import { Typography, Colors } from '../constants';
 import BookmarkScreen from './BookmarkScreen';
 import ArticleScreen from './ArticleScreen';
 import { createStackNavigator } from '@react-navigation/stack';
 
 const ProfileStack = createStackNavigator();
 
-export default function ProfileScreen({navigation}) {
+function ProfileScreen(props) {
   return (
     <SafeAreaConsumer>
       {(insets) => (
-        <View style={[styles.profileScreen, { paddingTop: 2 * insets.top }]}>
+        <View style={[styles.profileScreen, { paddingTop: insets.top }]}>
           <View style={styles.intro}>
-            <Text style={styles.title}>Hello, Jessica.</Text>
-            <Stack size={36} />
+            <Text style={styles.title}>Hello, {props.user.data?.name?.first || 'there'}.</Text>
+            <Stack size={24} />
             <View style={styles.reward}>
               <View>
                 <SimpleLineIcons name="cup" size={24} color="black" />
                 <Text style={styles.coffeeCount}>16</Text>
               </View>
-              <Queue size={18} />
+              <Queue size={16} />
               <Text style={styles.rewardText}>coffee cups earned!</Text>
             </View>
           </View>
-          <Stack size={36} />
+          <Stack size={24} />
           <Divider style={styles.divider} />
-          <Stack size={36} />
+          <Stack size={24} />
           <View style={styles.contentBoxes}>
             <View style={styles.contentBox}>
               <Text style={styles.heading}>Your stuff</Text>
               <Stack size={12} />
               <Divider style={styles.thinDivider} />
               <Stack size={4} />
-              <TouchableOpacity style={styles.rowItem} onPress={ () => navigation.navigate('Bookmarks')}>
+              <TouchableOpacity style={styles.rowItem} onPress={ () => props.navigation.navigate('Bookmarks')}>
                 <Text style={Typography.p}>Bookmarks</Text>
                 <Ionicons name="ios-arrow-forward" size={24} style={styles.rowItemIcon} />
               </TouchableOpacity>
@@ -87,10 +89,15 @@ export default function ProfileScreen({navigation}) {
   );
 }
 
+const ConnectedProfileScreen = connect(store => ({
+  user: store.user
+}),
+(dispatch) => ({auth: actions.auth(dispatch), getUser: actions.getUser(dispatch)}))(ProfileScreen);
+
 export function ProfileStackScreen() {
   return (
     <ProfileStack.Navigator>
-      <ProfileStack.Screen name="Profile" component={ProfileScreen} />
+      <ProfileStack.Screen name="Profile" component={ConnectedProfileScreen} />
       <ProfileStack.Screen name="Bookmarks" component={BookmarkScreen} />
       <ProfileStack.Screen name="Articles" component={ArticleScreen}/>
     </ProfileStack.Navigator>
@@ -100,9 +107,8 @@ export function ProfileStackScreen() {
 const styles = StyleSheet.create({
   profileScreen: {
     flex: 1,
-    paddingVertical: 36,
     paddingHorizontal: 36,
-    backgroundColor: 'white',
+    backgroundColor: Colors.paper,
     alignItems: 'stretch',
   },
   intro: {
@@ -110,6 +116,7 @@ const styles = StyleSheet.create({
   },
   title: {
     ...Typography.h1,
+    ...Typography.serifRegular,
   },
   reward: {
     flexDirection: 'row',
@@ -118,9 +125,11 @@ const styles = StyleSheet.create({
   coffeeCount: {
     marginLeft: 2, // because the coffee icon is slightly imbalanced
     // alignItems: 'center',
+    ...Typography.serifRegular,
   },
   rewardText: {
     ...Typography.p,
+    ...Typography.serifRegular,
   },
   divider: {
     height: 1,
@@ -130,7 +139,9 @@ const styles = StyleSheet.create({
   contentBox: {
   },
   heading: {
-    ...Typography.h2,
+    ...Typography.h3,
+    ...Typography.sansBold,
+    color: Colors.pencil,
   },
   rowItem: {
     flex: 0,

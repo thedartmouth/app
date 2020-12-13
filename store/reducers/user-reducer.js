@@ -1,11 +1,14 @@
 import { ActionTypes } from '../actions';
 
-const INITIAL_STATE = {};
+const INITIAL_STATE = {
+  data: null,
+  lastAuth: null,
+};
 
 const userReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case ActionTypes.GET_USER.SUCCESS:
-      return action.payload;
+      return {...state, data: action.payload, lastAuth: new Date()};
     default:
       return state;
   }

@@ -1,4 +1,6 @@
 import * as React from 'react';
+import {connect} from 'react-redux';
+import {actions} from '../store';
 import { StyleSheet, Text, View, Image } from 'react-native';
 import { Divider } from 'react-native-elements';
 import { ScrollView, TouchableOpacity} from 'react-native-gesture-handler';
@@ -9,8 +11,6 @@ import { Ionicons } from '@expo/vector-icons';
 import HTML from 'react-native-render-html';
 import PreviewCard from '../components/PreviewCard';
 import axios from 'axios';
-import { connect } from 'react-redux';
-import { getUser, signIn} from '../store/actions/user-actions';
 
 class AuthorScreen extends React.Component {
   constructor(props) {
@@ -25,8 +25,8 @@ class AuthorScreen extends React.Component {
   }
 
   checkFollowedAuthors = () => { //returns true if user following, false if not (or not signed in)
-    if (Object.keys(this.props.user).length === 0) return false; //user not signed in, user object is empty
-    for (let author of this.props.user.followedAuthors) {
+    if (Object.keys(this.props.user.data).length === 0) return false; //user not signed in, user object is empty
+    for (let author of this.props.user.data.followedAuthors) {
       if (author === this.state.slug) return true;
     }
     return false;
@@ -34,18 +34,7 @@ class AuthorScreen extends React.Component {
 
 
   follow = async () => {
-    this.props.signIn({ email: "email@gmail.com", password: "password" }); //needed to make sure SecureStore has token
-
-    let token = await getUser();
-
-
-    axios.put(`${ROOT_URL}/author/profile/` + this.state.slug, 
-      {"follow": !this.state.followed}, 
-      { headers: {"Authorization": "Bearer " + token }})
-        .then(
-          this.setState({ followed: !this.state.followed })
-        );
-
+    alert('following');
   }
 
   /**
@@ -159,17 +148,7 @@ class AuthorScreen extends React.Component {
   }
 }
 
-function mapStateToProps(reduxState) {
-  return reduxState.user;
-}
-
-function mapDispatchToProps(dispatch) {
-  return ({
-    signIn: ({email, password}) => dispatch(signIn({email, password}))
-  })
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(AuthorScreen);
+export default connect((store) => ({user: store.user}), dispatch => ({auth: actions.auth(dispatch)}))(AuthorScreen);
 
 const styles = StyleSheet.create({
   scroll: {

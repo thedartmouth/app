@@ -2,6 +2,7 @@ import * as React from 'react';
 import {connect} from 'react-redux';
 import {actions} from '../store';
 import { Animated, Button, Image, Platform, StyleSheet, Text, TouchableOpacity, View, flex, requireNativeComponent } from 'react-native';
+import * as SecureStore from 'expo-secure-store';
 import {Stack} from 'react-native-spacing-system';
 import dateFormat from 'dateformat';
 import { Typography, Colors } from '../constants';
@@ -13,11 +14,18 @@ class LoadingScreen extends React.Component {
   }
 
   componentDidMount() {
-    this.props.getUser("5eeaedc31ba9cb48805ded95");
-    this.props.refreshFeed().then(() => {
+    const authUser = async () => {
+      const userId = await SecureStore.getItemAsync('userId');
+      const token = await SecureStore.getItemAsync('token');
+      if (userId && token) {
+        await this.props.getUser(userId, token);
+      }
+    }
+    const loadingPromises = [authUser, this.props.refreshFeed()]
+    Promise.all(loadingPromises).then(() => {
       setTimeout(() => {
         this.props.completeLoading();
-      }, 2000);
+      }, 3000);
     })
   }
 
@@ -64,10 +72,10 @@ class LoadingScreen extends React.Component {
 
 
 export default connect(
-	reduxState => ({
-		loading: reduxState.loading, error: reduxState.error, articles: reduxState.articles,
+	store => ({
+		articles: store.articles,
 	}),
-	{refreshFeed: actions.refreshFeed, getUser: actions.getUser}
+	dispatch => ({refreshFeed: actions.refreshFeed(dispatch), getUser: actions.getUser(dispatch)})
 	)(LoadingScreen);
 
 const styles = StyleSheet.create({

@@ -13,20 +13,17 @@ export const ActionTypes = {
   SET_PAGE: "SET_PAGE",
   BOOKMARK_ARTICLE: "BOOKMARK_ARTICLE",
   ERROR_SET: "ERROR_SET",
-  GET_USER: "GET_USER",
 };
 
 /**
  * Pulls the most recent set of articles from all sections on page 1 and saves to redux store.
  */
-export const refreshFeed = () => (dispatch) =>
+export const refreshFeed = (dispatch) => () =>
   new Promise((resolve, reject) => {
     dispatch({ type: ActionTypes.REFRESH_FEED.REQUEST });
-    console.log("refreshing feed");
     axios
       .get(`${CMS_URL}/search.json?a=1&ty=article&per_page=20&page=1`)
       .then((response) => {
-        console.log("feed refreshed");
         dispatch({
           type: ActionTypes.REFRESH_FEED.SUCCESS,
           payload: response.data.items,
@@ -43,7 +40,7 @@ export const refreshFeed = () => (dispatch) =>
  * Pulls the most recent set of articles from all sections on a given page and adds to redux store.
  * @param {Integer} page The current page to fill the newsfeed with.
  */
-export const addFeed = (page) => (dispatch) =>
+export const addFeed = (dispatch) => (page) =>
   new Promise((resolve) => {
     console.log(`adding page ${page} to feed`);
     axios
@@ -118,21 +115,6 @@ export const unbookmarkArticle = (userID, articleID, bookmarkedArticles) => (
         type: ActionTypes.BOOKMARK_ARTICLE,
         payload: response.data.user.bookmarkedArticles,
       });
-    })
-    .catch((error) => {
-      dispatch({ type: ActionTypes.ERROR_SET, error });
-    });
-};
-
-/**
- * Gets information pertaining to a user
- * @param {Integer} userID The current user
- */
-export const getUser = (userID) => (dispatch) => {
-  axios
-    .get(`${ROOT_URL}/users/${userID}`)
-    .then((response) => {
-      dispatch({ type: ActionTypes.GET_USER, payload: response.data });
     })
     .catch((error) => {
       dispatch({ type: ActionTypes.ERROR_SET, error });

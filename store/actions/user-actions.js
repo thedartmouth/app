@@ -10,18 +10,19 @@ export const ActionTypes = {
   },
 };
 
-export const getUser = (token) => (dispatch) => {
+export const getUser = (dispatch) => (id, token) => {
   axios.defaults.headers.common.Authorization = `Bearer ${token}`;
-  axios.get(`${ROOT_URL}/users/me`).then((response) => {
+  dispatch({type: ActionTypes.GET_USER.REQUEST});
+  axios.get(`${ROOT_URL}/users/${id}`).then((response) => {
     dispatch({ type: ActionTypes.GET_USER.SUCCESS, payload: response.data });
   });
 };
 
 // gives user to reducer, which should save the user to state
-export const signIn = (email, password) => (dispatch) => {
-  axios.post(`${ROOT_URL}/auth/signin`, { email, password })
+export const auth = (dispatch) => (email, password) => {
+  axios.post(`${ROOT_URL}/users/auth`, { email, password })
     .then((response) => {
-      Promise.all([SecureStore.setItemAsync('token', response.data.token), SecureStore.setItemAsync('userName', response.data.user.name)])
+      Promise.all([SecureStore.setItemAsync('token', response.data.token), SecureStore.setItemAsync('userId', response.data.userId)])
         .then(() => {
           dispatch({ type: ActionTypes.GET_USER.SUCCESS, payload: response.data.user });
         });
