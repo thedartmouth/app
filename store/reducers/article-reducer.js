@@ -1,7 +1,7 @@
 import { ActionTypes } from '../actions';
 
 const INITIAL_STATE = {
-  current: {},
+  // current: {},
   feed: [],
   page: 1,
   bookmarkedArticles: [],

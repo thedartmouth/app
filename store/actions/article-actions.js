@@ -8,7 +8,7 @@ export const ActionTypes = {
     FAILURE: 'REFRESH_FEED_FAILURE',
   },
   ADD_FEED: 'ADD_FEED',
-  READ_ARTICLE: 'READ_ARTICLE',
+  // READ_ARTICLE: 'READ_ARTICLE',
   // LEAVE_ARTICLE: 'LEAVE_ARTICLE',
   SET_PAGE: 'SET_PAGE',
   BOOKMARK_ARTICLE: 'BOOKMARK_ARTICLE',
@@ -17,7 +17,7 @@ export const ActionTypes = {
 };
 
 /**
- * Pulls the most recent set of articles from all sections on a page 1 and saves to redux store.
+ * Pulls the most recent set of articles from all sections on page 1 and saves to redux store.
  */
 export const refreshFeed = () => (dispatch) => new Promise((resolve, reject) => {
   dispatch({ type: ActionTypes.REFRESH_FEED.REQUEST });
@@ -48,19 +48,19 @@ export const addFeed = (page) => (dispatch) => new Promise((resolve) => {
  * Sends to backend the current article and receives an object back containing data like views.
  * @param {String} article The article to send backend (current article).
  */
-export const readArticle = (article) => (dispatch) => new Promise((resolve) => {
+export const readArticle = (article) => () => new Promise((resolve) => {
   axios.post(`${ROOT_URL}/articles/read`, article)
     .then((response) => {
       resolve(response.data);
     });
 });
 
-/**
- * Clears current article once user goes back to feed.
- */
-export const leaveArticle = () => (dispatch) => {
-  dispatch({ type: ActionTypes.LEAVE_ARTICLE });
-};
+// /**
+//  * Clears current article once user goes back to feed.
+//  */
+// export const leaveArticle = () => (dispatch) => {
+//   dispatch({ type: ActionTypes.LEAVE_ARTICLE });
+// };
 
 /**
  * Bookmarks an article
