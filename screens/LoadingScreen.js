@@ -3,8 +3,8 @@ import {connect} from 'react-redux';
 import {actions} from '../store';
 import { Animated, Button, Image, Platform, StyleSheet, Text, TouchableOpacity, View, flex, requireNativeComponent } from 'react-native';
 import {Stack} from 'react-native-spacing-system';
+import dateFormat from 'dateformat';
 import { Typography, Colors } from '../constants';
-
 
 class LoadingScreen extends React.Component {
   constructor(props) {
@@ -54,7 +54,7 @@ class LoadingScreen extends React.Component {
             styles.date
           ]}
         >
-          Tuesday, Jan. 5, 2018
+          {dateFormat(new Date(), 'dddd, mmm. d, yyyy')}
         </Animated.Text>
       </View>
     );
@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
     banner: {
-      height: 30,
+      height: 36,
       resizeMode: 'contain',
     },
     date: {
