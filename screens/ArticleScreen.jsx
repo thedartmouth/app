@@ -1,7 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 import * as React from 'react';
 import {
-  StyleSheet, Text, TouchableOpacity, View, Image, Animated, Dimensions,
+  StyleSheet, Text, View, Image, Animated, Dimensions, Share, TouchableOpacity
 } from 'react-native';
 import { Ionicons, FontAwesome5, MaterialIcons } from '@expo/vector-icons';
 import { SafeAreaConsumer } from 'react-native-safe-area-context';
@@ -13,6 +13,8 @@ import { Typography, Colors } from '../constants';
 import { Box, Stack, Queue } from '../components/layout';
 import { actions } from '../store';
 
+const HORIZONTAL_PADDING = 30;
+
 function ArticleScreen(props) {
   const { article } = props.route.params;
   const {
@@ -20,34 +22,40 @@ function ArticleScreen(props) {
   } = props;
   const [articleID, setArticleID] = React.useState('');
   const [articleViews, setArticleViews] = React.useState('');
+  const authorString = article.authors.map((e) => e.name).join(', ');
 
+  // on initial render, read the article, set the ID and views
   React.useEffect(() => {
     readArticle({ article }).then((response) => {
-      if (!articleID) {
+      if (!articleID && !articleViews) {
         setArticleID(response._id);
         setArticleViews(response.views);
       }
     });
   }, []);
 
-  function renderHTML() {
-    if (article.content) {
-      return (
-        <HTML
-          tagsStyles={{ p: styles.content, a: styles.links }} // heads up, styles do not trigger autorefresh on expo
-          html={article.content}
-          onLinkPress={(event, href) => {
-            Linking.openURL(href);
-          }}
-          imagesMaxWidth={Dimensions.get('window').width - 60}
-        />
-      );
+  const onShare = async () => {
+    try {
+      const result = await Share.share({
+        url:
+          `https://www.thedartmouth.com/article/${article.slug}`,
+      });
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          // shared with activity type of result.activityType
+        } else {
+          // shared
+        }
+      } else if (result.action === Share.dismissedAction) {
+        // dismissed
+      }
+    } catch (error) {
+      console.log(error.message);
     }
-    return null;
-  }
+  };
 
+  // animation
   const scrollY = new Animated.Value(0);
-  const authorString = article.authors.map((e) => e.name).join(', ');
   const translateYTop = (step) => Animated.diffClamp(scrollY, 0, step).interpolate({
     inputRange: [0, step],
     outputRange: [0, -step],
@@ -128,7 +136,17 @@ function ArticleScreen(props) {
               style={styles.articleImage}
             />
             <Stack size={12} />
-            {renderHTML()}
+            {/* render article HTML content if it exists */}
+            {article.content ? (
+              <HTML
+                tagsStyles={{ p: styles.content, a: styles.links }} // heads up, styles do not trigger autorefresh on expo
+                html={article.content}
+                onLinkPress={(event, href) => {
+                  Linking.openURL(href);
+                }}
+                imagesMaxWidth={Dimensions.get('window').width - (HORIZONTAL_PADDING * 2)}
+              />
+            ) : null}
           </ScrollView>
           <Animated.View style={{
             transform: [
@@ -144,7 +162,7 @@ function ArticleScreen(props) {
                 {bookmarkedArticles.includes(articleID)
                   ? <MaterialIcons name="bookmark" size={35} color="gray" onPress={() => unbookmarkArticle('5f08d289904d6614d951a501', articleID, bookmarkedArticles)} />
                   : <MaterialIcons name="bookmark-border" size={35} color="gray" onPress={() => bookmarkArticle('5f08d289904d6614d951a501', articleID, bookmarkedArticles)} />}
-                <Ionicons name="ios-share" size={35} color="gray" />
+                <Ionicons name="ios-share" size={35} color="gray" onPress={onShare} />
               </View>
             </View>
           </Animated.View>
@@ -156,7 +174,6 @@ function ArticleScreen(props) {
 
 function mapStateToProps(reduxState) {
   return {
-    currentArticle: reduxState.articles.current,
     bookmarkedArticles: reduxState.articles.bookmarkedArticles,
   };
 }
@@ -164,7 +181,6 @@ function mapStateToProps(reduxState) {
 export default connect(mapStateToProps,
   {
     readArticle: actions.readArticle,
-    // leaveArticle: actions.leaveArticle,
     bookmarkArticle: actions.bookmarkArticle,
     unbookmarkArticle: actions.unbookmarkArticle,
   })(ArticleScreen);
@@ -175,7 +191,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   articleScroll: {
-    paddingHorizontal: 30,
+    paddingHorizontal: HORIZONTAL_PADDING,
   },
   topTab: {
     zIndex: 1,
