@@ -13,6 +13,7 @@ import { Stack } from 'react-native-spacing-system';
 import { useSafeArea } from 'react-native-safe-area-context';
 import ArticleCard from '../components/ArticleCard';
 import { actions } from '../store';
+import { Colors } from '../constants';
 
 const FeedScreen = (props) => {
   const [page, setPage] = React.useState(1);
@@ -30,12 +31,12 @@ const FeedScreen = (props) => {
   return (
     <View style={[styles.screen]}>
       <View style={[styles.bannerContainer, { paddingTop: useSafeArea().top }]}>
-        <Stack size={20} />
+        <Stack size={useSafeArea().top > 0 ? 4 : 16} />
         <Image
           source={require('../assets/images/banner.png')}
           style={styles.banner}
         />
-        <Stack size={20} />
+        <Stack size={16} />
       </View>
       <FlatList
         style={styles.articleBox}
@@ -52,9 +53,8 @@ const FeedScreen = (props) => {
         )}
         renderItem={({ item }) => (
           <View key={item.ceo_id}>
-            <Stack size={24} />
             <ArticleCard article={item} navigation={props.navigation} />
-            <Stack size={24} />
+            <Stack size={36} />
           </View>
         )}
       />
@@ -76,39 +76,41 @@ export default connect(
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: Colors.paper,
   },
   bannerContainer: {
     backgroundColor: 'white',
     zIndex: 1,
     alignItems: 'center',
-    shadowOffset: { height: 3 },
-    shadowRadius: 10,
-    shadowColor: 'gray',
-    shadowOpacity: 0.3,
+    borderColor: Colors.border,
+    borderStyle: 'solid',
+    borderBottomWidth: 1,
+    // shadowOffset: { height: 3 },
+    // shadowRadius: 10,
+    // shadowColor: 'gray',
+    // shadowOpacity: 0.3,
   },
   banner: {
-    height: 30,
+    height: 18,
     resizeMode: 'contain',
   },
-  topicBar: {
-    height: 35,
-  },
-  topicBarItem: {
-    height: 35,
-    backgroundColor: 'white',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderStyle: 'solid',
-    borderColor: '#BDBDBD',
-    borderLeftWidth: 0.5,
-    borderRightWidth: 0.5,
-    borderTopWidth: 1,
-    borderBottomWidth: 1,
-    paddingHorizontal: 15,
-  },
+  // topicBar: {
+  //   height: 35,
+  // },
+  // topicBarItem: {
+  //   height: 35,
+  //   backgroundColor: 'white',
+  //   justifyContent: 'center',
+  //   alignItems: 'center',
+  //   borderStyle: 'solid',
+  //   borderColor: '#BDBDBD',
+  //   borderLeftWidth: 0.5,
+  //   borderRightWidth: 0.5,
+  //   borderTopWidth: 1,
+  //   borderBottomWidth: 1,
+  //   paddingHorizontal: 15,
+  // },
   articleBox: {
     flex: 1,
-    paddingHorizontal: 36,
   },
 });

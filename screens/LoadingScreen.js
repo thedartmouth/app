@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 import {actions} from '../store';
 import { Animated, Button, Image, Platform, StyleSheet, Text, TouchableOpacity, View, flex, requireNativeComponent } from 'react-native';
 import {Stack} from 'react-native-spacing-system';
-import { Typography } from '../constants';
+import { Typography, Colors } from '../constants';
 
 
 class LoadingScreen extends React.Component {
@@ -73,7 +73,7 @@ export default connect(
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: Colors.paper,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -82,8 +82,8 @@ const styles = StyleSheet.create({
       resizeMode: 'contain',
     },
     date: {
-      ...Typography.serif,
-      fontSize: 18,
-      color: 'gray',
+      ...Typography.serifRegular,
+      ...Typography.p,
+      color: Colors.charcoal,
     }
 });

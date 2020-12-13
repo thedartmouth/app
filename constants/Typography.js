@@ -6,19 +6,26 @@ export default StyleSheet.create({
   },
   h2: {
     fontSize: 24,
-    fontWeight: 'bold',
   },
   h3: {
-    fontSize: 20,
-    fontWeight: 'bold',
+    fontSize: 18,
   },
   p: {
     fontSize: 16,
-    fontWeight: '300',
   },
-  serif: {
+  serifRegular: {
     fontFamily: 'libre-regular',
   },
-  sans: {
+  serifBold: {
+    fontFamily: 'libre-bold',
   },
+  serifItalic: {
+    fontFamily: 'libre-italic',
+  },
+  sansBold: {
+    fontFamily: 'poppins-bold',
+  },
+  mono: {
+    fontFamily: 'space-mono'
+  }
 });

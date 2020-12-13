@@ -211,7 +211,7 @@ const styles = StyleSheet.create({
   },
   articleTitle: {
     ...Typography.h2,
-    ...Typography.serif,
+    ...Typography.serifBold,
   },
   tag: {
     flexDirection: 'row',
@@ -267,12 +267,12 @@ const styles = StyleSheet.create({
   content: {
     textAlign: 'left',
     ...Typography.p,
-    ...Typography.serif,
+    ...Typography.serifRegular,
     marginBottom: 18,
   },
   links: {
     ...Typography.p,
-    ...Typography.serif,
+    ...Typography.serifRegular,
   },
   bottomTab: {
     borderWidth: 1,
