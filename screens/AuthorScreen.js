@@ -4,60 +4,115 @@ import { Divider } from 'react-native-elements';
 import { ScrollView, TouchableOpacity} from 'react-native-gesture-handler';
 import { SafeAreaConsumer } from 'react-native-safe-area-context';
 import {Stack, Queue} from 'react-native-spacing-system';
-import { Typography, Colors } from '../constants';
-import { PreviewCard } from '../components/PreviewCard';
+import { Typography, CMS_URL, ROOT_URL } from '../constants';
+import { Ionicons } from '@expo/vector-icons';
+import HTML from 'react-native-render-html';
+import PreviewCard from '../components/PreviewCard';
+import axios from 'axios';
+import { connect } from 'react-redux';
+import { getUser, signIn} from '../store/actions/user-actions';
 
 class AuthorScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      previews: [], // React component state
+      name: props.route.params.name,
+      slug: props.route.params.name.split(' ').join("-").toLowerCase(),
+      previews: [], 
       followed: false,
       author: {},
     }
   }
 
-  follow = () => { 
-    this.setState({ followed: !this.state.followed })
+  checkFollowedAuthors = () => { //returns true if user following, false if not (or not signed in)
+    if (Object.keys(this.props.user).length === 0) return false; //user not signed in, user object is empty
+    for (let author of this.props.user.followedAuthors) {
+      if (author === this.state.slug) return true;
+    }
+    return false;
+  }
+
+
+  follow = async () => {
+    this.props.signIn({ email: "email@gmail.com", password: "password" }); //needed to make sure SecureStore has token
+
+    let token = await getUser();
+
+
+    axios.put(`${ROOT_URL}/author/profile/` + this.state.slug, 
+      {"follow": !this.state.followed}, 
+      { headers: {"Authorization": "Bearer " + token }})
+        .then(
+          this.setState({ followed: !this.state.followed })
+        );
+
   }
 
   /**
    * This function is called by React when the component begins to mount (render).
-   * Here, we use it to initialize a sample poll.
+   * Here, we use it to initialize sample previews.
    */
   componentDidMount = () => {
-    const author = {
-      name: "Author Name",
-      readers: '10,329', //if we want commas this should be cast as a string 
-      followers: 24,
-      numArticles: 15,
-      bio: 'Author bio here. Fun facts, the section they write in, what have you. Etc etc etc. The border should adjust height to account for the length of the bio.',
-    }
-    const previews = []
-    for (let i = 0; i < author.numArticles; i += 1) {
-      const preview = {
-        articleID: 98345, // random number for now
-        category: 'CATEGORY',
-        image: require('../assets/images/article1.jpg'),  
-        content: 'Name of article about news or sports or art or opinion or ', // title of article only
+    const axios = require('axios');
+    axios.get(`${ROOT_URL}/author/profile/` + this.state.slug).then(response => { 
+      const author = {
+        name: response.data.author.name,
+        initials: response.data.author.name.split(' ').map(function(word, idx){
+          return ((idx == 0) ? ' ' + word[0] + '.' : word[0] + '.')
+        }).join(''), 
+        readers: response.data.totalHits.toLocaleString(), // known issue, doesn't work on Android. hopefully works on ioS
+        followers: response.data.author.followers.length,
+        numArticles: response.data.totalArticles,
+        bio: response.data.articles[0].authors[0].bio,
+      } 
+
+      const previews = []
+      for (let i = 0; i < author.numArticles; i+=1) {
+        const currPreview = response.data.articles[i]
+        let index = 0;
+        let trip = false;
+        if (currPreview.metadata != null) {
+          for (let j = 0; j < currPreview.metadata.length; j++) { //ensures fetching of main tag, otherwise, might get a null value
+            if (currPreview.metadata[j].label == "kicker") {
+              index = j;
+              trip = true;
+            }
+          }
+        }
+        const preview = {
+          articleID: currPreview.uuid,
+          category: (trip == true ? currPreview.metadata[index].value.toUpperCase() : currPreview.tags[0].name.toUpperCase()),
+          image: currPreview.dominantMedia.attachment_uuid,
+          imageType: (currPreview.dominantMedia.attachment_uuid == null ? "" : currPreview.dominantMedia.extension.toLowerCase()),
+          headline: currPreview.headline,
+          article: currPreview,
+          slug: currPreview.slug,
+        }
+        
+
+
+        const copyOfPreview = JSON.parse(JSON.stringify(preview));
+        previews.push(copyOfPreview) // copies the object so it's not referencing itself
       }
-      const copyOfPreview = JSON.parse(JSON.stringify(preview));
-      previews.push(copyOfPreview) // copies the object so it's not referencing itself
-    }
-    this.setState({previews: previews}) // sets this poll into the React component state
-    this.setState({author: author})
+
+      this.setState({ previews: previews})
+      this.setState({ author: author })
+      this.setState({ followed: this.checkFollowedAuthors()})
+
+    });
   }
 
   render() {
-    return (
+    return ( 
       <SafeAreaConsumer>
         {insets => (
           <View style={[styles.authorScreen, {paddingTop: insets.top}]}>
             <ScrollView style={styles.scroll}>
+                <Ionicons name="ios-arrow-back" size={30} color="black" onPress={this.props.navigation.goBack} />
                 <Stack size={18}></Stack>
                 <View style={styles.authorInfo}>
                     <View style={styles.authorPhoto}>
-                      <Text style={styles.initials}> A.N.</Text>
+                      <Text style={styles.initials}>{this.state.author.initials} </Text>
                     </View>
                     <Stack size={18}></Stack>
                     <Text style={styles.authorName}>{this.state.author.name}</Text>
@@ -65,10 +120,15 @@ class AuthorScreen extends React.Component {
                     <View style={styles.followers}> 
                         <Text style={styles.followersText}>{this.state.author.readers} readers   |</Text>
                         <Queue size={10}></Queue>
-                        <Text style={styles.followersText}>{this.state.author.followers} followers</Text>
+                        <Text style={styles.followersText}>{this.state.author.followers}</Text>
+                        {(this.state.author.followers == 1) ? <Text style={styles.followersText}> follower</Text> : <Text style={styles.followersText}> followers</Text>}
                     </View> 
-                    <Stack size={25}></Stack>
-                    <Text style={styles.bio}>{this.state.author.bio}</Text>
+                    {(this.state.author.bio === '') ? <Stack size={0}></Stack> : <Stack size={25}></Stack>} 
+                    <HTML // causing a warning on Android
+                      tagsStyles={{ p: styles.bio }}  // heads up, styles do not trigger autorefresh on expo
+                      html={this.state.author.bio}
+                    />
+                    {/* <Text style={styles.bio}>{this.state.author.bio}</Text> */}
                     <Stack size={25}></Stack>
                     <TouchableOpacity style={styles.followButton} onPress={this.follow}>
                         {this.state.followed == false ? <Text style={styles.followButtonText}> Follow</Text> : <Text style={styles.followButtonText}> Following</Text>}
@@ -81,11 +141,13 @@ class AuthorScreen extends React.Component {
                 <Stack size={24}></Stack> 
                 {this.state.previews.map((preview, index) => {
                   return (
-                    <View>
+                    <View key={preview.articleID}>
                       <TouchableOpacity>
-                        <PreviewCard preview={preview}></PreviewCard>
+                        <PreviewCard preview={preview} navigation={this.props.navigation}></PreviewCard> 
                       </TouchableOpacity>
-                      <Stack size={(index == this.state.previews.length - 1) ? 0 : 28}></Stack>
+                      <Stack size = {28}></Stack>
+                      {/* <Stack size={(index == this.state.previews.length - 1) ? 0 : 28}></Stack> */} 
+                      {/* ^ displays funny on android (cuts off bottom text) -- how does it look on ios? */}
                     </View>
                   )
                 })}
@@ -97,7 +159,17 @@ class AuthorScreen extends React.Component {
   }
 }
 
+function mapStateToProps(reduxState) {
+  return reduxState.user;
+}
 
+function mapDispatchToProps(dispatch) {
+  return ({
+    signIn: ({email, password}) => dispatch(signIn({email, password}))
+  })
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(AuthorScreen);
 
 const styles = StyleSheet.create({
   scroll: {
@@ -133,7 +205,7 @@ const styles = StyleSheet.create({
   followersText: {
   },
   bio: {
-    ...Typography.p
+    ...Typography.p,
   },
   followButton: {
     paddingVertical: 8,
@@ -160,4 +232,4 @@ const styles = StyleSheet.create({
   titleImage: {},
 });
 
-export default AuthorScreen;
+// export default AuthorScreen;

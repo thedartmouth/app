@@ -4,6 +4,7 @@ import { StyleSheet } from 'react-native';
 import FeedScreen from '../screens/FeedScreen';
 import { ProfileStackScreen } from '../screens/ProfileScreen';
 import PollsScreen from '../screens/PollsScreen';
+import AuthorScreen from '../screens/AuthorScreen';
 import TabBarIcon from '../components/TabBarIcon';
 
 const BottomTab = createBottomTabNavigator();
