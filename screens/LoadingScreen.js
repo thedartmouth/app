@@ -13,6 +13,7 @@ class LoadingScreen extends React.Component {
   }
 
   componentDidMount() {
+    this.props.getUser("5eeaedc31ba9cb48805ded95");
     this.props.refreshFeed().then(() => {
       setTimeout(() => {
         this.props.completeLoading();
@@ -60,7 +61,7 @@ class LoadingScreen extends React.Component {
   }
 }
 
- 
+
 
 export default connect(
 	reduxState => ({

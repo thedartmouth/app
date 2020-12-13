@@ -7,8 +7,13 @@ import { Ionicons, SimpleLineIcons } from '@expo/vector-icons';
 import { SafeAreaConsumer } from 'react-native-safe-area-context';
 import { Stack, Queue } from 'react-native-spacing-system';
 import { Typography } from '../constants';
+import BookmarkScreen from './BookmarkScreen';
+import ArticleScreen from './ArticleScreen';
+import { createStackNavigator } from '@react-navigation/stack';
 
-export default function ProfileScreen() {
+const ProfileStack = createStackNavigator();
+
+export default function ProfileScreen({navigation}) {
   return (
     <SafeAreaConsumer>
       {(insets) => (
@@ -34,7 +39,7 @@ export default function ProfileScreen() {
               <Stack size={12} />
               <Divider style={styles.thinDivider} />
               <Stack size={4} />
-              <TouchableOpacity style={styles.rowItem}>
+              <TouchableOpacity style={styles.rowItem} onPress={ () => navigation.navigate('Bookmarks')}>
                 <Text style={Typography.p}>Bookmarks</Text>
                 <Ionicons name="ios-arrow-forward" size={24} style={styles.rowItemIcon} />
               </TouchableOpacity>
@@ -79,6 +84,16 @@ export default function ProfileScreen() {
       )}
     </SafeAreaConsumer>
 
+  );
+}
+
+export function ProfileStackScreen() {
+  return (
+    <ProfileStack.Navigator>
+      <ProfileStack.Screen name="Profile" component={ProfileScreen} />
+      <ProfileStack.Screen name="Bookmarks" component={BookmarkScreen} />
+      <ProfileStack.Screen name="Articles" component={ArticleScreen}/>
+    </ProfileStack.Navigator>
   );
 }
 
