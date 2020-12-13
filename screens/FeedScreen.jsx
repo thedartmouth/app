@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.paper,
   },
   bannerContainer: {
-    backgroundColor: 'white',
+    backgroundColor: Colors.paper,
     zIndex: 1,
     alignItems: 'center',
     borderColor: Colors.border,

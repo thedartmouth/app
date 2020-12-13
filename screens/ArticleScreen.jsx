@@ -3,17 +3,18 @@ import * as React from 'react';
 import {
   StyleSheet, Text, View, Image, Animated, Dimensions, Share, TouchableOpacity
 } from 'react-native';
+import FullWidthImage from 'react-native-fullwidth-image'
 import { Ionicons, FontAwesome5, MaterialIcons } from '@expo/vector-icons';
 import { SafeAreaConsumer } from 'react-native-safe-area-context';
 import { ScrollView } from 'react-native-gesture-handler';
 import HTML from 'react-native-render-html';
 import { Linking } from 'expo';
 import { connect } from 'react-redux';
-import { Typography, Colors } from '../constants';
+import { Typography, Colors, CMSImageUrl } from '../constants';
 import { Box, Stack, Queue } from '../components/layout';
 import { actions } from '../store';
 
-const HORIZONTAL_PADDING = 30;
+const HORIZONTAL_PADDING = 36;
 
 function ArticleScreen(props) {
   const { article } = props.route.params;
@@ -21,7 +22,7 @@ function ArticleScreen(props) {
     readArticle, navigation, bookmarkArticle, unbookmarkArticle, bookmarkedArticles,
   } = props;
   const [articleID, setArticleID] = React.useState('');
-  const [articleViews, setArticleViews] = React.useState('');
+  const [articleViews, setArticleViews] = React.useState(0);
   const authorString = article.authors.map((e) => e.name).join(', ');
 
   // on initial render, read the article, set the ID and views
@@ -82,64 +83,63 @@ function ArticleScreen(props) {
           >
             <Box dir="column" style={styles.topTab} pad={[insets.top, 0, 0, 0]}>
               <Box dir="row">
-                <Queue size={30} />
+                <Queue size={HORIZONTAL_PADDING} />
                 <Animated.View style={{ opacity: opacityButton }}>
-                  <Ionicons name="ios-arrow-back" size={30} color="black" onPress={() => navigation.goBack()} />
+                  <Ionicons name="ios-arrow-back" size={36} color={Colors.charcoal} onPress={() => navigation.goBack()} />
                 </Animated.View>
               </Box>
-              <Stack size={10} />
+              <Stack size={12} />
             </Box>
           </Animated.View>
           <ScrollView
             onScroll={(e) => { scrollY.setValue(e.nativeEvent.contentOffset.y); }}
             scrollEventThrottle={16}
             bounces={false}
-            style={styles.articleScroll}
           >
-            <Stack size={120} />
-            <Stack size={12} />
-            <View style={styles.tagsArea}>
+            <Stack size={insets.top + 72} />
+            <View style={[styles.tags, styles.padded]}>
               {article.tags.map((tag) => (
-                <View key={tag.name} style={styles.tag}>
-                  <Text style={styles.articleCategory}>{tag.name}</Text>
+                <View key={tag.name} style={styles.tagContainer}>
+                  <Text style={styles.tag}>{tag.name}</Text>
                   <Queue size={8} />
                   <Stack size={32} />
                 </View>
               ))}
             </View>
+            <Stack size={4} />
+            <Text style={[styles.articleTitle, styles.padded]}>{article.headline}</Text>
             <Stack size={12} />
-            <Text style={styles.articleTitle}>{article.headline}</Text>
-            <Stack size={12} />
-            <View style={styles.authorViewsArea}>
+            <View style={[styles.authorViewsArea, styles.padded]}>
               <View style={styles.authorArea}>
-                {/* <Text style={styles.author}>by {authorString}</Text> */}
                 {article.authors.map((author, idx) => (
                   <TouchableOpacity key={idx} navigation={props.navigation} onPress={() => { props.navigation.push('Author', { name: author.name }); }}>
+                    <Box dir='row' align='center'>
                     <Text style={styles.author}>
                       {author.name}
-                      {idx === article.authors.length - 1 ? '' : ', '}
                     </Text>
+                    <Queue size={4} />
+                    <Ionicons style={styles.authorAdd} name="ios-add" size={18} color="gray" />
+                    {idx < article.authors.length - 1 ? <Queue size={8}></Queue> : null}
+                    </Box>
                   </TouchableOpacity>
                 ))}
-                <Queue size={8} />
-                <Ionicons style={styles.authorAdd} name="ios-add" size={16} color="gray" />
               </View>
               <Text style={styles.views}>
                 {articleViews}
                 {' '}
-                view(s)
+                {articleViews === 1 ? 'view' : 'views'}
               </Text>
             </View>
             <Stack size={12} />
-            <Image
-              source={require('../assets/images/article2.jpg')}
-              style={styles.articleImage}
-            />
+            <FullWidthImage
+        source={{ uri: CMSImageUrl(article.dominantMedia.attachment_uuid, article.dominantMedia.preview_extension) }}
+      />
             <Stack size={12} />
             {/* render article HTML content if it exists */}
+            <View style={styles.padded}>
             {article.content ? (
               <HTML
-                tagsStyles={{ p: styles.content, a: styles.links }} // heads up, styles do not trigger autorefresh on expo
+                tagsStyles={{ p: styles.content, a: styles.links }}
                 html={article.content}
                 onLinkPress={(event, href) => {
                   Linking.openURL(href);
@@ -147,6 +147,10 @@ function ArticleScreen(props) {
                 imagesMaxWidth={Dimensions.get('window').width - (HORIZONTAL_PADDING * 2)}
               />
             ) : null}
+            </View>
+            <View>
+              <Stack size={144}></Stack>
+            </View>
           </ScrollView>
           <Animated.View style={{
             transform: [
@@ -187,24 +191,29 @@ export default connect(mapStateToProps,
 
 const styles = StyleSheet.create({
   screen: {
-    backgroundColor: 'white',
+    backgroundColor: Colors.paper,
     flex: 1,
   },
-  articleScroll: {
+  padded: {
     paddingHorizontal: HORIZONTAL_PADDING,
   },
   topTab: {
     zIndex: 1,
-    borderWidth: 1,
+    // alignItems: 'center',
+    borderColor: Colors.border,
+    borderStyle: 'solid',
+    borderBottomWidth: 1,
+    // borderWidth: 1,
     position: 'absolute',
     top: 0,
     width: '100%',
-    borderColor: '#e5e6e9',
-    backgroundColor: 'white',
-    shadowOffset: { height: 3 },
-    shadowRadius: 10,
-    shadowColor: 'gray',
-    shadowOpacity: 0.3,
+    backgroundColor: Colors.paper,
+    // borderColor: '#e5e6e9',
+    // backgroundColor: 'white',
+    // shadowOffset: { height: 3 },
+    // shadowRadius: 10,
+    // shadowColor: 'gray',
+    // shadowOpacity: 0.3,
   },
   intro: {
     alignItems: 'flex-start',
@@ -213,21 +222,22 @@ const styles = StyleSheet.create({
     ...Typography.h2,
     ...Typography.serifBold,
   },
-  tag: {
+  tagContainer: {
     flexDirection: 'row',
   },
-  tagsArea: {
+  tags: {
     flexDirection: 'row',
     flexWrap: 'wrap',
   },
-  articleCategory: {
+  tag: {
     alignSelf: 'flex-start',
     paddingVertical: 4,
     paddingHorizontal: 12,
     borderRadius: 8,
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: 'white',
+    fontSize: 12,
+    lineHeight: 0,
+    ...Typography.sansBold,
+    color: Colors.paper,
     backgroundColor: Colors.green,
     overflow: 'hidden', // needed to show the borderRadius with backgroundColor
     textTransform: 'uppercase',
@@ -235,39 +245,32 @@ const styles = StyleSheet.create({
   authorViewsArea: {
     flexDirection: 'row',
     alignItems: 'center',
-    // justifyContent: 'space-between',
-    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    flex: 1,
+    // flexWrap: 'wrap',
   },
   authorArea: {
     flexDirection: 'row',
     alignItems: 'center',
     flexWrap: 'wrap',
-    // flex: 3,
   },
   views: {
     ...Typography.sans,
-    position: 'absolute',
-    right: 0,
-    // flex: 1,
   },
+
   author: {
-    color: 'grey',
+    color: Colors.charcoal,
     ...Typography.p,
     ...Typography.sans,
-    // flexWrap: 'wrap',
   },
   authorAdd: {
-    marginTop: 2, // correction
-  },
-  articleImage: {
-    width: '100%',
-    maxHeight: 200,
-    resizeMode: 'cover',
+    marginTop: 3, // correction
   },
   content: {
-    textAlign: 'left',
     ...Typography.p,
     ...Typography.serifRegular,
+    color: Colors.pencil,
+    lineHeight: Typography.p.fontSize * 1.7,
     marginBottom: 18,
   },
   links: {
