@@ -1,27 +1,24 @@
 import React from 'react';
 import {
-  Image,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
 import FullWidthImage from 'react-native-fullwidth-image'
-import { Ionicons } from '@expo/vector-icons';
 import { Stack, Queue } from 'react-native-spacing-system';
 import HTML from 'react-native-render-html';
 import { connect } from 'react-redux';
-import { Colors, Typography, CMSImageUrl } from '../constants';
+import { Colors, Typography } from '../constants';
 import { readArticle } from '../store/actions/article-actions';
 
 function ArticleCard(props) {
   const { navigation } = props;
-  const authorString = props.article.authors.map((e) => e.name).join(', ');
 
   return (
     <TouchableOpacity
       onPress={() => {
-        // props.readArticle({ article: props.article });
+        props.readArticle({ article: props.article });
 
         navigation.push('Article', {
           article: props.article,
@@ -30,39 +27,36 @@ function ArticleCard(props) {
     >
       <View>
       <FullWidthImage
-        source={{ uri: CMSImageUrl(props.article.dominantMedia.attachment_uuid, props.article.dominantMedia.preview_extension) }}
+        source={{ uri: article.imageURI }}
       />
         <Stack size={12} />
         <View style={[styles.tags, styles.padded]}>
           {props.article.tags.map((tag) => (
-            <View key={tag.name} style={styles.tagContainer}>
-              <Text style={styles.tag}>{tag.name}</Text>
+            <View key={tag} style={styles.tagContainer}>
+              <Text style={styles.tag}>{tag}</Text>
               <Queue size={8} />
               <Stack size={32}></Stack>
             </View>
           ))}
         </View>
       <Stack size={4} />
-      <Text style={[styles.articleTitle, styles.padded]}>{props.article.headline}</Text>
+      <Text style={[styles.headline, styles.padded]}>{props.article.headline}</Text>
       <Stack size={12} />
       <View style={styles.padded}>
 
-      {props.article.abstract ?
-              <HTML
-              tagsStyles={{ p: styles.abstract, a: styles.links }}
-              html={props.article.abstract}
-              ignoredTags={['u']}
-            /> : null}
+        <HTML
+        tagsStyles={{ p: styles.abstract, a: styles.links }}
+        html={props.article.abstract}
+        ignoredTags={['u']}
+        ></HTML>
       </View>
       <Stack size={12} />
-      <View style={[styles.authorArea, styles.padded]}>
+      <View style={[styles.authors, styles.padded]}>
         <Text style={styles.author}>
           By
           {' '}
-          {authorString}
+          {props.article.authors.map((author) => author.name).join(', ')}
         </Text>
-        {/* <Queue size={8} /> */}
-        {/* <Ionicons style={styles.authorAdd} name="ios-add" size={16} color="gray" /> */}
       </View>
       </View>
     </TouchableOpacity>
@@ -95,11 +89,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
   },
-  articleTitle: {
+  headline: {
     ...Typography.h3,
     ...Typography.serifBold,
   },
-  authorArea: {
+  authors: {
     flexDirection: 'row',
     alignItems: 'center',
   },

@@ -1,8 +1,9 @@
 import { ActionTypes } from '../actions';
 
 const INITIAL_STATE = {
-  // current: {},
   feed: [],
+  discovered: [],
+  totalDiscovered: 0,
   page: 1,
   bookmarkedArticles: [],
 };
@@ -10,20 +11,20 @@ const INITIAL_STATE = {
 const articleReducer = (state = INITIAL_STATE, action) => {
   const prevState = JSON.parse(JSON.stringify(state));
   switch (action.type) {
+    case ActionTypes.SEARCH_ARTICLES.REQUEST:
+      return { ...prevState, discovered: null };
+    case ActionTypes.SEARCH_ARTICLES.SUCCESS:
+      return { ...prevState, discovered: action.payload.discovered, totalDiscovered: action.payload.total };
     case ActionTypes.REFRESH_FEED.REQUEST:
       return { ...prevState, feed: null };
     case ActionTypes.REFRESH_FEED.SUCCESS:
       return { ...prevState, feed: action.payload };
     case ActionTypes.ADD_FEED:
       return { ...prevState, feed: [...prevState.feed, ...action.payload] };
-    // case ActionTypes.READ_ARTICLE:
-    //   return { ...prevState, current: action.payload };
-    // case ActionTypes.LEAVE_ARTICLE:
-    //   return { ...prevState, current: {} };
     case ActionTypes.BOOKMARK_ARTICLE:
-      return { ...prevState, bookmarkedArticles: action.payload };
-    case ActionTypes.GET_USER:
-      return { ...prevState, bookmarkedArticles: action.payload.bookmarkedArticles };
+      return { ...prevState, bookmarks: action.payload };
+    case ActionTypes.GET_BOOKMARKS:
+      return { ...prevState, bookmarks: action.payload };
     default:
       return state;
   }

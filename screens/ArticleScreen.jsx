@@ -10,9 +10,10 @@ import { ScrollView } from 'react-native-gesture-handler';
 import HTML from 'react-native-render-html';
 import { Linking } from 'expo';
 import { connect } from 'react-redux';
-import { Typography, Colors, CMSImageUrl } from '../constants';
+import { Typography, Colors } from '../constants';
 import { Box, Stack, Queue } from '../components/layout';
 import { actions } from '../store';
+import { utils } from '../lib';
 
 const HORIZONTAL_PADDING = 36;
 
@@ -132,7 +133,7 @@ function ArticleScreen(props) {
             </View>
             <Stack size={12} />
             <FullWidthImage
-        source={{ uri: CMSImageUrl(article.dominantMedia.attachment_uuid, article.dominantMedia.preview_extension) }}
+        source={{ uri: utils.extractImageURI(article.dominantMedia.attachment_uuid, article.dominantMedia.preview_extension) }}
       />
             <Stack size={12} />
             {/* render article HTML content if it exists */}

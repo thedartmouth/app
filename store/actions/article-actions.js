@@ -1,5 +1,6 @@
 import axios from "axios";
 import { CMS_URL, ROOT_URL } from "../../constants";
+import { types } from '../../lib';
 
 export const ActionTypes = {
   REFRESH_FEED: {
@@ -7,26 +8,36 @@ export const ActionTypes = {
     SUCCESS: "REFRESH_FEED_SUCCESS",
     FAILURE: "REFRESH_FEED_FAILURE",
   },
+  SEARCH_ARTICLES: {
+    REQUEST: "SEARCH_ARTICLES_REQUEST",
+    SUCCESS: "SEARCH_ARTICLES_SUCCESS",
+    FAILURE: "SEARCH_ARTICLES_FAILURE",
+  },
   ADD_FEED: "ADD_FEED",
-  READ_ARTICLE: "READ_ARTICLE",
-  // LEAVE_ARTICLE: 'LEAVE_ARTICLE',
   SET_PAGE: "SET_PAGE",
   BOOKMARK_ARTICLE: "BOOKMARK_ARTICLE",
+  GET_BOOKMARKS: {
+    REQUEST: 'GET_BOOKMARKS_REQUEST',
+    SUCCESS: 'GET_BOOKMARKS_SUCCESS',
+    FAILURE: 'GET_BOOKMARKS_FAILURE',
+  },
   ERROR_SET: "ERROR_SET",
 };
 
+const CMS_QUERY_SETTINGS = (page) => `a=1&ty=article&per_page=10&page=${page || 1}`
+
 /**
- * Pulls the most recent set of articles from all sections on page 1 and saves to redux store.
+ * Pulls the most recent set of articles from all sections on page 1 and saves to store.
  */
 export const refreshFeed = (dispatch) => () =>
   new Promise((resolve, reject) => {
     dispatch({ type: ActionTypes.REFRESH_FEED.REQUEST });
     axios
-      .get(`${CMS_URL}/search.json?a=1&ty=article&per_page=20&page=1`)
+      .get(`${CMS_URL}/search.json?${CMS_QUERY_SETTINGS()}`)
       .then((response) => {
         dispatch({
           type: ActionTypes.REFRESH_FEED.SUCCESS,
-          payload: response.data.items,
+          payload: response.data.items.map(types.articleConverter),
         });
         resolve();
       })
@@ -37,19 +48,40 @@ export const refreshFeed = (dispatch) => () =>
   });
 
 /**
- * Pulls the most recent set of articles from all sections on a given page and adds to redux store.
+ * Pulls the most recent set of articles from all sections on a given page and adds to store.
  * @param {Integer} page The current page to fill the newsfeed with.
  */
 export const addFeed = (dispatch) => (page) =>
   new Promise((resolve) => {
     console.log(`adding page ${page} to feed`);
     axios
-      .get(`${CMS_URL}/search.json?a=1&ty=article&per_page=20&page=${page}`)
+      .get(`${CMS_URL}/search.json?${CMS_QUERY_SETTINGS(page)}`)
       .then((response) => {
-        dispatch({ type: ActionTypes.ADD_FEED, payload: response.data.items });
+        dispatch({ type: ActionTypes.ADD_FEED, payload: response.data.items.map(types.articleConverter) });
         resolve();
       });
   });
+
+export const searchArticles = (dispatch) => (query, page) => {
+  console.info('began search');
+  dispatch({type: ActionTypes.SEARCH_ARTICLES.REQUEST});
+  new Promise((resolve, reject) => {
+    axios
+    .get(`${CMS_URL}/search.json?s=${query}&${CMS_QUERY_SETTINGS(page)}`)
+    .then((response) => {
+      dispatch({type: ActionTypes.SEARCH_ARTICLES.SUCCESS, payload: {
+        discovered: response.data.items.map(types.articleConverter),
+        total: response.data.total
+      }});
+      resolve();
+    })
+    .catch(error => {
+      console.error(error);
+      dispatch({type: ActionTypes.SEARCH_ARTICLES.FAILURE});
+      reject(error);
+    });
+  })
+}
 
 /**
  * Sends to backend the current article and receives an object back containing data like views.
@@ -62,12 +94,12 @@ export const readArticle = (article) => () => new Promise((resolve) => {
     });
   });
 
-// /**
-//  * Clears current article once user goes back to feed.
-//  */
-// export const leaveArticle = () => (dispatch) => {
-//   dispatch({ type: ActionTypes.LEAVE_ARTICLE });
-// };
+/**
+ * Clears current article once user goes back to feed.
+ */
+export const leaveArticle = () => (dispatch) => {
+  dispatch({ type: ActionTypes.LEAVE_ARTICLE });
+};
 
 /**
  * Bookmarks an article

@@ -43,15 +43,15 @@ const FeedScreen = (props) => {
         refreshControl={<RefreshControl refreshing={props.articles.feed == null} onRefresh={onRefresh} />}
         onEndReached={() => setPage(page + 1)} // set page to adding
         ItemSeparatorComponent={Divider}
-        ListFooterComponent={props.articles.feed == null ? null : (
+        ListFooterComponent={props.articles.feed == null ?(
           <View>
             <Divider />
-            <Stack size={20} />
+            <Stack size={36} />
             <ActivityIndicator animating size="large" />
           </View>
-        )}
+        ): null}
         renderItem={({ item }) => (
-          <View key={item.ceo_id}>
+          <View key={item.slug}>
             <ArticleCard article={item} navigation={props.navigation} />
             <Stack size={36} />
           </View>

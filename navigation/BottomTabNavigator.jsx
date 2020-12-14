@@ -3,12 +3,11 @@ import * as React from 'react';
 import { StyleSheet } from 'react-native';
 import FeedScreen from '../screens/FeedScreen';
 import { ProfileStackScreen } from '../screens/ProfileScreen';
-import PollsScreen from '../screens/PollsScreen';
-import AuthorScreen from '../screens/AuthorScreen';
 import TabBarIcon from '../components/TabBarIcon';
+import DiscoverScreen from '../screens/DiscoverScreen';
 
 const BottomTab = createBottomTabNavigator();
-const INITIAL_ROUTE_NAME = 'Feed';
+const INITIAL_ROUTE_NAME = 'Discover';
 
 export default function BottomTabNavigator({ navigation, route }) {
   // Set the header title on the parent stack navigator depending on the
@@ -32,10 +31,10 @@ export default function BottomTabNavigator({ navigation, route }) {
         }}
       />
       <BottomTab.Screen
-        name="Polls"
-        component={PollsScreen}
+        name="Discover"
+        component={DiscoverScreen}
         options={{
-          title: 'Polls',
+          title: 'Discover',
           tabBarIcon: ({ focused }) => (
             <TabBarIcon focused={focused} name="ios-podium" />
           ),
