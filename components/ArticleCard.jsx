@@ -27,7 +27,7 @@ function ArticleCard(props) {
     >
       <View>
       <FullWidthImage
-        source={{ uri: article.imageURI }}
+        source={{ uri: props.article.imageURI }}
       />
         <Stack size={12} />
         <View style={[styles.tags, styles.padded]}>

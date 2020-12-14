@@ -5,13 +5,25 @@ import { SearchBar } from 'react-native-elements';
 import { Divider } from 'react-native-elements';
 import { ScrollView, TouchableOpacity} from 'react-native-gesture-handler';
 import { SafeAreaConsumer } from 'react-native-safe-area-context';
-import {Stack, Queue} from 'react-native-spacing-system';
+import { Box, Stack, Queue } from '../components/layout';
 import { Typography, Colors } from '../constants';
 import dateFormat from 'dateformat';
 import { debounce } from 'debounce';
 import axios from 'axios';
 import { actions } from '../store';
 import PreviewCard from '../components/PreviewCard';
+
+const DiscoverTile = (props) => {
+  return (
+    <TouchableOpacity
+      onPress={props.onPress}
+      style={[styles.tile, {backgroundColor: props.colors[0]}]}>
+      <Text style={[styles.tileTitle, {color: props.colors[1]}]}>
+        {props.title}
+      </Text>
+    </TouchableOpacity>
+  )
+}
 
 class DiscoverScreen extends React.Component {
   constructor(props) {
@@ -49,26 +61,33 @@ class DiscoverScreen extends React.Component {
           <View style={[styles.pollsScreen, {paddingTop: insets.top}]}>
             <ScrollView style={styles.scroll}>
             <Stack size={24}></Stack>
-              <View style={styles.titleArea}>
-                <Text style={styles.title}>
-                  Discover
-                </Text>
-                <Stack size={12}></Stack>
-                <SearchBar
-                  platform='default'
-                  lightTheme={true}
-                  containerStyle={styles.searchContainer}
-                  inputContainerStyle={styles.searchInputContainer}
-                  placeholder="Vox quaerere..."
-                  onChangeText={(query) => {
+            <View style={styles.titleArea}>
+              <Text style={styles.title}>
+                Discover
+              </Text>
+              <Stack size={12}></Stack>
+              <SearchBar
+                platform='default'
+                lightTheme={true}
+                containerStyle={styles.searchContainer}
+                inputContainerStyle={styles.searchInputContainer}
+                placeholder="Vox quaerere..."
+                onChangeText={(query) => {
+                  if (query) {
                     this.setState({query})
                     this.debouncedSearch(query)
-                  }}
-                  value={this.state.query}
-                />
-                {this.state.mode === 'searching' ?
-                <View>
-
+                  }
+                }}
+                onClear={() => {
+                  this.setState({page: 1, query: null, mode: 'discovering'})
+                }}
+                onCancel={() => {
+                  this.setState({page: 1, query: null, mode: 'discovering'})
+                }}
+                value={this.state.query}
+              />
+              {this.state.mode === 'searching' ?
+              <View>
                 <Stack size={8}></Stack>
                 <Text style={styles.hint}>
                   {this.props.articles.totalDiscovered > 0 ?
@@ -81,32 +100,68 @@ class DiscoverScreen extends React.Component {
                   } results
                 </Text>
                 <Stack size={8}></Stack>
-                </View>
-                :
-                <Stack size={12}></Stack>
-                }
-                <FlatList
-                  style={styles.articleBox}
-                  data={this.props.articles.discovered}
-                  refreshControl={<RefreshControl refreshing={this.props.articles.discovered == null} onRefresh={this.refresh} />}
-                  onEndReached={() => this.setState(prevState => ({page: prevState.page += 1}))} // set page to adding
-                  ItemSeparatorComponent={Divider}
-                  ListFooterComponent={this.props.articles.discovered == null ? (
-                    <View>
-                      <Divider />
-                      <Stack size={36} />
-                      <ActivityIndicator animating size="large" />
-                    </View>
-                  ): null}
-                  renderItem={({ item }) => (
-                    <View key={item.slug}>
-                      <Stack size={18} />
-                      <PreviewCard article={item} navigation={this.props.navigation} />
-                      <Stack size={18} />
-                    </View>
-                  )}
-                />
               </View>
+              :
+              <Stack size={24}></Stack>
+              }
+              {this.state.mode === 'searching' ?
+              <FlatList
+                style={styles.articleBox}
+                data={this.props.articles.discovered}
+                refreshControl={<RefreshControl refreshing={this.props.articles.discovered == null} onRefresh={this.refresh} />}
+                onEndReached={() => this.setState(prevState => ({page: prevState.page += 1}))} // set page to adding
+                ItemSeparatorComponent={Divider}
+                ListFooterComponent={this.props.articles.discovered == null ? (
+                  <View>
+                    <Divider />
+                    <Stack size={36} />
+                    <ActivityIndicator animating size="large" />
+                  </View>
+                ): null}
+                renderItem={({ item }) => (
+                  <View key={item.slug}>
+                    <Stack size={18} />
+                    <PreviewCard article={item} navigation={this.props.navigation} />
+                    <Stack size={18} />
+                  </View>
+                )}
+              />
+              :
+              <View>
+                {/* <Box dir='col'>
+                  <Box dir='row' style={{height: 200}}>
+                    <Text style={[styles.tile, {flex: 3}]}>
+                      Trendin
+                    </Text>
+                    <Box dir='col' style={{flex: 2}}>
+                      <Text style={[styles.tile, {flex: 3}]}>
+                        Opinion
+                      </Text>
+                      <Box dir='row' style={{flex: 1}}>
+                        <Text style={[styles.tile, {flex: 3}]}>
+                          COVID
+                        </Text>
+                        <Text style={[styles.tile, {flex: 2}]}>
+                          Art
+                        </Text>
+                      </Box>
+                    </Box>
+                  </Box>
+                </Box> */}
+                <DiscoverTile title='COVID-19' colors={[Colors.theme[4], Colors.paper]} onPress={() => alert('hi')} />
+                <Stack size={24}></Stack>
+                <DiscoverTile title='Mirror' colors={[Colors.theme[5], Colors.paper]} onPress={() => alert('hi')} />
+                <Stack size={24}></Stack>
+                <DiscoverTile title='Art' colors={[Colors.theme[1], Colors.paper]} onPress={() => alert('hi')} />
+                <Stack size={24}></Stack>
+                <DiscoverTile title='Featured' colors={[Colors.theme[3], Colors.paper]} onPress={() => alert('hi')} />
+                <Stack size={24}></Stack>
+                <DiscoverTile title='Opinion' colors={[Colors.theme[0], Colors.paper]} onPress={() => alert('hi')} />
+                <Stack size={24}></Stack>
+                <DiscoverTile title='Sports' colors={[Colors.theme[2], Colors.paper]} onPress={() => alert('hi')} />
+              </View>
+              }
+            </View>
               <Stack size={24}></Stack>
             </ScrollView>
           </View>
@@ -148,6 +203,34 @@ const styles = StyleSheet.create({
   hint: {
     ...Typography.sansLight,
     fontSize: 10,
+  },
+  // tile: {
+  //   width: '100%',
+  //   height: '100%',
+  //   textAlign: 'center',
+  //   justifyContent: 'center',
+  //   alignItems: 'center',
+  //   backgroundColor: Colors.shade,
+  //   color: Colors.charcoal,
+  //   ...Typography.sansBold,
+  //   ...Typography.h3,
+  //   margin: 4,
+  //   borderRadius: 8,
+  // }
+  tile: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: Colors.paper,
+    height: 100,
+    borderRadius: 12,
+    shadowOffset: { height: 1 },
+    shadowRadius: 4,
+    shadowColor: 'gray',
+    shadowOpacity: 0.3,
+  },
+  tileTitle: {
+    ...Typography.serifRegular,
+    ...Typography.h3,
   }
 });
 

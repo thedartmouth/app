@@ -19,12 +19,12 @@ const HORIZONTAL_PADDING = 36;
 
 function ArticleScreen(props) {
   const { article } = props.route.params;
+  console.log(article)
   const {
     readArticle, navigation, bookmarkArticle, unbookmarkArticle, bookmarkedArticles,
   } = props;
   const [articleID, setArticleID] = React.useState('');
   const [articleViews, setArticleViews] = React.useState(0);
-  const authorString = article.authors.map((e) => e.name).join(', ');
 
   // on initial render, read the article, set the ID and views
   React.useEffect(() => {
@@ -100,8 +100,8 @@ function ArticleScreen(props) {
             <Stack size={insets.top + 72} />
             <View style={[styles.tags, styles.padded]}>
               {article.tags.map((tag) => (
-                <View key={tag.name} style={styles.tagContainer}>
-                  <Text style={styles.tag}>{tag.name}</Text>
+                <View key={tag} style={styles.tagContainer}>
+                  <Text style={styles.tag}>{tag}</Text>
                   <Queue size={8} />
                   <Stack size={32} />
                 </View>
@@ -123,7 +123,9 @@ function ArticleScreen(props) {
                     {idx < article.authors.length - 1 ? <Queue size={8}></Queue> : null}
                     </Box>
                   </TouchableOpacity>
-                ))}
+                )) || <Text style={styles.author}>
+                No authorship
+              </Text>}
               </View>
               <Text style={styles.views}>
                 {articleViews}
@@ -133,15 +135,14 @@ function ArticleScreen(props) {
             </View>
             <Stack size={12} />
             <FullWidthImage
-        source={{ uri: utils.extractImageURI(article.dominantMedia.attachment_uuid, article.dominantMedia.preview_extension) }}
-      />
+              source={{ uri: article.imageURI }}
+            />
             <Stack size={12} />
-            {/* render article HTML content if it exists */}
             <View style={styles.padded}>
-            {article.content ? (
+            {article.body ? (
               <HTML
                 tagsStyles={{ p: styles.content, a: styles.links }}
-                html={article.content}
+                html={article.body}
                 onLinkPress={(event, href) => {
                   Linking.openURL(href);
                 }}
