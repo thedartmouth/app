@@ -5,8 +5,6 @@ import Typography from './Typography';
 const CMS_URL = 'https://www.thedartmouth.com';
 const ROOT_URL = 'http://localhost:9090';
 
-export const CMSImageUrl = (imageUUID, extension) => `https://snworksceo.imgix.net/drt/${imageUUID}.sized-1000x1000.${extension}`;
-
 const wait = (timeout) => new Promise((resolve) => {
   setTimeout(resolve, timeout);
 });
