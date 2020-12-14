@@ -4,6 +4,7 @@ const green = '#00693E';
 export default {
   green,
   paper: '#fbfbf8',
+  shade: '#ECECEC',
   pencil: '#565656',
   charcoal: 'gray',
   border: '#E6E6E6',

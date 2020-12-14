@@ -26,6 +26,14 @@ export default StyleSheet.create({
     fontWeight: 'bold',
     // fontFamily: 'poppins-bold',
   },
+  sansRegular: {
+    fontWeight: 'normal',
+    // fontFamily: 'poppins-bold',
+  },
+  sansLight: {
+    fontWeight: '300',
+    // fontFamily: 'poppins-bold',
+  },
   mono: {
     fontFamily: 'space-mono'
   }
