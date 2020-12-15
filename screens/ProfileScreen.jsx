@@ -15,84 +15,100 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 const ProfileStack = createStackNavigator();
 
-function ProfileScreen(props) {
-  return (
-    <SafeAreaConsumer>
-      {(insets) => (
-        <View style={[styles.profileScreen, { paddingTop: insets.top }]}>
-          <View style={styles.intro}>
-            <Text style={styles.title}>Hello, {props.user.data?.name?.first || 'there'}.</Text>
-            <Stack size={24} />
-            <View style={styles.reward}>
-              <View>
-                <SimpleLineIcons name="cup" size={24} color="black" />
-                <Text style={styles.coffeeCount}>16</Text>
-              </View>
-              <Queue size={16} />
-              <Text style={styles.rewardText}>coffee cups earned!</Text>
-            </View>
-          </View>
-          <Stack size={24} />
-          <Divider style={styles.divider} />
-          <Stack size={24} />
-          <View style={styles.contentBoxes}>
-            <View style={styles.contentBox}>
-              <Text style={styles.heading}>Your stuff</Text>
-              <Stack size={12} />
-              <Divider style={styles.thinDivider} />
-              <Stack size={4} />
-              <TouchableOpacity style={styles.rowItem} onPress={ () => props.navigation.push('Results', {bookmarks: true})}>
-                <Text style={Typography.p}>Bookmarks</Text>
-                <Ionicons name="ios-arrow-forward" size={24} style={styles.rowItemIcon} />
-              </TouchableOpacity>
-              <Stack size={4} />
-              <Divider style={styles.thinDivider} />
-              <Stack size={4} />
-              <TouchableOpacity style={styles.rowItem}>
-                <Text style={Typography.p}>Followed authors</Text>
-                <Ionicons name="ios-arrow-forward" size={24} style={styles.rowItemIcon} />
-              </TouchableOpacity>
-              <Stack size={4} />
-              <Divider style={styles.thinDivider} />
-              <Stack size={4} />
-              <TouchableOpacity style={styles.rowItem}>
-                <Text style={Typography.p}>Completed polls</Text>
-                <Ionicons name="ios-arrow-forward" size={24} style={styles.rowItemIcon} />
-              </TouchableOpacity>
-              <Stack size={4} />
-              <Divider style={styles.thinDivider} />
-            </View>
-            <Stack size={24} />
-            <View style={styles.contentBox}>
-              <Text style={styles.heading}>Notification settings</Text>
-              <Stack size={12} />
-              <View style={styles.rowItem}>
-                <Text style={Typography.p}>Trending articles</Text>
-                <Switch />
-              </View>
-              <Stack size={8} />
-              <View style={styles.rowItem}>
-                <Text style={Typography.p}>Followed tags</Text>
-                <Switch />
-              </View>
-              <Stack size={8} />
-              <View style={styles.rowItem}>
-                <Text style={Typography.p}>Followed writers</Text>
-                <Switch />
-              </View>
-            </View>
-          </View>
-        </View>
-      )}
-    </SafeAreaConsumer>
+class ProfileScreen extends React.Component {
+  constructor(props) {
+    super(props)
+  }
 
-  );
+  componentDidMount() {
+    if (!this.props.user.lastAuth) {
+      this.props.showAuthModal()
+    }
+  }
+
+  render() {
+    return (
+      <SafeAreaConsumer>
+        {(insets) => (
+          <View style={[styles.profileScreen, { paddingTop: insets.top }]}>
+            <View style={styles.intro}>
+              <Text style={styles.title}>Hello, {this.props.user.data?.name?.first || 'there'}.</Text>
+              <Stack size={24} />
+              <View style={styles.reward}>
+                <View>
+                  <SimpleLineIcons name="cup" size={24} color="black" />
+                  <Text style={styles.coffeeCount}>16</Text>
+                </View>
+                <Queue size={16} />
+                <Text style={styles.rewardText}>coffee cups earned!</Text>
+              </View>
+            </View>
+            <Stack size={24} />
+            <Divider style={styles.divider} />
+            <Stack size={24} />
+            <View style={styles.contentBoxes}>
+              <View style={styles.contentBox}>
+                <Text style={styles.heading}>Your stuff</Text>
+                <Stack size={12} />
+                <Divider style={styles.thinDivider} />
+                <Stack size={4} />
+                <TouchableOpacity style={styles.rowItem} onPress={ () => this.props.navigation.push('Results', {bookmarks: true})}>
+                  <Text style={Typography.p}>Bookmarks</Text>
+                  <Ionicons name="ios-arrow-forward" size={24} style={styles.rowItemIcon} />
+                </TouchableOpacity>
+                <Stack size={4} />
+                <Divider style={styles.thinDivider} />
+                <Stack size={4} />
+                <TouchableOpacity style={styles.rowItem}>
+                  <Text style={Typography.p}>Followed authors</Text>
+                  <Ionicons name="ios-arrow-forward" size={24} style={styles.rowItemIcon} />
+                </TouchableOpacity>
+                <Stack size={4} />
+                <Divider style={styles.thinDivider} />
+                <Stack size={4} />
+                <TouchableOpacity style={styles.rowItem}>
+                  <Text style={Typography.p}>Completed polls</Text>
+                  <Ionicons name="ios-arrow-forward" size={24} style={styles.rowItemIcon} />
+                </TouchableOpacity>
+                <Stack size={4} />
+                <Divider style={styles.thinDivider} />
+              </View>
+              <Stack size={24} />
+              <View style={styles.contentBox}>
+                <Text style={styles.heading}>Notification settings</Text>
+                <Stack size={12} />
+                <View style={styles.rowItem}>
+                  <Text style={Typography.p}>Trending articles</Text>
+                  <Switch />
+                </View>
+                <Stack size={8} />
+                <View style={styles.rowItem}>
+                  <Text style={Typography.p}>Followed tags</Text>
+                  <Switch />
+                </View>
+                <Stack size={8} />
+                <View style={styles.rowItem}>
+                  <Text style={Typography.p}>Followed writers</Text>
+                  <Switch />
+                </View>
+              </View>
+            </View>
+          </View>
+        )}
+      </SafeAreaConsumer>
+    );
+  }
 }
 
-export default connect(store => ({
-  user: store.user
-}),
-(dispatch) => ({auth: actions.auth(dispatch), getUser: actions.getUser(dispatch)}))(ProfileScreen);
+export default connect(
+  store => ({
+    user: store.user
+  }),
+  (dispatch) => ({
+    auth: actions.auth(dispatch),
+    getUser: actions.getUser(dispatch),
+    showAuthModal: actions.showAuthModal(dispatch),
+  }))(ProfileScreen);
 
 // export function ProfileStackScreen() {
 //   return (

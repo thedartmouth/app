@@ -111,19 +111,12 @@ export const searchArticles = (dispatch) => (query, page) => {
  * Sends to backend the current article and receives an object back containing data like views.
  * @param {String} article The article to send backend (current article).
  */
-export const readArticle = (article) => () => new Promise((resolve) => {
+export const readArticle = (dispatch) => (article) => new Promise((resolve) => {
   axios.post(`${ROOT_URL}/articles/read`, article)
     .then((response) => {
       resolve(response.data);
     });
   });
-
-/**
- * Clears current article once user goes back to feed.
- */
-export const leaveArticle = () => (dispatch) => {
-  dispatch({ type: ActionTypes.LEAVE_ARTICLE });
-};
 
 /**
  * Bookmarks an article

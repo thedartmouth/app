@@ -76,6 +76,7 @@ class DiscoverScreen extends React.Component {
               <SearchBar
                 platform='default'
                 lightTheme={true}
+                returnKeyType='search'
                 containerStyle={styles.searchContainer}
                 inputContainerStyle={styles.searchInputContainer}
                 placeholder="Vox quaerere..."
