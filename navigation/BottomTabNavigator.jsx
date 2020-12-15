@@ -2,9 +2,9 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import * as React from 'react';
 import { StyleSheet } from 'react-native';
 import FeedScreen from '../screens/FeedScreen';
-import { ProfileStackScreen } from '../screens/ProfileScreen';
-import TabBarIcon from '../components/TabBarIcon';
+import ProfileScreen from '../screens/ProfileScreen';
 import DiscoverScreen from '../screens/DiscoverScreen';
+import TabBarIcon from '../components/TabBarIcon';
 
 const BottomTab = createBottomTabNavigator();
 const INITIAL_ROUTE_NAME = 'Discover';
@@ -42,7 +42,7 @@ export default function BottomTabNavigator({ navigation, route }) {
       />
       <BottomTab.Screen
         name="Me"
-        component={ProfileStackScreen}
+        component={ProfileScreen}
         options={{
           title: 'My Profile',
           tabBarIcon: ({ focused }) => (
@@ -65,7 +65,12 @@ function getHeaderTitle(route) {
     case 'Me':
       return 'My Profile';
     case 'Article':
-      return 'Test Author Screen';
+      return 'Article';
+    case 'Results':
+      if (route.state?.routes[route.state.index]?.tag) {
+        return route.state?.routes[route.state.index]?.tag;
+      }
+      else return 'Results';
   }
 }
 

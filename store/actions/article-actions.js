@@ -8,6 +8,11 @@ export const ActionTypes = {
     SUCCESS: "REFRESH_FEED_SUCCESS",
     FAILURE: "REFRESH_FEED_FAILURE",
   },
+  DISCOVER_ARTICLES_BY_TAG: {
+    REQUEST: "DISCOVER_ARTICLES_BY_TAG_REQUEST",
+    SUCCESS: "DISCOVER_ARTICLES_BY_TAG_SUCCESS",
+    FAILURE: "DISCOVER_ARTICLES_BY_TAG_FAILURE",
+  },
   SEARCH_ARTICLES: {
     REQUEST: "SEARCH_ARTICLES_REQUEST",
     SUCCESS: "SEARCH_ARTICLES_SUCCESS",
@@ -62,15 +67,34 @@ export const addFeed = (dispatch) => (page) =>
       });
   });
 
+export const discoverArticlesByTag = (dispatch) => (tag, page) => {
+  dispatch({type: ActionTypes.DISCOVER_ARTICLES_BY_TAG.REQUEST, reset: page === 1});
+  new Promise((resolve, reject) => {
+    axios
+    .get(`${CMS_URL}/section/${tag}.json?${CMS_QUERY_SETTINGS(page)}`)
+    .then((response) => {
+      dispatch({type: ActionTypes.DISCOVER_ARTICLES_BY_TAG.SUCCESS, payload: {
+        results: response.data.articles.map(types.articleConverter),
+        total: response.data.pagination.total
+      }});
+      resolve();
+    })
+    .catch(error => {
+      console.error(error);
+      dispatch({type: ActionTypes.DISCOVER_ARTICLES_BY_TAG.FAILURE});
+      reject(error);
+    });
+  })
+}
+
 export const searchArticles = (dispatch) => (query, page) => {
-  console.info('began search');
-  dispatch({type: ActionTypes.SEARCH_ARTICLES.REQUEST});
+  dispatch({type: ActionTypes.SEARCH_ARTICLES.REQUEST, reset: page === 1});
   new Promise((resolve, reject) => {
     axios
     .get(`${CMS_URL}/search.json?s=${query}&${CMS_QUERY_SETTINGS(page)}`)
     .then((response) => {
       dispatch({type: ActionTypes.SEARCH_ARTICLES.SUCCESS, payload: {
-        discovered: response.data.items.map(types.articleConverter),
+        results: response.data.items.map(types.articleConverter),
         total: response.data.total
       }});
       resolve();

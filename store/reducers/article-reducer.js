@@ -2,19 +2,22 @@ import { ActionTypes } from '../actions';
 
 const INITIAL_STATE = {
   feed: [],
-  discovered: [],
-  totalDiscovered: 0,
-  page: 1,
-  bookmarkedArticles: [],
+  results: [],
+  totalResults: 0,
+  loadingResults: false,
 };
 
 const articleReducer = (state = INITIAL_STATE, action) => {
   const prevState = JSON.parse(JSON.stringify(state));
   switch (action.type) {
+    case ActionTypes.DISCOVER_ARTICLES_BY_TAG.REQUEST:
+      return { ...prevState, loadingResults: true, results: action.reset ? [] : prevState.results, totalResults: action.reset ? 0 : prevState.totalResults };
+    case ActionTypes.DISCOVER_ARTICLES_BY_TAG.SUCCESS:
+      return { ...prevState, loadingResults: false, results: [...prevState.results, ...action.payload.results], totalResults: prevState.totalResults + action.payload.total };
     case ActionTypes.SEARCH_ARTICLES.REQUEST:
-      return { ...prevState, discovered: null };
+      return { ...prevState, loadingResults: true, results: action.reset ? [] : prevState.results, totalResults: action.reset ? 0 : prevState.totalResults };
     case ActionTypes.SEARCH_ARTICLES.SUCCESS:
-      return { ...prevState, discovered: action.payload.discovered, totalDiscovered: action.payload.total };
+      return { ...prevState, loadingResults: false, results: [...prevState.results, ...action.payload.results], totalResults: prevState.totalResults + action.payload.total };
     case ActionTypes.REFRESH_FEED.REQUEST:
       return { ...prevState, feed: null };
     case ActionTypes.REFRESH_FEED.SUCCESS:

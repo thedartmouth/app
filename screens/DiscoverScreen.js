@@ -7,16 +7,15 @@ import { ScrollView, TouchableOpacity} from 'react-native-gesture-handler';
 import { SafeAreaConsumer } from 'react-native-safe-area-context';
 import { Box, Stack, Queue } from '../components/layout';
 import { Typography, Colors } from '../constants';
-import dateFormat from 'dateformat';
 import { debounce } from 'debounce';
-import axios from 'axios';
 import { actions } from '../store';
+import { utils } from '../lib';
 import PreviewCard from '../components/PreviewCard';
 
 const DiscoverTile = (props) => {
   return (
     <TouchableOpacity
-      onPress={props.onPress}
+      onPress={() => props.onPress(props.title)}
       style={[styles.tile, {backgroundColor: props.colors[0]}]}>
       <Text style={[styles.tileTitle, {color: props.colors[1]}]}>
         {props.title}
@@ -33,6 +32,14 @@ class DiscoverScreen extends React.Component {
       query: null,
       mode: 'discovering'
     }
+  }
+
+  navigateToTag = (tag) => {
+    this.props.discoverArticlesByTag(utils.convertTag(tag), 1);
+    this.props.navigation.push('Results', {
+      tag,
+      getMore: (currentPage) => this.props.discoverArticlesByTag(utils.convertTag(tag), currentPage)
+    });
   }
 
   search = (query) => {
@@ -90,10 +97,10 @@ class DiscoverScreen extends React.Component {
               <View>
                 <Stack size={8}></Stack>
                 <Text style={styles.hint}>
-                  {this.props.articles.totalDiscovered > 0 ?
+                  {this.props.articles.totalResults > 0 ?
                   `Here are ${
-                    this.props.articles.totalDiscovered === 1000 ?
-                    'over 1,000' : `${this.props.articles.totalDiscovered}`
+                    this.props.articles.totalResults === 1000 ?
+                    'over 1,000' : `${this.props.articles.totalResults}`
                   }`
                   :
                   'We found no'
@@ -106,12 +113,15 @@ class DiscoverScreen extends React.Component {
               }
               {this.state.mode === 'searching' ?
               <FlatList
-                style={styles.articleBox}
-                data={this.props.articles.discovered}
-                refreshControl={<RefreshControl refreshing={this.props.articles.discovered == null} onRefresh={this.refresh} />}
-                onEndReached={() => this.setState(prevState => ({page: prevState.page += 1}))} // set page to adding
+                data={this.props.articles.results}
+                refreshControl={<RefreshControl refreshing={this.props.articles.loadingResults} onRefresh={this.refresh} />}
+                onEndReached={() => {
+                  this.setState(prevState => ({page: prevState.page += 1}), () => {
+                    this.props.searchArticles(this.state.query, this.state.page);
+                  })
+                }} // set page to adding
                 ItemSeparatorComponent={Divider}
-                ListFooterComponent={this.props.articles.discovered == null ? (
+                ListFooterComponent={this.props.articles.loadingResults ? (
                   <View>
                     <Divider />
                     <Stack size={36} />
@@ -148,17 +158,19 @@ class DiscoverScreen extends React.Component {
                     </Box>
                   </Box>
                 </Box> */}
-                <DiscoverTile title='COVID-19' colors={[Colors.theme[4], Colors.paper]} onPress={() => alert('hi')} />
+                <DiscoverTile title='COVID-19' colors={[Colors.theme[0], Colors.paper]} onPress={this.navigateToTag}/>
                 <Stack size={24}></Stack>
-                <DiscoverTile title='Mirror' colors={[Colors.theme[5], Colors.paper]} onPress={() => alert('hi')} />
+                <DiscoverTile title='Mirror' colors={[Colors.theme[1], Colors.paper]} onPress={this.navigateToTag}/>
                 <Stack size={24}></Stack>
-                <DiscoverTile title='Art' colors={[Colors.theme[1], Colors.paper]} onPress={() => alert('hi')} />
+                <DiscoverTile title='Arts' colors={[Colors.theme[2], Colors.paper]} onPress={this.navigateToTag}/>
                 <Stack size={24}></Stack>
-                <DiscoverTile title='Featured' colors={[Colors.theme[3], Colors.paper]} onPress={() => alert('hi')} />
+                <DiscoverTile title='Featured' colors={[Colors.theme[3], Colors.paper]} onPress={this.navigateToTag}/>
                 <Stack size={24}></Stack>
-                <DiscoverTile title='Opinion' colors={[Colors.theme[0], Colors.paper]} onPress={() => alert('hi')} />
+                <DiscoverTile title='Opinion' colors={[Colors.theme[4], Colors.paper]} onPress={this.navigateToTag}/>
                 <Stack size={24}></Stack>
-                <DiscoverTile title='Sports' colors={[Colors.theme[2], Colors.paper]} onPress={() => alert('hi')} />
+                <DiscoverTile title='Sports' colors={[Colors.theme[5], Colors.paper]} onPress={this.navigateToTag}/>
+                <Stack size={24}></Stack>
+                <DiscoverTile title='Cartoon' colors={[Colors.theme[6], Colors.paper]} onPress={this.navigateToTag}/>
               </View>
               }
             </View>
@@ -239,6 +251,7 @@ export default connect(
     articles: store.articles
   }),
   (dispatch) => ({
-    searchArticles: actions.searchArticles(dispatch)
+    searchArticles: actions.searchArticles(dispatch),
+    discoverArticlesByTag: actions.discoverArticlesByTag(dispatch)
   })
 )(DiscoverScreen);

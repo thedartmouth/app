@@ -16,6 +16,7 @@ import { reducers, actions } from './store';
 import ArticleScreen from './screens/ArticleScreen';
 import LoadingScreen from './screens/LoadingScreen';
 import AuthorScreen from './screens/AuthorScreen';
+import ResultsScreen from './screens/ResultsScreen';
 
 const Stack = createStackNavigator();
 
@@ -78,6 +79,7 @@ export default function App(props) {
               <NavigationContainer ref={containerRef} initialState={initialNavigationState}>
                 <Stack.Navigator screenOptions={{ headerShown: false }}>
                   <Stack.Screen name="Root" component={BottomTabNavigator} />
+                  <Stack.Screen name="Results" component={ResultsScreen} />
                   <Stack.Screen name="Article" component={ArticleScreen} />
                   <Stack.Screen name="Author" component={AuthorScreen} />
                 </Stack.Navigator>

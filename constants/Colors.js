@@ -9,12 +9,13 @@ export default {
   charcoal: 'gray',
   border: '#E6E6E6',
   theme: [
-    '#57989F',
-    '#8AC5D0',
-    '#497277',
-    '#80AED9',
-    '#899F81',
-    '#C9CBA3'
+    '#72A162',
+    '#C7CB7A',
+    '#60BED0',
+    '#5599D9',
+    '#38959F',
+    '#316F77',
+    '#6F639F'
   ],
   rainbow: {
     red: '#5A2328',

@@ -9,7 +9,7 @@ import { Ionicons, SimpleLineIcons } from '@expo/vector-icons';
 import { SafeAreaConsumer } from 'react-native-safe-area-context';
 import { Stack, Queue } from 'react-native-spacing-system';
 import { Typography, Colors } from '../constants';
-import BookmarkScreen from './BookmarkScreen';
+import ResultsScreen from './ResultsScreen';
 import ArticleScreen from './ArticleScreen';
 import { createStackNavigator } from '@react-navigation/stack';
 
@@ -41,7 +41,7 @@ function ProfileScreen(props) {
               <Stack size={12} />
               <Divider style={styles.thinDivider} />
               <Stack size={4} />
-              <TouchableOpacity style={styles.rowItem} onPress={ () => props.navigation.navigate('Bookmarks')}>
+              <TouchableOpacity style={styles.rowItem} onPress={ () => props.navigation.push('Results', {bookmarks: true})}>
                 <Text style={Typography.p}>Bookmarks</Text>
                 <Ionicons name="ios-arrow-forward" size={24} style={styles.rowItemIcon} />
               </TouchableOpacity>
@@ -89,20 +89,20 @@ function ProfileScreen(props) {
   );
 }
 
-const ConnectedProfileScreen = connect(store => ({
+export default connect(store => ({
   user: store.user
 }),
 (dispatch) => ({auth: actions.auth(dispatch), getUser: actions.getUser(dispatch)}))(ProfileScreen);
 
-export function ProfileStackScreen() {
-  return (
-    <ProfileStack.Navigator>
-      <ProfileStack.Screen name="Profile" component={ConnectedProfileScreen} />
-      <ProfileStack.Screen name="Bookmarks" component={BookmarkScreen} />
-      <ProfileStack.Screen name="Articles" component={ArticleScreen}/>
-    </ProfileStack.Navigator>
-  );
-}
+// export function ProfileStackScreen() {
+//   return (
+//     <ProfileStack.Navigator>
+//       <ProfileStack.Screen name="Profile" component={ConnectedProfileScreen} />
+//       <ProfileStack.Screen name="Bookmarks" component={ResultsScreen} />
+//       <ProfileStack.Screen name="Articles" component={ArticleScreen}/>
+//     </ProfileStack.Navigator>
+//   );
+// }
 
 const styles = StyleSheet.create({
   profileScreen: {
