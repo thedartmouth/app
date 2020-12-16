@@ -18,6 +18,8 @@ const userReducer = (state = INITIAL_STATE, action) => {
       return { ...state, loadingAuth: true }
     case ActionTypes.AUTH_USER.SUCCESS:
       return { ...state, loadingAuth: false, lastAuth: new Date() }
+    case ActionTypes.DEAUTH_USER:
+      return { ...state, lastAuth: null, data: null }
     case ActionTypes.SHOW_AUTH_MODAL:
       return { ...state, showAuthModal: true }
     case ActionTypes.HIDE_AUTH_MODAL:

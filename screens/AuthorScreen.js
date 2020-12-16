@@ -130,7 +130,7 @@ class AuthorScreen extends React.Component {
                 <Stack size={24}></Stack> 
                 {this.state.previews.map((preview, index) => {
                   return (
-                    <View key={preview.articleID}>
+                    <View key={preview.slug}>
                       <TouchableOpacity>
                         <PreviewCard preview={preview} navigation={this.props.navigation}></PreviewCard> 
                       </TouchableOpacity>

@@ -118,7 +118,7 @@ class DiscoverScreen extends React.Component {
                 refreshControl={<RefreshControl refreshing={this.props.articles.loadingResults} onRefresh={this.refresh} />}
                 onEndReached={() => {
                   this.setState(prevState => ({page: prevState.page += 1}), () => {
-                    this.props.searchArticles(this.state.query, this.state.page);
+                    // this.props.searchArticles(this.state.query, this.state.page);
                   })
                 }} // set page to adding
                 ItemSeparatorComponent={Divider}

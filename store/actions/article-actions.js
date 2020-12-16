@@ -1,6 +1,8 @@
 import axios from "axios";
+import * as SecureStore from 'expo-secure-store';
 import { CMS_URL, ROOT_URL } from "../../constants";
 import { types } from '../../lib';
+import { showAuthModal } from "./user-actions";
 
 export const ActionTypes = {
   REFRESH_FEED: {
@@ -20,13 +22,22 @@ export const ActionTypes = {
   },
   ADD_FEED: "ADD_FEED",
   SET_PAGE: "SET_PAGE",
-  BOOKMARK_ARTICLE: "BOOKMARK_ARTICLE",
+  BOOKMARK_ARTICLE: {
+    REQUEST: 'BOOKMARK_ARTICLE_REQUEST',
+    SUCCESS_ADD: 'BOOKMARK_ARTICLE_SUCCESS_ADD',
+    SUCCESS_DELETE: 'BOOKMARK_ARTICLE_SUCCESS_DELETE',
+    FAILURE: 'BOOKMARK_ARTICLE_FAILURE'
+  },
+  READ_ARTICLE: {
+    REQUEST: 'READ_ARTICLE_REQUEST',
+    SUCCESS: 'READ_ARTICLE_SUCCESS'
+  },
+  EXIT_ARTICLE: 'EXIT_ARTICLE',
   GET_BOOKMARKS: {
     REQUEST: 'GET_BOOKMARKS_REQUEST',
     SUCCESS: 'GET_BOOKMARKS_SUCCESS',
     FAILURE: 'GET_BOOKMARKS_FAILURE',
   },
-  ERROR_SET: "ERROR_SET",
 };
 
 const CMS_QUERY_SETTINGS = (page) => `a=1&ty=article&per_page=10&page=${page || 1}`
@@ -42,7 +53,7 @@ export const refreshFeed = (dispatch) => () =>
       .then((response) => {
         dispatch({
           type: ActionTypes.REFRESH_FEED.SUCCESS,
-          payload: response.data.items.map(types.articleConverter),
+          payload: response.data.items.filter(types.articleFilter).map(types.articleConverter),
         });
         resolve();
       })
@@ -58,11 +69,10 @@ export const refreshFeed = (dispatch) => () =>
  */
 export const addFeed = (dispatch) => (page) =>
   new Promise((resolve) => {
-    console.log(`adding page ${page} to feed`);
     axios
       .get(`${CMS_URL}/search.json?${CMS_QUERY_SETTINGS(page)}`)
       .then((response) => {
-        dispatch({ type: ActionTypes.ADD_FEED, payload: response.data.items.map(types.articleConverter) });
+        dispatch({ type: ActionTypes.ADD_FEED, payload: response.data.items.filter(types.articleFilter).map(types.articleConverter) });
         resolve();
       });
   });
@@ -74,7 +84,7 @@ export const discoverArticlesByTag = (dispatch) => (tag, page) => {
     .get(`${CMS_URL}/section/${tag}.json?${CMS_QUERY_SETTINGS(page)}`)
     .then((response) => {
       dispatch({type: ActionTypes.DISCOVER_ARTICLES_BY_TAG.SUCCESS, payload: {
-        results: response.data.articles.map(types.articleConverter),
+        results: response.data.articles.filter(types.articleFilter).map(types.articleConverter),
         total: response.data.pagination.total
       }});
       resolve();
@@ -94,7 +104,7 @@ export const searchArticles = (dispatch) => (query, page) => {
     .get(`${CMS_URL}/search.json?s=${query}&${CMS_QUERY_SETTINGS(page)}`)
     .then((response) => {
       dispatch({type: ActionTypes.SEARCH_ARTICLES.SUCCESS, payload: {
-        results: response.data.items.map(types.articleConverter),
+        results: response.data.items.filter(types.articleFilter).map(types.articleConverter),
         total: response.data.total
       }});
       resolve();
@@ -107,65 +117,87 @@ export const searchArticles = (dispatch) => (query, page) => {
   })
 }
 
+export const getBookmarks = (dispatch) => async () => {
+  dispatch({type: ActionTypes.GET_BOOKMARKS.REQUEST });
+  try {
+    const userId = await SecureStore.getItemAsync('userId')
+    const res = await axios
+      .get(`${ROOT_URL}/articles/bookmarks/${userId}`)
+    const populatedBookmarks = await Promise.all(
+      res.data.map(({slug}) => new Promise((resolve) => {
+        axios.get(`${CMS_URL}/article/${slug}.json`).then(articleRes => resolve(types.articleConverter(articleRes.data.article)))
+      }))
+    )
+    dispatch({type: ActionTypes.GET_BOOKMARKS.SUCCESS, payload: {
+      results: populatedBookmarks,
+      total: populatedBookmarks.length
+    }});
+  }
+  catch (err) {
+    console.error(err);
+    dispatch({type: ActionTypes.GET_BOOKMARKS.FAILURE});
+  }
+}
+
 /**
  * Sends to backend the current article and receives an object back containing data like views.
- * @param {String} article The article to send backend (current article).
+ * @param {import("../../lib/types").Article} article The article to send backend (current article).
  */
-export const readArticle = (dispatch) => (article) => new Promise((resolve) => {
-  axios.post(`${ROOT_URL}/articles/read`, article)
-    .then((response) => {
-      resolve(response.data);
+export const readArticle = (dispatch) => (article) => new Promise(async (resolve) => {
+  dispatch({ type: ActionTypes.READ_ARTICLE.REQUEST, payload: article })
+  const userId = await SecureStore.getItemAsync('userId')
+  axios.post(
+    `${ROOT_URL}/articles/reads`,
+    {
+      articleSlug: article.slug,
+      userId
+    })
+    .then(() => {
+      axios.get(`${ROOT_URL}/articles/${article.slug}${userId ? `?for=${userId}` : ''}`).then((metaArticleRes) => {
+        dispatch({type: ActionTypes.READ_ARTICLE.SUCCESS, payload: {...article, ...metaArticleRes.data} })
+        resolve();
+      })
     });
   });
 
-/**
- * Bookmarks an article
- * @param {Integer} userID The current user
- * @param {String} articleID The article being bookmarked
- * @param {Array} bookmarkedArticles The current list of bookmarked articles
- */
-export const bookmarkArticle = (userID, articleID, bookmarkedArticles) => (
-  dispatch
-) => {
-  const bookmarked = [...bookmarkedArticles, articleID];
-  dispatch({ type: ActionTypes.BOOKMARK_ARTICLE, payload: bookmarked });
-  axios
-    .put(`${ROOT_URL}/articles/${userID}/${articleID}`)
-    .then((response) => {
-      dispatch({
-        type: ActionTypes.BOOKMARK_ARTICLE,
-        payload: response.data.user.bookmarkedArticles,
-      });
-    })
-    .catch((error) => {
-      dispatch({ type: ActionTypes.ERROR_SET, error });
-    });
-};
+export const exitArticle = (dispatch) => () => dispatch({ type: ActionTypes.EXIT_ARTICLE })
 
 /**
- * Unbookmarks an article
- * @param {Integer} userID The current user
- * @param {String} articleID The article being unbookmarked
- * @param {Array} bookmarkedArticles The current list of bookmarked articles
+ * Bookmarks an article
+ * @param {String} articleSlug The article being bookmarked
  */
-export const unbookmarkArticle = (userID, articleID, bookmarkedArticles) => (
-  dispatch
-) => {
-  const bookmarked = [...bookmarkedArticles];
-  const index = bookmarked.indexOf(articleID);
-  if (index > -1) {
-    bookmarked.splice(index);
+export const bookmarkArticle = (dispatch) => async (articleSlug) => {
+  dispatch({ type: ActionTypes.BOOKMARK_ARTICLE.REQUEST, payload: articleSlug });
+  try {
+    const userId = await SecureStore.getItemAsync('userId')
+    if (!userId) {
+      showAuthModal(dispatch)()
+      throw new Error('not authed')
+    }
+    const res = await axios
+      .post(
+        `${ROOT_URL}/articles/bookmarks/${userId}`,
+          {
+            articleSlug
+          }
+        )
+      switch (res.status) {
+        case 200:
+          dispatch({
+            type: ActionTypes.BOOKMARK_ARTICLE.SUCCESS_ADD,
+            payload: articleSlug
+          });
+          break
+        case 410:
+          dispatch({
+            type: ActionTypes.BOOKMARK_ARTICLE.SUCCESS_DELETE,
+            payload: articleSlug,
+          });
+          break
+        default:
+          throw new Error('failed bookmark')
+      }
+      } catch (err) {
+    dispatch({ type: ActionTypes.BOOKMARK_ARTICLE.FAILURE, err });
   }
-  dispatch({ type: ActionTypes.BOOKMARK_ARTICLE, payload: bookmarked });
-  axios
-    .put(`${ROOT_URL}/articles/${userID}/${articleID}`)
-    .then((response) => {
-      dispatch({
-        type: ActionTypes.BOOKMARK_ARTICLE,
-        payload: response.data.user.bookmarkedArticles,
-      });
-    })
-    .catch((error) => {
-      dispatch({ type: ActionTypes.ERROR_SET, error });
-    });
 };

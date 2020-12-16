@@ -5,8 +5,9 @@ export default {
   green,
   paper: '#fbfbf8',
   shade: '#ECECEC',
-  pencil: '#565656',
+  pencil: '#c7c7c7',
   charcoal: 'gray',
+  pen: '#565656',
   border: '#E6E6E6',
   theme: [
     '#72A162',

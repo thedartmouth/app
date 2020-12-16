@@ -9,17 +9,15 @@ import FullWidthImage from 'react-native-fullwidth-image'
 import { Stack, Queue } from 'react-native-spacing-system';
 import { Typography, Colors } from '../constants';
 import { connect } from 'react-redux';
-import { readArticle } from '../store/actions/article-actions';
+import { actions } from '../store';
 
 
 function PreviewCard(props) { 
   return (
     <TouchableOpacity onPress={() => {
-      props.readArticle( { article: props.article });
+      props.readArticle(props.article);
 
-      props.navigation.push('Article', {
-        article: props.article,
-      })
+      props.navigation.push('Article')
 
     }}>
       <Text style={styles.category}>{props.article.category}</Text>
@@ -39,7 +37,11 @@ function PreviewCard(props) {
   );
 }
 
-export default connect(null, { readArticle })(PreviewCard);
+export default connect(
+  null,
+  (dispatch) => ({
+    readArticle: actions.readArticle(dispatch) 
+  }))(PreviewCard);
 
 
 const styles = StyleSheet.create({

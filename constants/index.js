@@ -3,7 +3,7 @@ import Layout from './Layout';
 import Typography from './Typography';
 
 const CMS_URL = 'https://www.thedartmouth.com';
-const ROOT_URL = 'http://localhost:9090';
+const ROOT_URL = 'http://192.168.0.101:9090';
 
 const wait = (timeout) => new Promise((resolve) => {
   setTimeout(resolve, timeout);

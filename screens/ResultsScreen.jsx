@@ -53,14 +53,15 @@ class ResultsScreen extends React.Component {
               <Stack size={12} />
             </Box>
         {this.props.articles.loadingResults ? (
-          <View style={styles.noBookmarks}>
-            <MaterialIcons name="bookmark-border" size={35} color="gray" />
-            <Text style={styles.noBookmarksTitle}>No articles bookmarked</Text>
-            <Text style={styles.noBookmarksSubtitle}>
-              Tap on the bookmark icon at the bottom of an article to add to
-              your bookmarks
-            </Text>
-          </View>
+          null
+          // <View style={styles.noBookmarks}>
+          //   <MaterialIcons name="bookmark-border" size={35} color="gray" />
+          //   <Text style={styles.noBookmarksTitle}>No articles bookmarked</Text>
+          //   <Text style={styles.noBookmarksSubtitle}>
+          //     Tap on the bookmark icon at the bottom of an article to add to
+          //     your bookmarks
+          //   </Text>
+          // </View>
         ) : (
           <FlatList
             data={this.props.articles.results}

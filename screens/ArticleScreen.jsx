@@ -14,32 +14,25 @@ import { Typography, Colors } from '../constants';
 import { Box, Stack, Queue } from '../components/layout';
 import { actions } from '../store';
 
-const HORIZONTAL_PADDING = 36;
+class ArticleScreen extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      shareButtonPressed: false,
+    }
+  }
 
-function ArticleScreen(props) {
-  const { article } = props.route.params;
-  console.log(article)
-  const {
-    readArticle, navigation, bookmarkArticle, unbookmarkArticle, bookmarkedArticles,
-  } = props;
-  const [articleID, setArticleID] = React.useState('');
-  const [articleViews, setArticleViews] = React.useState(0);
+  goBack = () => {
+    this.props.navigation.goBack()
+    this.props.exitArticle()
+  }
 
-  // on initial render, read the article, set the ID and views
-  React.useEffect(() => {
-    readArticle({ article }).then((response) => {
-      if (!articleID && !articleViews) {
-        setArticleID(response._id);
-        setArticleViews(response.views);
-      }
-    });
-  }, []);
-
-  const onShare = async () => {
+  onShare = async () => {
+    this.setState({ shareButtonPressed: true })
     try {
       const result = await Share.share({
         url:
-          `https://www.thedartmouth.com/article/${article.slug}`,
+          `https://www.thedartmouth.com/article/${this.props.articles.current.slug}`,
       });
       if (result.action === Share.sharedAction) {
         if (result.activityType) {
@@ -52,143 +45,156 @@ function ArticleScreen(props) {
       }
     } catch (error) {
       console.log(error.message);
+    } finally {
+      this.setState({ shareButtonPressed: false })
     }
   };
 
-  // animation
-  const scrollY = new Animated.Value(0);
-  const translateYTop = (step) => Animated.diffClamp(scrollY, 0, step).interpolate({
-    inputRange: [0, step],
-    outputRange: [0, -step],
-  });
-  const translateYBottom = Animated.diffClamp(scrollY, 0, 20).interpolate({
-    inputRange: [0, 20],
-    outputRange: [0, 80],
-  });
-  const opacityButton = Animated.diffClamp(scrollY, 0, 40).interpolate({
-    inputRange: [0, 40],
-    outputRange: [1, 0],
-  });
+  visitAuthor = (author) => {
+    alert('Feature coming soon!')
+    // this.props.navigation.push('Author', author);
+  }
 
-  return (
-    <SafeAreaConsumer>
-      {(insets) => (
-        <View style={styles.screen}>
-          <Animated.View style={{
-            transform: [
-              { translateY: translateYTop(insets.top) },
-            ],
-            zIndex: 1,
-          }}
-          >
-            <Box dir="column" style={styles.topTab} pad={[insets.top, 0, 0, 0]}>
-              <Box dir="row">
-                <Queue size={HORIZONTAL_PADDING} />
-                <Animated.View style={{ opacity: opacityButton }}>
-                  <Ionicons name="ios-arrow-back" size={36} color={Colors.charcoal} onPress={() => navigation.goBack()} />
-                </Animated.View>
+  render() {
+  
+    // animation
+    const scrollY = new Animated.Value(0);
+    const translateYTop = (step) => Animated.diffClamp(scrollY, 0, step).interpolate({
+      inputRange: [0, step],
+      outputRange: [0, -step],
+    });
+    const translateYBottom = Animated.diffClamp(scrollY, 0, 192).interpolate({
+      inputRange: [0, 192],
+      outputRange: [0, 96],
+    });
+    const opacityButton = Animated.diffClamp(scrollY, 0, 40).interpolate({
+      inputRange: [0, 40],
+      outputRange: [1, 0],
+    });
+  
+    return (
+      <SafeAreaConsumer>
+        {(insets) => (
+          <View style={styles.screen}>
+            <Animated.View style={{
+              transform: [
+                { translateY: translateYTop(insets.top) },
+              ],
+              zIndex: 1,
+            }}
+            >
+              <Box dir="column" style={styles.topTab} pad={[insets.top, 0, 0, 0]}>
+                <Box dir="row">
+                  <Queue size={36} />
+                  <Animated.View style={{ opacity: opacityButton }}>
+                    <Ionicons name="ios-arrow-back" size={36} color={Colors.charcoal} onPress={this.goBack} />
+                  </Animated.View>
+                </Box>
+                <Stack size={12} />
               </Box>
+            </Animated.View>
+            {this.props.articles.current ?
+            <>
+            <ScrollView
+              onScroll={(e) => { scrollY.setValue(e.nativeEvent.contentOffset.y); }}
+              scrollEventThrottle={16}
+              bounces={false}
+            >
+              <Stack size={insets.top + 72} />
+              <View style={[styles.tags, styles.padded]}>
+                {this.props.articles.current.tags.map((tag) => (
+                  <View key={tag} style={styles.tagContainer}>
+                    <Text style={styles.tag}>{tag}</Text>
+                    <Queue size={8} />
+                    <Stack size={32} />
+                  </View>
+                ))}
+              </View>
+              <Stack size={4} />
+              <Text style={[styles.articleTitle, styles.padded]}>{this.props.articles.current.headline}</Text>
               <Stack size={12} />
-            </Box>
-          </Animated.View>
-          <ScrollView
-            onScroll={(e) => { scrollY.setValue(e.nativeEvent.contentOffset.y); }}
-            scrollEventThrottle={16}
-            bounces={false}
-          >
-            <Stack size={insets.top + 72} />
-            <View style={[styles.tags, styles.padded]}>
-              {article.tags.map((tag) => (
-                <View key={tag} style={styles.tagContainer}>
-                  <Text style={styles.tag}>{tag}</Text>
-                  <Queue size={8} />
-                  <Stack size={32} />
+              <View style={[styles.authorViewsArea, styles.padded]}>
+                <View style={styles.authorArea}>
+                  {this.props.articles.current.authors.map((author, idx) => (
+                    <TouchableOpacity key={author.slug} navigation={this.props.navigation} onPress={() => { this.visitAuthor(author) }}>
+                      <Box dir='row' align='center'>
+                      <Text style={styles.author}>
+                        {author.name}
+                      </Text>
+                      <Queue size={4} />
+                      <Ionicons style={styles.authorAdd} name="ios-add" size={18} color="gray" />
+                      {idx < this.props.articles.current.authors.length - 1 ? <Queue size={8}></Queue> : null}
+                      </Box>
+                    </TouchableOpacity>
+                  )) || <Text style={styles.author}>
+                  No authorship
+                </Text>}
                 </View>
-              ))}
-            </View>
-            <Stack size={4} />
-            <Text style={[styles.articleTitle, styles.padded]}>{article.headline}</Text>
-            <Stack size={12} />
-            <View style={[styles.authorViewsArea, styles.padded]}>
-              <View style={styles.authorArea}>
-                {article.authors.map((author, idx) => (
-                  <TouchableOpacity key={idx} navigation={props.navigation} onPress={() => { props.navigation.push('Author', { name: author.name }); }}>
-                    <Box dir='row' align='center'>
-                    <Text style={styles.author}>
-                      {author.name}
-                    </Text>
-                    <Queue size={4} />
-                    <Ionicons style={styles.authorAdd} name="ios-add" size={18} color="gray" />
-                    {idx < article.authors.length - 1 ? <Queue size={8}></Queue> : null}
-                    </Box>
-                  </TouchableOpacity>
-                )) || <Text style={styles.author}>
-                No authorship
-              </Text>}
+                <Text style={styles.views}>
+                  {this.props.articles.current.reads || 0}
+                  {' '}
+                  {this.props.articles.current.reads === 1 ? 'view' : 'views'}
+                </Text>
               </View>
-              <Text style={styles.views}>
-                {articleViews}
-                {' '}
-                {articleViews === 1 ? 'view' : 'views'}
-              </Text>
-            </View>
-            <Stack size={12} />
-            <FullWidthImage
-              source={{ uri: article.imageURI }}
-            />
-            <Stack size={12} />
-            <View style={styles.padded}>
-            {article.body ? (
-              <HTML
-                tagsStyles={{ p: styles.content, a: styles.links }}
-                html={article.body}
-                onLinkPress={(event, href) => {
-                  Linking.openURL(href);
-                }}
-                imagesMaxWidth={Dimensions.get('window').width - (HORIZONTAL_PADDING * 2)}
+              <Stack size={12} />
+              <FullWidthImage
+                source={{ uri: this.props.articles.current.imageURI }}
               />
-            ) : null}
-            </View>
-            <View>
-              <Stack size={144}></Stack>
-            </View>
-          </ScrollView>
-          <Animated.View style={{
-            transform: [
-              { translateY: translateYBottom },
-            ],
-            zIndex: 1,
-          }}
-          >
-            <View style={styles.bottomTab}>
-              <Stack size={10} />
-              <View style={styles.bottomTabButtons}>
-                <FontAwesome5 name="praying-hands" size={25} color="gray" />
-                {article.bookmarked
-                  ? <MaterialIcons name="bookmark" size={35} color="gray" onPress={() => unbookmarkArticle('5f08d289904d6614d951a501', articleID, bookmarkedArticles)} />
-                  : <MaterialIcons name="bookmark-border" size={35} color="gray" onPress={() => bookmarkArticle('5f08d289904d6614d951a501', articleID, bookmarkedArticles)} />}
-                <Ionicons name="ios-share" size={35} color="gray" onPress={onShare} />
+              <Stack size={12} />
+              <View style={styles.padded}>
+              {this.props.articles.current.body ? (
+                <HTML
+                  tagsStyles={{ p: styles.content, a: styles.links }}
+                  html={this.props.articles.current.body}
+                  onLinkPress={(event, href) => {
+                    Linking.openURL(href);
+                  }}
+                  imagesMaxWidth={Dimensions.get('window').width - (36 * 2)}
+                />
+              ) : null}
               </View>
-            </View>
-          </Animated.View>
-        </View>
-      )}
-    </SafeAreaConsumer>
-  );
+              <View>
+                <Stack size={144}></Stack>
+              </View>
+            </ScrollView>
+            <Animated.View style={{
+              transform: [
+                { translateY: translateYBottom },
+              ],
+              zIndex: 1,
+            }}
+            >
+              <View style={styles.bottomTab}>
+                <Stack size={12} />
+                <View style={styles.bottomTabButtons}>
+                  <Ionicons name="ios-heart-outline" size={36} color={Colors.charcoal} onPress={() => alert('Feature coming soon!')}/>
+                  {this.props.articles.current.bookmarked || this.props.articles.pendingBookmarks.includes(this.props.articles.current.slug)
+                    ? <Ionicons name="ios-bookmark" size={36} color="gray" onPress={() => this.props.bookmarkArticle(this.props.articles.current.slug)} />
+                    : <Ionicons name="ios-bookmark-outline" size={36} color="gray" onPress={() => this.props.bookmarkArticle(this.props.articles.current.slug)} />}
+                  <Ionicons name={this.state.shareButtonPressed ? "ios-share" : "ios-share-outline"} size={36} color={Colors.charcoal} onPress={this.onShare} />
+                </View>
+              </View>
+            </Animated.View>
+            </>
+            :
+            null
+            }
+          </View>
+        )}
+      </SafeAreaConsumer>
+    );
+  }
 }
 
-function mapStateToProps(reduxState) {
-  return {
-    bookmarkedArticles: reduxState.articles.bookmarkedArticles,
-  };
-}
-
-export default connect(mapStateToProps,
-  {
-    readArticle: actions.readArticle,
-    bookmarkArticle: actions.bookmarkArticle,
-    unbookmarkArticle: actions.unbookmarkArticle,
-  })(ArticleScreen);
+export default connect(
+  (store) => ({
+    articles: store.articles,
+  }),
+  (dispatch) => ({
+    exitArticle: actions.exitArticle(dispatch),
+    bookmarkArticle: actions.bookmarkArticle(dispatch),
+  })
+  )(ArticleScreen);
 
 const styles = StyleSheet.create({
   screen: {
@@ -196,7 +202,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   padded: {
-    paddingHorizontal: HORIZONTAL_PADDING,
+    paddingHorizontal: 36,
   },
   topTab: {
     zIndex: 1,
@@ -270,7 +276,7 @@ const styles = StyleSheet.create({
   content: {
     ...Typography.p,
     ...Typography.serifRegular,
-    color: Colors.pencil,
+    color: Colors.pen,
     lineHeight: Typography.p.fontSize * 1.7,
     marginBottom: 18,
   },
@@ -286,7 +292,7 @@ const styles = StyleSheet.create({
     width: '100%',
     zIndex: 1,
     backgroundColor: 'white',
-    height: 80,
+    height: 96,
   },
   bottomTabButtons: {
     flexDirection: 'row',

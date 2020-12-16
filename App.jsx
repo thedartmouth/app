@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { connect } from 'react-redux';
 import { createStore, applyMiddleware, compose } from 'redux';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
@@ -13,11 +14,15 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import BottomTabNavigator from './navigation/BottomTabNavigator';
 import useLinking from './navigation/useLinking';
 import { reducers, actions } from './store';
+import { Colors } from './constants';
 import ArticleScreen from './screens/ArticleScreen';
 import LoadingScreen from './screens/LoadingScreen';
 import AuthorScreen from './screens/AuthorScreen';
 import ResultsScreen from './screens/ResultsScreen';
+import * as SecureStorage from 'expo-secure-store';
 import Auth from './components/Auth';
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
+import { Ionicons } from '@expo/vector-icons';
 
 const Stack = createStackNavigator();
 
@@ -27,11 +32,51 @@ export const store = createStore(reducers, {}, compose(
   window.__REDUX_DEVTOOLS_EXTENSION__ ? window.__REDUX_DEVTOOLS_EXTENSION__() : (f) => f,
 ));
 
+const ConnectedModal = connect(
+  (store) => ({
+    visible: store.user.showAuthModal
+  }),
+  (dispatch) => ({
+    show: actions.showAuthModal(dispatch),
+    hide: actions.hideAuthModal(dispatch)
+  })
+)((props) => (
+  <Modal
+    visible={props.visible}
+    animationType='slide'
+    presentationStyle='formSheet'
+  >
+    <Ionicons name='ios-close' size={48} color={Colors.charcoal} style={styles.closeModal} onPress={props.hide}></Ionicons>
+    {/* <TouchableWithoutFeedback
+      style={styles.modalFix}
+        delayPressIn={300}
+        onPressIn={(e) => {
+          console.log('hide')
+          props.hide()
+          if (e?.nativeEvent?.locationY < 0) {
+          }
+        }}
+        onPressOut={(e) => {
+          console.log('show')
+          props.show()
+          if (e?.nativeEvent?.locationY < 0) {
+          }
+        }}
+        > */}
+          {/* <SafeAreaView
+            forceInset={{ bottom: 'always' }}
+          > */}
+          {props.children}
+          {/* </SafeAreaView> */}
+    {/* </TouchableWithoutFeedback> */}
+  </Modal>
+))
+
 export default function App(props) {
   const [isFontLoadingComplete, setFontLoadingComplete] = React.useState(false);
   const [isFeedLoadingComplete, setFeedLoadingComplete] = React.useState(false);
   const [initialNavigationState, setInitialNavigationState] = React.useState();
-  const [mounted, setMounted] = React.useState(false);
+  const [userLoaded, setUserLoaded] = React.useState(false);
   const [showAuthModal, setShowAuthModal] = React.useState(false);
   const containerRef = React.useRef();
   const { getInitialState } = useLinking(containerRef);
@@ -39,7 +84,6 @@ export default function App(props) {
   // Load any resources or data that we need prior to rendering the app
 
   React.useEffect(() => {
-    console.log('re-rendering')
     async function loadResourcesAndDataAsync() {
       try {
         SplashScreen.preventAutoHide();
@@ -68,15 +112,31 @@ export default function App(props) {
       }
     }
 
+    async function loadUser() {
+      try {
+        const token = await SecureStorage.getItemAsync('token')
+        const userId = await SecureStorage.getItemAsync('userId')
+        if (token && userId) {
+          actions.auth(store.dispatch)(token)
+          actions.getUser(store.dispatch)()
+          setUserLoaded(true)
+        }
+      } catch (err) {
+        console.error(err)
+      }
+    }
+
+    if (!userLoaded) loadUser();
+
     if (!isFontLoadingComplete) loadResourcesAndDataAsync();
 
-    if (!mounted) {
-      store.subscribe(() => {
-        console.log(`updating auth modal status to ${store.getState().user.showAuthModal}, currently it is ${showAuthModal}`)
-        if (store.getState().user.showAuthModal !== showAuthModal) setShowAuthModal(store.getState().user.showAuthModal)
-      })
-      setMounted(true)
-    }
+    // if (!mounted) {
+    //   store.subscribe(() => {
+    //     console.log(`updating auth modal status to ${store.getState().user.showAuthModal}, currently it is ${showAuthModal}`)
+    //     if (store.getState().user.showAuthModal !== showAuthModal) setShowAuthModal(store.getState().user.showAuthModal)
+    //   })
+    //   setMounted(true)
+    // }
   }, []);
 
 
@@ -98,15 +158,12 @@ export default function App(props) {
                 </Stack.Navigator>
               </NavigationContainer>
             )}
-            <Modal
-              visible={showAuthModal}
-              animationType='slide'
-              presentationStyle='formSheet'
-            >
-              <View style={styles.modal}>
+            <ConnectedModal>
+              <View style={styles.modalContainer}>
+                {/* <View style={styles.modalBar}></View> */}
                 <Auth></Auth>
               </View>
-            </Modal>
+            </ConnectedModal>
         </View>
       </SafeAreaProvider>
     </Provider>
@@ -123,7 +180,31 @@ const styles = StyleSheet.create({
   },
   modal: {
     flex: 1,
+  },
+  modalContainer: {
+    width: '100%',
+    height: '100%',
     justifyContent: 'center',
     alignItems: 'center'
-  }
+  },
+  closeModal: {
+    zIndex: 1,
+    position: 'absolute',
+    top: 16,
+    right: 16,
+  },
+  // modalBarContainer: {
+  //   position: 'absolute',
+  //   top: 16,
+  //   right: 16,
+  //   width: '100%',
+  //   flexDirection: 'row',
+  //   justifyContent: 'flex-end',
+  // },
+  // modalBar: {
+  //   width: '40%',
+  //   height: 8,
+  //   backgroundColor: Colors.pencil,
+  //   borderRadius: 4
+  // }
 });

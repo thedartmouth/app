@@ -7,7 +7,7 @@ import DiscoverScreen from '../screens/DiscoverScreen';
 import TabBarIcon from '../components/TabBarIcon';
 
 const BottomTab = createBottomTabNavigator();
-const INITIAL_ROUTE_NAME = 'Discover';
+const INITIAL_ROUTE_NAME = 'Feed';
 
 export default function BottomTabNavigator({ navigation, route }) {
   // Set the header title on the parent stack navigator depending on the
@@ -26,7 +26,7 @@ export default function BottomTabNavigator({ navigation, route }) {
         options={{
           title: 'Feed',
           tabBarIcon: ({ focused }) => (
-            <TabBarIcon focused={focused} name="ios-book" />
+            <TabBarIcon focused={focused} name="ios-newspaper" />
           ),
         }}
       />
@@ -36,7 +36,7 @@ export default function BottomTabNavigator({ navigation, route }) {
         options={{
           title: 'Discover',
           tabBarIcon: ({ focused }) => (
-            <TabBarIcon focused={focused} name="ios-podium" />
+            <TabBarIcon focused={focused} name="ios-grid" />
           ),
         }}
       />
@@ -55,23 +55,24 @@ export default function BottomTabNavigator({ navigation, route }) {
 }
 
 function getHeaderTitle(route) {
-  const routeName = route.state?.routes[route.state.index]?.name ?? INITIAL_ROUTE_NAME;
+  // const routeName = route.state?.routes[route.state.index]?.name ?? INITIAL_ROUTE_NAME;
 
-  switch (routeName) {
-    case 'Home':
-      return 'The Dartmouth';
-    case 'Polls':
-      return 'Polls';
-    case 'Me':
-      return 'My Profile';
-    case 'Article':
-      return 'Article';
-    case 'Results':
-      if (route.state?.routes[route.state.index]?.tag) {
-        return route.state?.routes[route.state.index]?.tag;
-      }
-      else return 'Results';
-  }
+  // switch (routeName) {
+  //   case 'Home':
+  //     return 'The Dartmouth';
+  //   case 'Polls':
+  //     return 'Polls';
+  //   case 'Me':
+  //     return 'My Profile';
+  //   case 'Article':
+  //     return 'Article';
+  //   case 'Results':
+  //     if (route.state?.routes[route.state.index]?.tag) {
+  //       return route.state?.routes[route.state.index]?.tag;
+  //     }
+  //     else return 'Results';
+  // }
+  return 'The Dartmouth'
 }
 
 const styles = StyleSheet.create({

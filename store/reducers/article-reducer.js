@@ -5,6 +5,9 @@ const INITIAL_STATE = {
   results: [],
   totalResults: 0,
   loadingResults: false,
+  current: null,
+  loadingCurrent: false,
+  pendingBookmarks: [],
 };
 
 const articleReducer = (state = INITIAL_STATE, action) => {
@@ -24,10 +27,26 @@ const articleReducer = (state = INITIAL_STATE, action) => {
       return { ...prevState, feed: action.payload };
     case ActionTypes.ADD_FEED:
       return { ...prevState, feed: [...prevState.feed, ...action.payload] };
-    case ActionTypes.BOOKMARK_ARTICLE:
-      return { ...prevState, bookmarks: action.payload };
-    case ActionTypes.GET_BOOKMARKS:
-      return { ...prevState, bookmarks: action.payload };
+    case ActionTypes.READ_ARTICLE.REQUEST:
+      return { ...prevState, loadingCurrent: true, current: action.payload };
+    case ActionTypes.READ_ARTICLE.SUCCESS:
+      return { ...prevState, loadingCurrent: false, current: action.payload };
+    case ActionTypes.EXIT_ARTICLE:
+      return { ...prevState, current: null };
+    case ActionTypes.BOOKMARK_ARTICLE.REQUEST:
+      return { ...prevState, pendingBookmarks: [...prevState.pendingBookmarks, action.payload] };
+    case ActionTypes.BOOKMARK_ARTICLE.SUCCESS_ADD:
+      return { ...prevState, pendingBookmarks: prevState.pendingBookmarks.filter(article => article !== action.payload), current: {...prevState.current, bookmarked: true} };
+    case ActionTypes.BOOKMARK_ARTICLE.SUCCESS_DELETE:
+      return { ...prevState, pendingBookmarks: prevState.pendingBookmarks.filter(article => article !== action.payload), current: {...prevState.current, bookmarked: false} };
+    case ActionTypes.BOOKMARK_ARTICLE.FAILURE:
+      return { ...prevState, pendingBookmarks: prevState.pendingBookmarks.filter(article => article !== action.payload) };
+    case ActionTypes.GET_BOOKMARKS.REQUEST:
+      return { ...prevState, loadingResults: true };
+    case ActionTypes.GET_BOOKMARKS.SUCCESS:
+      return { ...prevState, loadingResults: false, results: action.payload.results, totalResults: action.payload.total };
+    case ActionTypes.GET_BOOKMARKS.FAILURE:
+      return { ...prevState, loadingResults: false };
     default:
       return state;
   }

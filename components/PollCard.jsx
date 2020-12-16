@@ -8,6 +8,7 @@ import {
 import { Divider } from 'react-native-elements';
 import { Stack, Queue } from 'react-native-spacing-system';
 import { Typography } from '../constants';
+import * as uuid from 'uuid';
 import axios from 'axios';
 
 export default function PollCard(props) {
@@ -17,8 +18,8 @@ export default function PollCard(props) {
       <Stack size={18} />
       <View>
         {props.poll.answers.map((answer, idx) => (
-          <View key={idx}>
-            <TouchableOpacity style={styles.answerArea} onPress={() => handleAnswer(props.poll.pollID, props.userID, answer.text)} key={answer.text}>
+          <View key={uuid.v4()}>
+            <TouchableOpacity style={styles.answerArea} onPress={() => handleAnswer(props.poll.pollID, props.userID, answer.text)} key={uuid.v4()}>
               <Queue size={12} />
               {displayVotes(props.poll.isUnanswered, answer.value)}
               {/* <View style={styles.answerButton} /> */}

@@ -20,7 +20,11 @@ class Auth extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      mode: 'welcome',
+      mode: 'signup',
+      name: {
+        first: null,
+        last: null
+      },
       email: null,
       password: null,
       error: null,
@@ -36,7 +40,7 @@ class Auth extends React.Component {
 
   auth = () => {
     if (this.state.mode === 'login') {
-      this.props.auth(this.state.email, this.state.password).then(() => {
+      this.props.signIn(this.state.email, this.state.password).then(() => {
         this.setState({ mode: 'welcome' })
       }).catch(err => {
         this.setState({ error: err.message })
@@ -51,7 +55,7 @@ class Auth extends React.Component {
   }
 
   render() {
-    const passwordInput = React.createRef();
+    const lastNameInput = React.createRef();
     if (this.state.mode === 'welcome') {
       return (
         <Box dir='col' align='center' style={styles.container}>
@@ -93,24 +97,24 @@ class Auth extends React.Component {
             <View style={styles.nameInput}>
             <Input
               placeholder='First'
-              value={this.state.email}
+              value={this.state.name.first}
               onChangeText={first => { this.setState(prevState => ({name: {...prevState.name, first}})) }}
               errorStyle={{ color: 'red' }}
               errorMessage={this.state.error}
               inputStyle={styles.inputStyle}
-              enablesReturnKeyAutomatically
+              onSubmitEditing={() => lastNameInput.current.focus()}
             />
             </View>
             <View style={styles.nameInput}>
 
             <Input
+              ref={lastNameInput}
               placeholder='Last'
-              value={this.state.email}
+              value={this.state.name.last}
               onChangeText={last => { this.setState(prevState => ({name: {...prevState.name, last}})) }}
               errorStyle={{ color: 'red' }}
               errorMessage={this.state.error}
               inputStyle={styles.inputStyle}
-              enablesReturnKeyAutomatically
             />
             </View>
           </Box>
@@ -127,10 +131,8 @@ class Auth extends React.Component {
             errorMessage={this.state.error}
             leftIcon={{ type: 'ionicons', name: 'mail' }}
             inputStyle={styles.inputStyle}
-            onSubmitEditing={() => passwordInput.current.focus()}
           />
           <Input
-            ref={passwordInput}
             placeholder='Password'
             value={this.state.password}
             onChangeText={password => { this.setState({password}) }}
@@ -172,7 +174,8 @@ export default connect(
     user: store.user
   }),
   (dispatch) => ({
-    auth: actions.auth(dispatch),
+    signUp: actions.signUp(dispatch),
+    signIn: actions.signIn(dispatch),
     getUser: actions.getUser(dispatch),
     hideAuthModal: actions.hideAuthModal(dispatch)
   }))(Auth);
@@ -196,7 +199,7 @@ const styles = StyleSheet.create({
   inputStyle: {
     marginLeft: Typography.p.fontSize,
     ...Typography.sansLight,
-    color: Colors.pencil,
+    color: Colors.pen,
     ...Typography.p,
     // width: '100%',
     // flex: 1,

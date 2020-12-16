@@ -7,11 +7,12 @@ import {
 import { Divider } from 'react-native-elements';
 import { Ionicons, SimpleLineIcons } from '@expo/vector-icons';
 import { SafeAreaConsumer } from 'react-native-safe-area-context';
-import { Stack, Queue } from 'react-native-spacing-system';
+import { Box, Stack, Queue } from '../components/layout';
 import { Typography, Colors } from '../constants';
 import ResultsScreen from './ResultsScreen';
 import ArticleScreen from './ArticleScreen';
 import { createStackNavigator } from '@react-navigation/stack';
+import VoxButton from '../components/VoxButton';
 
 const ProfileStack = createStackNavigator();
 
@@ -21,9 +22,56 @@ class ProfileScreen extends React.Component {
   }
 
   componentDidMount() {
+    this.props.navigation.addListener('focus', () => {
+      this.checkAuth()
+    })
+  }
+
+  checkAuth = () => {
     if (!this.props.user.lastAuth) {
       this.props.showAuthModal()
+      return false
+    } else return true
+  }
+  
+  navigateProfileContent = (scenario) => {
+    const authed = this.checkAuth()
+    switch (scenario) {
+      case 'BOOKMARKS':
+        if (authed) {
+          this.props.getBookmarks()
+          this.props.navigation.push('Results', {bookmarks: true})
+        }
+        break
+      case 'FOLLOWING':
+        if (authed) alert('Feature coming soon!')
+        break
+      case 'POLLS':
+        if (authed) alert('Feature coming soon!')
+        break
     }
+  }
+
+  toggleProfileSetting = (setting) => {
+    const prevSettings = this.props.user.data?.settings
+    const updatedProfile = { settings: prevSettings }
+    switch (setting) {
+      case 'NOTIFICATION_TRENDING':
+        updatedProfile.settings.notifications.trending = !updatedProfile.settings.notifications?.trending
+        break
+      case 'NOTIFICATION_TAGS':
+        updatedProfile.settings.notifications.tags = !updatedProfile.settings.notifications?.tags
+        break
+      case 'NOTIFICATION_AUTHORS':
+        updatedProfile.settings.notifications.authors = !updatedProfile.settings.notifications?.authors
+        break
+    }
+    this.editProfileElement(updatedProfile)
+  }
+
+  editProfileElement = (updatedProfile) => {
+    const authed = this.checkAuth()
+    if (authed) alert('Feature coming soon!')
   }
 
   render() {
@@ -31,42 +79,42 @@ class ProfileScreen extends React.Component {
       <SafeAreaConsumer>
         {(insets) => (
           <View style={[styles.profileScreen, { paddingTop: insets.top }]}>
+            <Stack size={72} />
             <View style={styles.intro}>
               <Text style={styles.title}>Hello, {this.props.user.data?.name?.first || 'there'}.</Text>
               <Stack size={24} />
-              <View style={styles.reward}>
-                <View>
-                  <SimpleLineIcons name="cup" size={24} color="black" />
-                  <Text style={styles.coffeeCount}>16</Text>
-                </View>
-                <Queue size={16} />
+              <Box dir='row' align='center' style={styles.reward}>
+                <SimpleLineIcons name="cup" size={24} color="black" style={styles.coffeeCup}/>
+                <Queue size={8} />
+                <Text style={styles.coffeeCount}>{this.props.user.data?.reads || 0}</Text>
+                <Queue size={8} />
                 <Text style={styles.rewardText}>coffee cups earned!</Text>
-              </View>
+              </Box>
             </View>
-            <Stack size={24} />
+            <Stack size={36} />
             <Divider style={styles.divider} />
-            <Stack size={24} />
+            <Stack size={36} />
             <View style={styles.contentBoxes}>
               <View style={styles.contentBox}>
                 <Text style={styles.heading}>Your stuff</Text>
                 <Stack size={12} />
                 <Divider style={styles.thinDivider} />
                 <Stack size={4} />
-                <TouchableOpacity style={styles.rowItem} onPress={ () => this.props.navigation.push('Results', {bookmarks: true})}>
+                <TouchableOpacity style={styles.rowItem} onPress={() => this.navigateProfileContent('BOOKMARKS')}>
                   <Text style={Typography.p}>Bookmarks</Text>
                   <Ionicons name="ios-arrow-forward" size={24} style={styles.rowItemIcon} />
                 </TouchableOpacity>
                 <Stack size={4} />
                 <Divider style={styles.thinDivider} />
                 <Stack size={4} />
-                <TouchableOpacity style={styles.rowItem}>
+                <TouchableOpacity style={styles.rowItem} onPress={() => this.navigateProfileContent('FOLLOWING')}>
                   <Text style={Typography.p}>Followed authors</Text>
                   <Ionicons name="ios-arrow-forward" size={24} style={styles.rowItemIcon} />
                 </TouchableOpacity>
                 <Stack size={4} />
                 <Divider style={styles.thinDivider} />
                 <Stack size={4} />
-                <TouchableOpacity style={styles.rowItem}>
+                <TouchableOpacity style={styles.rowItem} onPress={() => this.navigateProfileContent('POLLS')}>
                   <Text style={Typography.p}>Completed polls</Text>
                   <Ionicons name="ios-arrow-forward" size={24} style={styles.rowItemIcon} />
                 </TouchableOpacity>
@@ -79,20 +127,36 @@ class ProfileScreen extends React.Component {
                 <Stack size={12} />
                 <View style={styles.rowItem}>
                   <Text style={Typography.p}>Trending articles</Text>
-                  <Switch />
+                  <Switch onValueChange={() => this.editProfileElement('NOTIFICATION_TRENDING')}/>
                 </View>
                 <Stack size={8} />
                 <View style={styles.rowItem}>
                   <Text style={Typography.p}>Followed tags</Text>
-                  <Switch />
+                  <Switch onValueChange={() => this.editProfileElement('NOTIFICATION_TAGS')}/>
                 </View>
                 <Stack size={8} />
                 <View style={styles.rowItem}>
                   <Text style={Typography.p}>Followed writers</Text>
-                  <Switch />
+                  <Switch onValueChange={() => this.editProfileElement('NOTIFICATION_AUTHORS')}/>
                 </View>
               </View>
             </View>
+            <Stack size={36}></Stack>
+            {this.props.user.lastAuth ?
+            <VoxButton
+              title='Logout'
+              variant='hollow'
+              hue='green'
+              flex={1}
+              raised
+              onPress={() => {
+                this.props.deAuth()
+                this.checkAuth()
+              }}
+          ></VoxButton>
+          :
+          null
+            }
           </View>
         )}
       </SafeAreaConsumer>
@@ -105,9 +169,10 @@ export default connect(
     user: store.user
   }),
   (dispatch) => ({
-    auth: actions.auth(dispatch),
+    deAuth: actions.deAuth(dispatch),
     getUser: actions.getUser(dispatch),
     showAuthModal: actions.showAuthModal(dispatch),
+    getBookmarks: actions.getBookmarks(dispatch)
   }))(ProfileScreen);
 
 // export function ProfileStackScreen() {
@@ -135,13 +200,9 @@ const styles = StyleSheet.create({
     ...Typography.serifRegular,
   },
   reward: {
-    flexDirection: 'row',
-    alignItems: 'center',
   },
-  coffeeCount: {
-    marginLeft: 2, // because the coffee icon is slightly imbalanced
-    // alignItems: 'center',
-    ...Typography.serifRegular,
+  coffeeCup: {
+    marginBottom: 2, // because the coffee icon is slightly imbalanced
   },
   rewardText: {
     ...Typography.p,
@@ -157,7 +218,7 @@ const styles = StyleSheet.create({
   heading: {
     ...Typography.h3,
     ...Typography.sansBold,
-    color: Colors.pencil,
+    color: Colors.pen,
   },
   rowItem: {
     flex: 0,

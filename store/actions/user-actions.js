@@ -8,6 +8,7 @@ export const ActionTypes = {
     SUCCESS: 'AUTH_USER_SUCCESS',
     FAILURE: 'AUTH_USER_FAILURE',
   },
+  DEAUTH_USER: 'DEAUTH_USER',
   GET_USER: {
     REQUEST: 'GET_USER_REQUEST',
     SUCCESS: 'GET_USER_SUCCESS',
@@ -25,39 +26,45 @@ export const hideAuthModal = (dispatch) => () => dispatch({
   type: ActionTypes.HIDE_AUTH_MODAL
 })
 
-export const getUser = (dispatch) => (id, token) => {
-  axios.defaults.headers.common.Authorization = `Bearer ${token}`;
+export const getUser = (dispatch) => async () => {
   dispatch({type: ActionTypes.GET_USER.REQUEST});
-  axios.get(`${ROOT_URL}/users/${id}`).then((response) => {
-    dispatch({ type: ActionTypes.GET_USER.SUCCESS, payload: response.data });
-  });
+  const response = await axios.get(`${ROOT_URL}/users/${await SecureStore.getItemAsync('userId')}`)
+  dispatch({ type: ActionTypes.GET_USER.SUCCESS, payload: response.data });
 };
 
 // gives user to reducer, which should save the user to state
-export const auth = (dispatch) => (email, password) => {
+export const signIn = (dispatch) => async (email, password) => {
   dispatch({ type: ActionTypes.AUTH_USER.REQUEST });
-  axios.post(`${ROOT_URL}/users/auth`, { email, password })
-    .then((response) => {
-      Promise.all([SecureStore.setItemAsync('token', response.data.token), SecureStore.setItemAsync('userId', response.data.userId)])
-        .then(() => {
-          dispatch({ type: ActionTypes.AUTH_USER.SUCCESS });
-        });
-    });
+  const response = await axios.post(`${ROOT_URL}/users/auth`, { email, password })
+  // axios.defaults.headers.common.Authorization = `Bearer ${response.data.token}`;
+  await Promise.all([SecureStore.setItemAsync('token', response.data.token), SecureStore.setItemAsync('userId', response.data.userId)])
+  auth(dispatch)(response.data.token)
+  await getUser(dispatch)()
 };
 
+export const auth = (dispatch) => (token) => {
+  dispatch({ type: ActionTypes.AUTH_USER.SUCCESS });
+  axios.defaults.headers.common.Authorization = `Bearer ${token}`;
+  console.log(axios.defaults.headers.common.Authorization);
+}
+
+export const deAuth = (dispatch) => () => {
+  dispatch({ type: ActionTypes.DEAUTH_USER })
+  axios.defaults.headers.common.Authorization = null;
+  SecureStore.deleteItemAsync('token')
+  SecureStore.deleteItemAsync('userId')
+}
+
 // gives user to reducer also
-export const signUp = ({firstName, lastName}, email, password) => (dispatch) => {
-  axios.post(`${ROOT_URL}/auth/signup`, {
+export const signUp = (dispatch) => async (name, email, password) => {
+  dispatch({ type: ActionTypes.AUTH_USER.REQUEST });
+  const response = await axios.post(`${ROOT_URL}/users`, {
     email,
     password,
-    firstName,
-    lastName,
-  }).then((response) => {
-    if (response.message == null) {
-      Promise.all([SecureStore.setItemAsync('token', response.data.token), SecureStore.setItemAsync('userName', response.data.user.name)])
-        .then(() => {
-          dispatch({ type: ActionTypes.GET_USER.SUCCESS, payload: response.data.user });
-        });
-    }
-  }); // TODO: do something about receiving the message about already having an email used. then, if not, send user object to reducer
+    name
+  })
+  // axios.defaults.headers.common.Authorization = `Bearer ${response.data.token}`;
+  await Promise.all([SecureStore.setItemAsync('token', response.data.token), SecureStore.setItemAsync('userId', response.data.userId)])
+  auth(dispatch)(response.data.token)
+  await getUser(dispatch)()
 };

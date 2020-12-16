@@ -20,7 +20,7 @@ const FeedScreen = (props) => {
 
   const onRefresh = React.useCallback(() => {
     props.refreshFeed();
-    setPage(1); // set page to refreshing (page 1 is always for refreshing)
+    setPage(1);
   }, []);
 
   React.useEffect(() => {
@@ -61,9 +61,9 @@ const FeedScreen = (props) => {
   );
 };
 
-FeedScreen.navigationOptions = {
-  header: null,
-};
+// FeedScreen.navigationOptions = {
+//   header: null,
+// };
 
 export default connect(
   (reduxState) => ({

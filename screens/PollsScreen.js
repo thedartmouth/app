@@ -6,7 +6,7 @@ import { SafeAreaConsumer } from 'react-native-safe-area-context';
 import {Stack, Queue} from 'react-native-spacing-system';
 import PollCard from '../components/PollCard';
 import { Typography, Colors } from '../constants';
-import axios from 'axios';
+import * as uuid from 'uuid';
 
 class PollsScreen extends React.Component {
   constructor(props) {
@@ -110,7 +110,7 @@ class PollsScreen extends React.Component {
               {/* What's this ID thing do again? */}
               {this.state.polls.map((poll, idx) => {
                 return (
-                  <View key={poll._id} style={styles.poll}>
+                  <View key={uuid.v4()} style={styles.poll}>
                     <PollCard poll={poll} userID={this.state.userID}></PollCard>
                     <Stack size={(idx === this.state.polls.length - 1) ? 0 : 36}></Stack>
                   </View>

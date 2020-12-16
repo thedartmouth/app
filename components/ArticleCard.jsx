@@ -10,7 +10,7 @@ import { Stack, Queue } from 'react-native-spacing-system';
 import HTML from 'react-native-render-html';
 import { connect } from 'react-redux';
 import { Colors, Typography } from '../constants';
-import { readArticle } from '../store/actions/article-actions';
+import { actions } from '../store';
 
 function ArticleCard(props) {
   const { navigation } = props;
@@ -18,11 +18,9 @@ function ArticleCard(props) {
   return (
     <TouchableOpacity
       onPress={() => {
-        props.readArticle({ article: props.article });
+        props.readArticle(props.article);
 
-        navigation.push('Article', {
-          article: props.article,
-        });
+        navigation.push('Article');
       }}
     >
       <View>
@@ -63,7 +61,12 @@ function ArticleCard(props) {
   );
 }
 
-export default connect(null, { readArticle })(ArticleCard);
+export default connect(
+  null,
+  (dispatch) => ({
+    readArticle: actions.readArticle(dispatch)
+  })
+)(ArticleCard);
 
 const styles = StyleSheet.create({
   padded: {
@@ -100,7 +103,7 @@ const styles = StyleSheet.create({
   author: {
     ...Typography.p,
     ...Typography.sansBold,
-    color: Colors.pencil,
+    color: Colors.pen,
   },
   authorAdd: {
     marginTop: 2,
@@ -109,7 +112,7 @@ const styles = StyleSheet.create({
     ...Typography.p,
     ...Typography.serifRegular,
     lineHeight: Typography.p.fontSize * 1.5,
-    color: Colors.pencil,
+    color: Colors.pen,
   },
   links: {
     ...Typography.p,
