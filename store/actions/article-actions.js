@@ -181,7 +181,6 @@ export const bookmarkArticle = (dispatch) => async (articleSlug) => {
             articleSlug
           }
         )
-      console.log(res)
       switch (res.status) {
         case 201:
           dispatch({
