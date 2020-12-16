@@ -44,7 +44,7 @@ const ConnectedModal = connect(
   <Modal
     visible={props.visible}
     animationType='slide'
-    presentationStyle='formSheet'
+    presentationStyle={Platform.OS === 'ios' ? 'formSheet' : undefined}
   >
     <Ionicons name='ios-close' size={48} color={Colors.charcoal} style={styles.closeModal} onPress={props.hide}></Ionicons>
     {/* <TouchableWithoutFeedback
