@@ -38,6 +38,9 @@ const articleReducer = (state = INITIAL_STATE, action) => {
     case ActionTypes.BOOKMARK_ARTICLE.SUCCESS_ADD:
       return { ...prevState, pendingBookmarks: prevState.pendingBookmarks.filter(article => article !== action.payload), current: {...prevState.current, bookmarked: true} };
     case ActionTypes.BOOKMARK_ARTICLE.SUCCESS_DELETE:
+      console.error('what')
+      console.log(prevState.pendingBookmarks)
+      console.log(prevState.pendingBookmarks.filter(article => article !== action.payload))
       return { ...prevState, pendingBookmarks: prevState.pendingBookmarks.filter(article => article !== action.payload), current: {...prevState.current, bookmarked: false} };
     case ActionTypes.BOOKMARK_ARTICLE.FAILURE:
       return { ...prevState, pendingBookmarks: prevState.pendingBookmarks.filter(article => article !== action.payload) };

@@ -45,7 +45,6 @@ export const signIn = (dispatch) => async (email, password) => {
 export const auth = (dispatch) => (token) => {
   dispatch({ type: ActionTypes.AUTH_USER.SUCCESS });
   axios.defaults.headers.common.Authorization = `Bearer ${token}`;
-  console.log(axios.defaults.headers.common.Authorization);
 }
 
 export const deAuth = (dispatch) => () => {

@@ -181,14 +181,15 @@ export const bookmarkArticle = (dispatch) => async (articleSlug) => {
             articleSlug
           }
         )
+      console.log(res)
       switch (res.status) {
-        case 200:
+        case 201:
           dispatch({
             type: ActionTypes.BOOKMARK_ARTICLE.SUCCESS_ADD,
             payload: articleSlug
           });
           break
-        case 410:
+        case 200:
           dispatch({
             type: ActionTypes.BOOKMARK_ARTICLE.SUCCESS_DELETE,
             payload: articleSlug,
@@ -198,6 +199,7 @@ export const bookmarkArticle = (dispatch) => async (articleSlug) => {
           throw new Error('failed bookmark')
       }
       } catch (err) {
+        console.log(err)
     dispatch({ type: ActionTypes.BOOKMARK_ARTICLE.FAILURE, err });
   }
 };
