@@ -87,7 +87,7 @@ class Auth extends React.Component {
         />
         <Stack size={24}></Stack>
         <Text style={styles.heading}>
-          Join us voces clamantis in deserto.
+          Join us voces clamantium in deserto.
         </Text>
         <Stack size={24}></Stack>
         <View style={styles.fatFormChild}>
