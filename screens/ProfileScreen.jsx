@@ -8,11 +8,14 @@ import { Divider } from 'react-native-elements';
 import { Ionicons, SimpleLineIcons } from '@expo/vector-icons';
 import { SafeAreaConsumer } from 'react-native-safe-area-context';
 import { Box, Stack, Queue } from '../components/layout';
-import { Typography, Colors } from '../constants';
+import { Typography, Colors, POLICY_URL } from '../constants';
 import ResultsScreen from './ResultsScreen';
 import ArticleScreen from './ArticleScreen';
+import { Linking} from 'expo';
+import HTML from 'react-native-render-html';
 import { createStackNavigator } from '@react-navigation/stack';
 import VoxButton from '../components/VoxButton';
+import { ScrollView } from 'react-native-gesture-handler';
 
 const ProfileStack = createStackNavigator();
 
@@ -76,7 +79,7 @@ class ProfileScreen extends React.Component {
 
   render() {
     return (
-          <View style={[styles.profileScreen, { paddingTop: 0 }]}>
+          <ScrollView contentContainerStyle={styles.profileScreen}>
             <Stack size={72} />
             <View style={styles.intro}>
               <Text style={styles.title}>Hello, {this.props.user.data?.name?.first || 'there'}.</Text>
@@ -140,22 +143,35 @@ class ProfileScreen extends React.Component {
               </View>
             </View>
             <Stack size={36}></Stack>
+            <HTML
+              tagsStyles={{ a: styles.policy }}
+              html={`<a href=${POLICY_URL}>Privacy Policy</a>`}
+              onLinkPress={(_, href) => {
+                Linking.openURL(href);
+              }}
+            ></HTML>
+            <Stack size={36}></Stack>
             {this.props.user.lastAuth ?
+            <>
+            
             <VoxButton
               title='Logout'
               variant='hollow'
               hue='green'
               flex={1}
-              raised
+              // raised
               onPress={() => {
                 this.props.deAuth()
                 this.checkAuth()
               }}
-          ></VoxButton>
-          :
-          null
+            ></VoxButton>
+            <Stack size={36}></Stack>
+            </>
+            :
+            null
             }
-          </View>
+            
+          </ScrollView>
     );
   }
 }
@@ -229,4 +245,9 @@ const styles = StyleSheet.create({
   thinDivider: {
     height: 0,
   },
+  policy: {
+    alignSelf: 'center',
+    ...Typography.sansRegular,
+    ...Typography.p
+  }
 });
