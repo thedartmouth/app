@@ -1,29 +1,25 @@
-import React from 'react';
-import { Button } from 'react-native-elements';
-import { Colors, Typography } from '../constants';
+import React from 'react'
+import { Button } from 'react-native-elements'
+import { Colors, Typography } from '../constants'
 
 const VoxButton = (props) => {
-	let primaryColor = Colors.green;
-	let secondaryColor = Colors.paper;
+	let primaryColor = Colors.green
+	let secondaryColor = Colors.paper
 	switch (props.hue) {
 		case 'green':
-			primaryColor = Colors.green;
-			secondaryColor = Colors.paper;
+			primaryColor = Colors.green
+			secondaryColor = Colors.paper
 		default:
-			primaryColor = Colors.green;
-			secondaryColor = Colors.paper;
+			primaryColor = Colors.green
+			secondaryColor = Colors.paper
 	}
 	const titleStyle = {
 		...Typography.sansRegular,
 		...Typography.h3,
 		marginHorizontal: 18,
 	}
-	const buttonStyle = {
-
-	}
-	const containerStyle = {
-		
-	}
+	const buttonStyle = {}
+	const containerStyle = {}
 	switch (props.variant) {
 		case 'filled':
 			titleStyle.color = secondaryColor
@@ -48,8 +44,11 @@ const VoxButton = (props) => {
 		containerStyle.flex = props.flex
 	}
 	return (
-		<Button {...props} buttonStyle={buttonStyle} titleStyle={titleStyle}>
-		</Button>
+		<Button
+			{...props}
+			buttonStyle={buttonStyle}
+			titleStyle={titleStyle}
+		></Button>
 	)
 }
 

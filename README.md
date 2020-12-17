@@ -23,11 +23,13 @@ Our project depends on many external Node packages. Once you have cloned the rep
 ```bash
 $ yarn install
 ```
+
 to fetch all the latest modules. Once downloaded, they are found in `node_modules`.
 
 #### Starting up the app
 
 Finally, to start the local development app, choose among the following:
+
 1. `yarn start` opens the generic Expo interace, where you can choose where to run the app
 2. `yarn web` runs the app virtually on your browser
 3. `yarn ios` runs the app natively on your XCode simulator

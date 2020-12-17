@@ -1,4 +1,4 @@
-import reducers from './reducers';
-import actions from './actions';
+import reducers from './reducers'
+import actions from './actions'
 
-export {actions, reducers};
+export { actions, reducers }
