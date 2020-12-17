@@ -57,6 +57,8 @@ class ArticleScreen extends React.Component {
   }
 
   render() {
+
+    const date = this.props.articles.current.date ? dateFormat(this.props.articles.current.date, 'dddd, m/d/yy @ h:MM TT') : 'Unknown publish date'
   
     // animation
     const scrollY = new Animated.Value(0);
@@ -139,7 +141,9 @@ class ArticleScreen extends React.Component {
               <Stack size={12} />
               <View style={styles.padded}>
                 <Box dir='row' justify='between'>
-                <Text style={styles.details}>{!isNaN(this.props.articles.current.date.valueOf()) ? dateFormat(this.props.articles.current.date, 'dddd, m/d/yy @ h:MM TT') : this.props.articles.current.originalDate}</Text>
+                {/* <Text style={styles.details}>{this.props.articles.current.date}</Text> */}
+                <Text style={styles.details}>{date}</Text>
+                {/* <Text style={styles.details}>{!isNaN(this.props.articles.current.date.valueOf()) ? dateFormat(this.props.articles.current.date, 'dddd, m/d/yy @ h:MM TT') : 'Unknown publish date'}</Text> */}
                 <Text style={styles.details}>
                   {this.props.articles.current.reads || 0}
                   {' '}

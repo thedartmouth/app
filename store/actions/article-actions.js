@@ -172,8 +172,8 @@ export const bookmarkArticle = (dispatch) => async (articleSlug) => {
     const userId = await SecureStore.getItemAsync('userId')
     if (!userId) {
       showAuthModal(dispatch)()
-      dispatch({ type: ActionTypes.BOOKMARK_ARTICLE.FAILURE, payload: articleSlug });
-      // throw new Error('not authed')
+      // dispatch({ type: ActionTypes.BOOKMARK_ARTICLE.FAILURE, payload: articleSlug });
+      throw new Error('not authed')
     }
     const res = await axios
       .post(
@@ -196,8 +196,8 @@ export const bookmarkArticle = (dispatch) => async (articleSlug) => {
         });
         break
       default:
-        dispatch({ type: ActionTypes.BOOKMARK_ARTICLE.FAILURE, payload: articleSlug });
-        // throw new Error('failed bookmark')
+        // dispatch({ type: ActionTypes.BOOKMARK_ARTICLE.FAILURE, payload: articleSlug });
+        throw new Error('failed bookmark')
     }
   } catch (err) {
     console.log(err)
