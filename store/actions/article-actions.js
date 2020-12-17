@@ -199,6 +199,6 @@ export const bookmarkArticle = (dispatch) => async (articleSlug) => {
       }
       } catch (err) {
         console.log(err)
-    dispatch({ type: ActionTypes.BOOKMARK_ARTICLE.FAILURE, err });
+    dispatch({ type: ActionTypes.BOOKMARK_ARTICLE.FAILURE, payload: articleSlug });
   }
 };
