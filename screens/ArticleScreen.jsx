@@ -21,6 +21,7 @@ import { Typography, Colors } from '../constants'
 import { Box, Stack, Queue } from '../components/layout'
 import { actions } from '../store'
 import dateFormat from 'dateformat'
+import { Platform } from 'react-native'
 
 class ArticleScreen extends React.Component {
 	constructor(props) {
@@ -63,7 +64,7 @@ class ArticleScreen extends React.Component {
 	}
 
 	render() {
-		const date = this.props.articles.current.date
+		const date = this.props.articles.current?.date
 			? dateFormat(
 					this.props.articles.current.date,
 					'dddd, m/d/yy @ h:MM TT'
@@ -86,201 +87,208 @@ class ArticleScreen extends React.Component {
 			outputRange: [1, 0],
 		})
 
-		return (
-			<SafeAreaConsumer>
-				{(insets) => (
-					<View style={[styles.screen, { marginTop: 0 }]}>
-						<Animated.View
-							style={{
-								transform: [{ translateY: translateYTop(48) }],
-								zIndex: 1,
-							}}
+		if (!this.props.articles.current) return null
+		else
+			return (
+				<View style={styles.screen}>
+					{Platform.OS === 'ios' ?
+					<Animated.View
+						style={{
+							transform: [{ translateY: translateYTop(48) }],
+							zIndex: 1,
+						}}
+					>
+						<Box
+							dir="column"
+							justifyContent="center"
+							style={styles.topTab}
 						>
-							<Box
-								dir="column"
-								justifyContent="center"
-								style={styles.topTab}
-								pad={[0, 0, 0, 0]}
-							>
-								<Box dir="row">
-									<Queue size={36} />
-									<Animated.View style={{ opacity: opacityButton }}>
-										<Ionicons
-											name="ios-chevron-back"
-											size={36}
-											color={Colors.charcoal}
-											onPress={this.goBack}
-										/>
-									</Animated.View>
-								</Box>
-							</Box>
-						</Animated.View>
-						{this.props.articles.current ? (
-							<>
-								<ScrollView
-									onScroll={(e) => {
-										scrollY.setValue(e.nativeEvent.contentOffset.y)
-									}}
-									scrollEventThrottle={16}
-									bounces={false}
-								>
-									<Stack size={0 + 72} />
-									<View style={[styles.tags, styles.padded]}>
-										{this.props.articles.current.tags.map((tag) => (
-											<View key={tag} style={styles.tagContainer}>
-												<Text style={styles.tag}>{tag}</Text>
-												<Queue size={8} />
-												<Stack size={32} />
-											</View>
-										))}
-									</View>
-									<Stack size={4} />
-									<Text style={[styles.articleTitle, styles.padded]}>
-										{this.props.articles.current.headline}
-									</Text>
-									<Stack size={12} />
-									<View
-										style={[styles.authorViewsArea, styles.padded]}
-									>
-										<View style={styles.authorArea}>
-											{this.props.articles.current.authors.map(
-												(author, idx) => (
-													<TouchableOpacity
-														key={author.slug}
-														navigation={this.props.navigation}
-														onPress={() => {
-															this.visitAuthor(author)
-														}}
-													>
-														<Box dir="row" align="center">
-															<Text style={styles.author}>
-																{author.name}
-															</Text>
-															<Queue size={4} />
-															<Ionicons
-																style={styles.authorAdd}
-																name="ios-add"
-																size={18}
-																color="gray"
-															/>
-															{idx <
-															this.props.articles.current.authors
-																.length -
-																1 ? (
-																<Queue size={8}></Queue>
-															) : null}
-														</Box>
-													</TouchableOpacity>
-												)
-											) || (
-												<Text style={styles.author}>
-													No authorship
-												</Text>
-											)}
-										</View>
-									</View>
-									<Stack size={12} />
-									<FullWidthImage
-										source={{
-											uri: this.props.articles.current.imageURI,
-										}}
+							<Box dir="row">
+								<Queue size={36} />
+								<Animated.View style={{ opacity: opacityButton }}>
+									<Ionicons
+										name="ios-chevron-back"
+										size={36}
+										color={Colors.charcoal}
+										onPress={this.goBack}
 									/>
-									<Stack size={12} />
-									<View style={styles.padded}>
-										<Box dir="row" justify="between">
-											{/* <Text style={styles.details}>{this.props.articles.current.date}</Text> */}
-											<Text style={styles.details}>{date}</Text>
-											{/* <Text style={styles.details}>{!isNaN(this.props.articles.current.date.valueOf()) ? dateFormat(this.props.articles.current.date, 'dddd, m/d/yy @ h:MM TT') : 'Unknown publish date'}</Text> */}
-											<Text style={styles.details}>
-												{this.props.articles.current.reads || 0}{' '}
-												{this.props.articles.current.reads === 1
-													? 'view'
-													: 'views'}
-											</Text>
-										</Box>
-										<Stack size={12}></Stack>
-										{this.props.articles.current.body ? (
-											<HTML
-												tagsStyles={{
-													p: styles.content,
-													a: styles.links,
-												}}
-												html={this.props.articles.current.body}
-												onLinkPress={(event, href) => {
-													Linking.openURL(href)
-												}}
-												imagesMaxWidth={
-													Dimensions.get('window').width - 36 * 2
-												}
-											/>
-										) : null}
-									</View>
-									<View>
-										<Stack size={144}></Stack>
-									</View>
-								</ScrollView>
-								<Animated.View
-									style={{
-										transform: [{ translateY: translateYBottom }],
-										zIndex: 1,
-									}}
-								>
-									<View style={styles.bottomTab}>
-										<Stack size={12} />
-										<View style={styles.bottomTabButtons}>
-											<Ionicons
-												name="ios-heart-outline"
-												size={36}
-												color={Colors.charcoal}
-												onPress={() =>
-													alert('Feature coming soon!')
-												}
-											/>
-											{this.props.articles.current.bookmarked ||
-											this.props.articles.pendingBookmarks.includes(
-												this.props.articles.current.slug
-											) ? (
-												<Ionicons
-													name="ios-bookmark"
-													size={36}
-													color="gray"
-													onPress={() =>
-														this.props.bookmarkArticle(
-															this.props.articles.current.slug
-														)
-													}
-												/>
-											) : (
-												<Ionicons
-													name="ios-bookmark-outline"
-													size={36}
-													color="gray"
-													onPress={() =>
-														this.props.bookmarkArticle(
-															this.props.articles.current.slug
-														)
-													}
-												/>
-											)}
-											<Ionicons
-												name={
-													this.state.shareButtonPressed
-														? 'ios-share'
-														: 'ios-share-outline'
-												}
-												size={36}
-												color={Colors.charcoal}
-												onPress={this.onShare}
-											/>
-										</View>
-									</View>
 								</Animated.View>
-							</>
-						) : null}
-					</View>
-				)}
-			</SafeAreaConsumer>
-		)
+							</Box>
+						</Box>
+					</Animated.View>
+					:
+					null
+					}
+					<ScrollView
+						onScroll={(e) => {
+							scrollY.setValue(e.nativeEvent.contentOffset.y)
+						}}
+						scrollEventThrottle={16}
+						bounces={false}
+					>
+						{Platform.OS === 'ios' ?
+						<Stack size={72} />
+						:
+						<View>
+							<Box dir="row">
+							<Queue size={36} />
+							<Animated.View style={{ opacity: opacityButton }}>
+								<Ionicons
+									name="ios-chevron-back"
+									size={36}
+									color={Colors.charcoal}
+									onPress={this.goBack}
+								/>
+							</Animated.View>
+							<Stack size={48}></Stack>
+						</Box>
+						</View>
+						}
+						<View style={[styles.tags, styles.padded]}>
+							{this.props.articles.current.tags.map((tag) => (
+								<View key={tag} style={styles.tagContainer}>
+									<Text style={styles.tag}>{tag}</Text>
+									<Queue size={8} />
+									<Stack size={32} />
+								</View>
+							))}
+						</View>
+						<Stack size={4} />
+						<Text style={[styles.articleTitle, styles.padded]}>
+							{this.props.articles.current.headline}
+						</Text>
+						<Stack size={12} />
+						<View style={[styles.authorViewsArea, styles.padded]}>
+							<View style={styles.authorArea}>
+								{this.props.articles.current.authors.map(
+									(author, idx) => (
+										<TouchableOpacity
+											key={author.slug}
+											navigation={this.props.navigation}
+											onPress={() => {
+												this.visitAuthor(author)
+											}}
+										>
+											<Box dir="row" align="center">
+												<Text style={styles.author}>
+													{author.name}
+												</Text>
+												<Queue size={4} />
+												<Ionicons
+													style={styles.authorAdd}
+													name="ios-add"
+													size={18}
+													color="gray"
+												/>
+												{idx <
+												this.props.articles.current.authors.length -
+													1 ? (
+													<Queue size={8}></Queue>
+												) : null}
+											</Box>
+										</TouchableOpacity>
+									)
+								) || <Text style={styles.author}>No authorship</Text>}
+							</View>
+						</View>
+						<Stack size={12} />
+						<FullWidthImage
+							source={{
+								uri: this.props.articles.current.imageURI,
+							}}
+						/>
+						<Stack size={12} />
+						<View style={styles.padded}>
+							<Box dir="row" justify="between">
+								<Text style={styles.details}>{date}</Text>
+								<Text style={styles.details}>
+									{this.props.articles.current.reads || 0}{' '}
+									{this.props.articles.current.reads === 1
+										? 'view'
+										: 'views'}
+								</Text>
+							</Box>
+							<Stack size={12}></Stack>
+							{this.props.articles.current.body ? (
+								<HTML
+									tagsStyles={{
+										p: styles.content,
+										a: styles.links,
+									}}
+									html={this.props.articles.current.body}
+									onLinkPress={(event, href) => {
+										Linking.openURL(href)
+									}}
+									imagesMaxWidth={
+										Dimensions.get('window').width - 36 * 2
+									}
+								/>
+							) : null}
+						</View>
+						<View>
+							<Stack size={144}></Stack>
+						</View>
+					</ScrollView>
+					<Animated.View
+						style={Platform.OS === 'ios' ?
+						{
+							transform: [{ translateY: translateYBottom }],
+						}:
+						{
+							// opacity: opacityButton
+						}
+					}
+					>
+						<View style={styles.bottomTab}>
+							<Stack size={12} />
+							<View style={styles.bottomTabButtons}>
+								<Ionicons
+									name="ios-heart-outline"
+									size={36}
+									color={Colors.charcoal}
+									onPress={() => alert('Feature coming soon!')}
+								/>
+								{this.props.articles.current.bookmarked ||
+								this.props.articles.pendingBookmarks.includes(
+									this.props.articles.current.slug
+								) ? (
+									<Ionicons
+										name="ios-bookmark"
+										size={36}
+										color="gray"
+										onPress={() =>
+											this.props.bookmarkArticle(
+												this.props.articles.current.slug
+											)
+										}
+									/>
+								) : (
+									<Ionicons
+										name="ios-bookmark-outline"
+										size={36}
+										color="gray"
+										onPress={() =>
+											this.props.bookmarkArticle(
+												this.props.articles.current.slug
+											)
+										}
+									/>
+								)}
+								<Ionicons
+									name={
+										this.state.shareButtonPressed
+											? 'ios-share'
+											: 'ios-share-outline'
+									}
+									size={36}
+									color={Colors.charcoal}
+									onPress={this.onShare}
+								/>
+							</View>
+						</View>
+					</Animated.View>
+				</View>
+			)
 	}
 }
 

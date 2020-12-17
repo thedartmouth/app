@@ -38,11 +38,11 @@ class ResultsScreen extends React.Component {
 	render() {
 		return (
 			<View style={styles.bookmarkScreen}>
-				<Box dir="column" style={styles.topTab} pad={[0, 0, 0, 0]}>
+				<Box dir="column" style={styles.topTab}>
 					{/* <Queue size={36} /> */}
 					<Box dir="row" justify="center" align="center" expand>
 						<Ionicons
-							name="ios-arrow-back"
+							name="ios-chevron-back"
 							size={36}
 							color={Colors.charcoal}
 							onPress={this.props.navigation.goBack}
