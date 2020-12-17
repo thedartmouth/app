@@ -40,10 +40,10 @@ export const ActionTypes = {
   },
 };
 
-const CMS_QUERY_SETTINGS = (page) => `a=1&ty=article&per_page=10&page=${page || 1}`
+const CMS_QUERY_SETTINGS = (page) => `a=1&ty=article&per_page=50&page=${page || 1}`
 
 /**
- * Pulls the most recent set of articles from all sections on page 1 and saves to store.
+ * Pulls the most recent set of articles from all sections on page 1 `and saves to store.
  */
 export const refreshFeed = (dispatch) => () =>
   new Promise((resolve, reject) => {

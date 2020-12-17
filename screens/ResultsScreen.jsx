@@ -62,6 +62,7 @@ class ResultsScreen extends React.Component {
           // </View>
         ) : (
           <FlatList
+          style={styles.scroll}
             data={this.props.articles.results}
             refreshControl={<RefreshControl refreshing={this.props.articles.loadingResults} onRefresh={this.refresh} />}
             onMomentumScrollBegin={() => {
@@ -97,7 +98,7 @@ class ResultsScreen extends React.Component {
                     'No'
                     } articles
                    </Text>
-              </Box> 
+                </Box> 
                 </View>
             }
             ItemSeparatorComponent={Divider}
@@ -115,7 +116,7 @@ class ResultsScreen extends React.Component {
                 <Stack size={18} />
               </View>
             )}
-            style={styles.scroll}
+            
           />
         )}
       </View>
@@ -135,7 +136,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.paper,
   },
   scroll: {
-    // flex: 1,
+    flex: 1,
     paddingHorizontal: 36,
   },
   topTab: {

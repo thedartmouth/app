@@ -41,7 +41,10 @@ const FeedScreen = (props) => {
         style={styles.articleBox}
         data={props.articles.feed}
         refreshControl={<RefreshControl refreshing={props.articles.feed == null} onRefresh={onRefresh} />}
-        onEndReached={() => setPage(page + 1)} // set page to adding
+        onEndReached={() => {
+          console.log('end')
+          setPage(page + 1)
+        }} // set page to adding
         ItemSeparatorComponent={Divider}
         ListFooterComponent={props.articles.feed == null ?(
           <View>
