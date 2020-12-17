@@ -55,7 +55,6 @@ const styles = StyleSheet.create({
   category: {
     color: Colors.green,
     fontSize: 10,
-    lineHeight: 0,
     ...Typography.sansBold,
     textTransform: 'uppercase'
   },

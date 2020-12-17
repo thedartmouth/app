@@ -29,7 +29,7 @@ const FeedScreen = (props) => {
 
   return (
     <View style={[styles.screen]}>
-      <View style={[styles.bannerContainer, { paddingTop: useSafeArea().top }]}>
+      <View style={[styles.bannerContainer, { paddingTop: 0 }]}>
         <Stack size={useSafeArea().top > 0 ? 4 : 16} />
         <Image
           source={require('../assets/images/banner.png')}

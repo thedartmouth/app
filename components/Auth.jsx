@@ -58,7 +58,7 @@ class Auth extends React.Component {
     const lastNameInput = React.createRef();
     if (this.state.mode === 'welcome') {
       return (
-        <Box dir='col' align='center' style={styles.container}>
+        <Box dir='column' align='center' style={styles.container}>
                   <Image
           source={require('../assets/images/icon.png')}
           style={styles.logo}
@@ -80,20 +80,20 @@ class Auth extends React.Component {
       )
     }
     return (
-      <Box dir='col' align='center' style={styles.container}>
+      <Box dir='column' align='center' style={styles.container}>
         <Image
           source={require('../assets/images/icon.png')}
           style={styles.logo}
         />
         <Stack size={24}></Stack>
         <Text style={styles.heading}>
-          Join us voces clamantium in deserto.
+          Join us — the voces clamantium in deserto.
         </Text>
         <Stack size={24}></Stack>
         <View style={styles.fatFormChild}>
         {this.state.mode === 'signup'
           ?
-          <Box dir='row' justify='between' style={styles.fatFormChild}>
+          <Box dir='row' justify='between' align='end' style={styles.fatFormChild}>
             <View style={styles.nameInput}>
             <Input
               placeholder='First'
@@ -101,6 +101,7 @@ class Auth extends React.Component {
               onChangeText={first => { this.setState(prevState => ({name: {...prevState.name, first}})) }}
               errorStyle={{ color: 'red' }}
               errorMessage={this.state.error}
+              leftIcon={{ type: 'ionicons', name: 'face' }}
               inputStyle={styles.inputStyle}
               onSubmitEditing={() => lastNameInput.current.focus()}
             />
@@ -193,6 +194,7 @@ const styles = StyleSheet.create({
     ...Typography.serifBold,
   },
   heading: {
+    textAlign: 'center',
     ...Typography.p,
     ...Typography.serifBold,
   },

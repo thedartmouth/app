@@ -2,6 +2,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import * as React from 'react';
 import { StyleSheet } from 'react-native';
 import FeedScreen from '../screens/FeedScreen';
+import { Colors } from '../constants';
 import ProfileScreen from '../screens/ProfileScreen';
 import DiscoverScreen from '../screens/DiscoverScreen';
 import TabBarIcon from '../components/TabBarIcon';
@@ -77,10 +78,12 @@ function getHeaderTitle(route) {
 
 const styles = StyleSheet.create({
   tabBar: {
-    height: 94,
+    color: Colors.paper,
+    height: 72,
     shadowOffset: { height: -3 },
     shadowRadius: 10,
     shadowColor: 'gray',
     shadowOpacity: 0.3,
+    paddingBottom: 0 // override default
   },
 });

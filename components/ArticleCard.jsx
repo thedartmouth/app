@@ -78,7 +78,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     borderRadius: 8,
     fontSize: 12,
-    lineHeight: 0,
     ...Typography.sansBold,
     color: Colors.paper,
     backgroundColor: Colors.green,

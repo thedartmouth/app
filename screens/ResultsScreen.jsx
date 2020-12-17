@@ -39,10 +39,8 @@ class ResultsScreen extends React.Component {
 
   render() {
     return (
-      <SafeAreaConsumer>
-     {(insets) => (
      <View style={styles.bookmarkScreen}>
-            <Box dir="column" style={styles.topTab} pad={[insets.top, 0, 0, 0]}>
+            <Box dir="column" style={styles.topTab} pad={[0, 0, 0, 0]}>
                 {/* <Queue size={36} /> */}
                 <Box dir='row' justify='center' align='center' expand>
                   <Ionicons name="ios-arrow-back" size={36} color={Colors.charcoal} onPress={this.props.navigation.goBack} style={styles.backButton} />
@@ -86,7 +84,7 @@ class ResultsScreen extends React.Component {
               null
               :
               <View>
-              <Stack size={insets.top + 72} />
+              <Stack size={0 + 72} />
               <Box dir='row' justify='between'>
                 <Text style={styles.hint}>Sorted by recency</Text>
                 <Text style={styles.hint}>
@@ -120,8 +118,7 @@ class ResultsScreen extends React.Component {
             style={styles.scroll}
           />
         )}
-      </View>)}
-      </SafeAreaConsumer>
+      </View>
     );
   }
 }

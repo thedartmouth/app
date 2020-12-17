@@ -10,7 +10,7 @@ import { SplashScreen } from 'expo';
 import * as Font from 'expo-font';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import BottomTabNavigator from './navigation/BottomTabNavigator';
 import useLinking from './navigation/useLinking';
 import { reducers, actions } from './store';
@@ -44,7 +44,8 @@ const ConnectedModal = connect(
   <Modal
     visible={props.visible}
     animationType='slide'
-    presentationStyle={Platform.OS === 'ios' ? 'formSheet' : undefined}
+    presentationStyle='formSheet'
+    // presentationStyle={Platform.OS === 'ios' ? 'formSheet' : undefined}
   >
     <Ionicons name='ios-close' size={48} color={Colors.charcoal} style={styles.closeModal} onPress={props.hide}></Ionicons>
     {/* <TouchableWithoutFeedback
@@ -144,7 +145,7 @@ export default function App(props) {
   return (
     <Provider store={store}>
       <SafeAreaProvider>
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
           {Platform.OS === 'ios' && <StatusBar style={styles.statusBar} barStyle="dark-content" />}
           {(!isFeedLoadingComplete && !props.skipLoadingScreen)
             ? <LoadingScreen completeLoading={() => setFeedLoadingComplete(true)} />
@@ -159,12 +160,12 @@ export default function App(props) {
               </NavigationContainer>
             )}
             <ConnectedModal>
-              <View style={styles.modalContainer}>
                 {/* <View style={styles.modalBar}></View> */}
+              <View style={styles.modalContainer}>
                 <Auth></Auth>
               </View>
             </ConnectedModal>
-        </View>
+        </SafeAreaView>
       </SafeAreaProvider>
     </Provider>
   );
@@ -173,10 +174,10 @@ export default function App(props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: Colors.paper,
   },
   statusBar: {
-    backgroundColor: 'white',
+    backgroundColor: Colors.paper,
   },
   modal: {
     flex: 1,

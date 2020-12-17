@@ -76,9 +76,7 @@ class ProfileScreen extends React.Component {
 
   render() {
     return (
-      <SafeAreaConsumer>
-        {(insets) => (
-          <View style={[styles.profileScreen, { paddingTop: insets.top }]}>
+          <View style={[styles.profileScreen, { paddingTop: 0 }]}>
             <Stack size={72} />
             <View style={styles.intro}>
               <Text style={styles.title}>Hello, {this.props.user.data?.name?.first || 'there'}.</Text>
@@ -158,8 +156,6 @@ class ProfileScreen extends React.Component {
           null
             }
           </View>
-        )}
-      </SafeAreaConsumer>
     );
   }
 }

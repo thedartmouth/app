@@ -5,7 +5,7 @@ import {
 } from 'react-native';
 import FullWidthImage from 'react-native-fullwidth-image'
 import { Ionicons, FontAwesome5, MaterialIcons } from '@expo/vector-icons';
-import { SafeAreaConsumer } from 'react-native-safe-area-context';
+import { SafeAreaConsumer, useSafeArea } from 'react-native-safe-area-context';
 import { ScrollView } from 'react-native-gesture-handler';
 import HTML from 'react-native-render-html';
 import { Linking } from 'expo';
@@ -23,6 +23,7 @@ class ArticleScreen extends React.Component {
   }
 
   goBack = () => {
+    console.log('GOING BACk')
     this.props.navigation.goBack()
     this.props.exitArticle()
   }
@@ -74,23 +75,23 @@ class ArticleScreen extends React.Component {
   
     return (
       <SafeAreaConsumer>
-        {(insets) => (
-          <View style={styles.screen}>
+        {insets => (
+
+          <View style={[styles.screen, {marginTop: 0}]}>
             <Animated.View style={{
               transform: [
-                { translateY: translateYTop(insets.top) },
+                { translateY: translateYTop(48) },
               ],
               zIndex: 1,
             }}
             >
-              <Box dir="column" style={styles.topTab} pad={[insets.top, 0, 0, 0]}>
+              <Box dir="column" justifyContent='center' style={styles.topTab} pad={[0, 0, 0, 0]}>
                 <Box dir="row">
                   <Queue size={36} />
                   <Animated.View style={{ opacity: opacityButton }}>
-                    <Ionicons name="ios-arrow-back" size={36} color={Colors.charcoal} onPress={this.goBack} />
+                    <Ionicons name="ios-chevron-back" size={36} color={Colors.charcoal} onPress={this.goBack} />
                   </Animated.View>
                 </Box>
-                <Stack size={12} />
               </Box>
             </Animated.View>
             {this.props.articles.current ?
@@ -100,7 +101,7 @@ class ArticleScreen extends React.Component {
               scrollEventThrottle={16}
               bounces={false}
             >
-              <Stack size={insets.top + 72} />
+              <Stack size={0 + 72} />
               <View style={[styles.tags, styles.padded]}>
                 {this.props.articles.current.tags.map((tag) => (
                   <View key={tag} style={styles.tagContainer}>
@@ -215,6 +216,7 @@ const styles = StyleSheet.create({
     top: 0,
     width: '100%',
     backgroundColor: Colors.paper,
+    height: 48
     // borderColor: '#e5e6e9',
     // backgroundColor: 'white',
     // shadowOffset: { height: 3 },
@@ -242,7 +244,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     borderRadius: 8,
     fontSize: 12,
-    lineHeight: 0,
     ...Typography.sansBold,
     color: Colors.paper,
     backgroundColor: Colors.green,
@@ -285,14 +286,14 @@ const styles = StyleSheet.create({
     ...Typography.serifRegular,
   },
   bottomTab: {
-    borderWidth: 1,
-    borderColor: '#e5e6e9',
+    borderTopWidth: 1,
+    borderColor: Colors.border,
     position: 'absolute',
     bottom: 0,
     width: '100%',
     zIndex: 1,
     backgroundColor: 'white',
-    height: 96,
+    height: 72,
   },
   bottomTabButtons: {
     flexDirection: 'row',

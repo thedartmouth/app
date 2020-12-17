@@ -63,9 +63,7 @@ class DiscoverScreen extends React.Component {
 
   render() {
     return (
-      <SafeAreaConsumer>
-        {insets => (
-          <View style={[styles.pollsScreen, {paddingTop: insets.top}]}>
+          <View style={[styles.pollsScreen, {paddingTop: 0}]}>
             <ScrollView style={styles.scroll}>
             <Stack size={24}></Stack>
             <View style={styles.titleArea}>
@@ -139,12 +137,12 @@ class DiscoverScreen extends React.Component {
               />
               :
               <View>
-                {/* <Box dir='col'>
+                {/* <Box dir='column'>
                   <Box dir='row' style={{height: 200}}>
                     <Text style={[styles.tile, {flex: 3}]}>
                       Trendin
                     </Text>
-                    <Box dir='col' style={{flex: 2}}>
+                    <Box dir='column' style={{flex: 2}}>
                       <Text style={[styles.tile, {flex: 3}]}>
                         Opinion
                       </Text>
@@ -178,8 +176,6 @@ class DiscoverScreen extends React.Component {
               <Stack size={24}></Stack>
             </ScrollView>
           </View>
-        )}
-      </SafeAreaConsumer>
     )
   }
 }
