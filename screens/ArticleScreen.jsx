@@ -211,7 +211,35 @@ class ArticleScreen extends React.Component {
 								<HTML
 									tagsStyles={{
 										p: styles.content,
+										strong: {
+											fontSize: 16,
+											fontFamily: 'libre-bold',
+											color: Colors.pen,
+											lineHeight: 16 * 1.7,
+											marginBottom: 16,
+										},
 										a: styles.links,
+									}}
+									classesStyles={{
+										'pull-quote': {
+											backgroundColor: Colors.shade,
+											padding: 24,
+											borderRadius: 8,
+											borderBottomWidth: 8,
+											borderColor: Colors.green,
+											borderStyle: 'solid',
+											marginBottom: 36,
+										},
+										'pull-quote-body': {
+											fontSize: 18,
+											fontFamily: 'libre-regular',
+											marginBottom: 4,
+										},
+										'pull-quote-byline': {
+											marginTop: 4,
+											fontWeight: 'bold',
+											fontSize: 16,
+										}
 									}}
 									html={this.props.articles.current.body}
 									onLinkPress={(event, href) => {
@@ -384,7 +412,10 @@ const styles = StyleSheet.create({
 		...Typography.serifRegular,
 		color: Colors.pen,
 		lineHeight: Typography.p.fontSize * 1.7,
-		marginBottom: 18,
+		marginBottom: 16,
+	},
+	contentStrong: {
+		...Typography.serifBold
 	},
 	links: {
 		...Typography.p,
