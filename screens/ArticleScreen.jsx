@@ -91,34 +91,32 @@ class ArticleScreen extends React.Component {
 		else
 			return (
 				<View style={styles.screen}>
-					{Platform.OS === 'ios' ?
-					<Animated.View
-						style={{
-							transform: [{ translateY: translateYTop(48) }],
-							zIndex: 1,
-						}}
-					>
-						<Box
-							dir="column"
-							justifyContent="center"
-							style={styles.topTab}
+					{Platform.OS === 'ios' ? (
+						<Animated.View
+							style={{
+								transform: [{ translateY: translateYTop(48) }],
+								zIndex: 1,
+							}}
 						>
-							<Box dir="row">
-								<Queue size={36} />
-								<Animated.View style={{ opacity: opacityButton }}>
-									<Ionicons
-										name="ios-chevron-back"
-										size={36}
-										color={Colors.charcoal}
-										onPress={this.goBack}
-									/>
-								</Animated.View>
+							<Box
+								dir="column"
+								justifyContent="center"
+								style={styles.topTab}
+							>
+								<Box dir="row">
+									<Queue size={36} />
+									<Animated.View style={{ opacity: opacityButton }}>
+										<Ionicons
+											name="ios-chevron-back"
+											size={36}
+											color={Colors.charcoal}
+											onPress={this.goBack}
+										/>
+									</Animated.View>
+								</Box>
 							</Box>
-						</Box>
-					</Animated.View>
-					:
-					null
-					}
+						</Animated.View>
+					) : null}
 					<ScrollView
 						onScroll={(e) => {
 							scrollY.setValue(e.nativeEvent.contentOffset.y)
@@ -126,24 +124,24 @@ class ArticleScreen extends React.Component {
 						scrollEventThrottle={16}
 						bounces={false}
 					>
-						{Platform.OS === 'ios' ?
-						<Stack size={72} />
-						:
-						<View>
-							<Box dir="row">
-							<Queue size={36} />
-							<Animated.View style={{ opacity: opacityButton }}>
-								<Ionicons
-									name="ios-chevron-back"
-									size={36}
-									color={Colors.charcoal}
-									onPress={this.goBack}
-								/>
-							</Animated.View>
-							<Stack size={48}></Stack>
-						</Box>
-						</View>
-						}
+						{Platform.OS === 'ios' ? (
+							<Stack size={72} />
+						) : (
+							<View>
+								<Box dir="row">
+									<Queue size={36} />
+									<Animated.View style={{ opacity: opacityButton }}>
+										<Ionicons
+											name="ios-chevron-back"
+											size={36}
+											color={Colors.charcoal}
+											onPress={this.goBack}
+										/>
+									</Animated.View>
+									<Stack size={48}></Stack>
+								</Box>
+							</View>
+						)}
 						<View style={[styles.tags, styles.padded]}>
 							{this.props.articles.current.tags.map((tag) => (
 								<View key={tag} style={styles.tagContainer}>
@@ -230,14 +228,15 @@ class ArticleScreen extends React.Component {
 						</View>
 					</ScrollView>
 					<Animated.View
-						style={Platform.OS === 'ios' ?
-						{
-							transform: [{ translateY: translateYBottom }],
-						}:
-						{
-							// opacity: opacityButton
+						style={
+							Platform.OS === 'ios'
+								? {
+										transform: [{ translateY: translateYBottom }],
+								  }
+								: {
+										// opacity: opacityButton
+								  }
 						}
-					}
 					>
 						<View style={styles.bottomTab}>
 							<Stack size={12} />
