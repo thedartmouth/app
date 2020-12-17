@@ -13,6 +13,7 @@ import { connect } from 'react-redux';
 import { Typography, Colors } from '../constants';
 import { Box, Stack, Queue } from '../components/layout';
 import { actions } from '../store';
+import dateFormat from 'dateformat';
 
 class ArticleScreen extends React.Component {
   constructor(props) {
@@ -23,7 +24,6 @@ class ArticleScreen extends React.Component {
   }
 
   goBack = () => {
-    console.log('GOING BACk')
     this.props.navigation.goBack()
     this.props.exitArticle()
   }
@@ -72,11 +72,10 @@ class ArticleScreen extends React.Component {
       inputRange: [0, 40],
       outputRange: [1, 0],
     });
-  
+
     return (
       <SafeAreaConsumer>
         {insets => (
-
           <View style={[styles.screen, {marginTop: 0}]}>
             <Animated.View style={{
               transform: [
@@ -131,11 +130,7 @@ class ArticleScreen extends React.Component {
                   No authorship
                 </Text>}
                 </View>
-                <Text style={styles.views}>
-                  {this.props.articles.current.reads || 0}
-                  {' '}
-                  {this.props.articles.current.reads === 1 ? 'view' : 'views'}
-                </Text>
+
               </View>
               <Stack size={12} />
               <FullWidthImage
@@ -143,6 +138,15 @@ class ArticleScreen extends React.Component {
               />
               <Stack size={12} />
               <View style={styles.padded}>
+                <Box dir='row' justify='between'>
+                <Text style={styles.details}>{!isNaN(this.props.articles.current.date.valueOf()) ? dateFormat(this.props.articles.current.date, 'dddd, m/d/yy @ h:MM TT') : this.props.articles.current.originalDate}</Text>
+                <Text style={styles.details}>
+                  {this.props.articles.current.reads || 0}
+                  {' '}
+                  {this.props.articles.current.reads === 1 ? 'view' : 'views'}
+                </Text>
+                </Box>
+                <Stack size={12}></Stack>
               {this.props.articles.current.body ? (
                 <HTML
                   tagsStyles={{ p: styles.content, a: styles.links }}
@@ -262,10 +266,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexWrap: 'wrap',
   },
-  views: {
-    ...Typography.sans,
-  },
-
   author: {
     color: Colors.charcoal,
     ...Typography.p,
@@ -273,6 +273,11 @@ const styles = StyleSheet.create({
   },
   authorAdd: {
     marginTop: 3, // correction
+  },
+  details: {
+    ...Typography.sansLight,
+    fontSize: 10,
+    color: Colors.pen,
   },
   content: {
     ...Typography.p,
@@ -292,7 +297,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     width: '100%',
     zIndex: 1,
-    backgroundColor: 'white',
+    backgroundColor: Colors.paper,
     height: 72,
   },
   bottomTabButtons: {
