@@ -1,26 +1,35 @@
 {
-	"expo": {
-		"name": "The Dartmouth Inc.",
-		"slug": "the-dartmouth",
-		"platforms": ["ios", "android", "web"],
-		"version": "1.0.0",
-		"orientation": "portrait",
-		"icon": "./assets/images/icon-small.png",
-		"scheme": "thedartmouth",
-		"splash": {
-			"image": "./assets/images/splash.png",
-			"resizeMode": "cover",
-			"backgroundColor": "#ffffff"
-		},
-		"updates": {
-			"fallbackToCacheTimeout": 0
-		},
-		"assetBundlePatterns": ["**/*"],
-		"ios": {
-			"supportsTablet": true,
-			"bundleIdentifier": "com.the-dartmouth.ios"
-		},
-		"description": "Stay up-to-date with what's happening around Dartmouth College and its broader community. Discover trending articles about student life at Dartmouth, administration's latest policies, college culture and arts, and our thought-provoking opinion pieces, written by the nation's oldest collegiate newspaper publication. Search across our thousands of historic publications with one-tap, save articles to our bookmarks, and get personalized feeds. Join the 'voces clamantium in deserto.'",
-		"githubUrl": "https://github.com/thedartmouth/mobile"
-	}
+  "expo": {
+    "name": "The Dartmouth Inc.",
+    "slug": "the-dartmouth",
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon-small.png",
+    "scheme": "thedartmouth",
+    "splash": {
+      "image": "./assets/images/splash.png",
+      "resizeMode": "cover",
+      "backgroundColor": "#ffffff"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.the-dartmouth.ios"
+    },
+    "description": "Stay up-to-date with what's happening around Dartmouth College and its broader community. Discover trending articles about student life at Dartmouth, administration's latest policies, college culture and arts, and our thought-provoking opinion pieces, written by the nation's oldest collegiate newspaper publication. Search across our thousands of historic publications with one-tap, save articles to our bookmarks, and get personalized feeds. Join the 'voces clamantium in deserto.'",
+    "githubUrl": "https://github.com/thedartmouth/mobile",
+    "android": {
+      "package": "com.thedartmouth.android"
+    }
+  }
 }
