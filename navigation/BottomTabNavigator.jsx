@@ -78,7 +78,7 @@ function getHeaderTitle(route) {
 
 const styles = StyleSheet.create({
   tabBar: {
-    color: Colors.paper,
+    backgroundColor: Colors.paper,
     height: 72,
     shadowOffset: { height: -3 },
     shadowRadius: 10,
