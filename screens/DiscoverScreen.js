@@ -11,7 +11,6 @@ import {
 import { SearchBar } from 'react-native-elements'
 import { Divider } from 'react-native-elements'
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
-import { SafeAreaConsumer } from 'react-native-safe-area-context'
 import { Box, Stack, Queue } from '../components/layout'
 import { Typography, Colors } from '../constants'
 import { debounce } from 'debounce'

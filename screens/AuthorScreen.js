@@ -4,7 +4,7 @@ import { actions } from '../store'
 import { StyleSheet, Text, View, Image } from 'react-native'
 import { Divider } from 'react-native-elements'
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
-import { SafeAreaConsumer } from 'react-native-safe-area-context'
+import { SafeAreaInsetsContext } from 'react-native-safe-area-context'
 import { Stack, Queue } from 'react-native-spacing-system'
 import { Typography, CMS_URL, ROOT_URL } from '../constants'
 import { Ionicons } from '@expo/vector-icons'
@@ -102,7 +102,7 @@ class AuthorScreen extends React.Component {
 
 	render() {
 		return (
-			<SafeAreaConsumer>
+			<SafeAreaInsetsContext.SafeAreaConsumer>
 				{(insets) => (
 					<View style={[styles.authorScreen, { paddingTop: insets.top }]}>
 						<ScrollView style={styles.scroll}>
@@ -199,7 +199,7 @@ class AuthorScreen extends React.Component {
 						</ScrollView>
 					</View>
 				)}
-			</SafeAreaConsumer>
+			</SafeAreaInsetsContext.SafeAreaConsumer>
 		)
 	}
 }

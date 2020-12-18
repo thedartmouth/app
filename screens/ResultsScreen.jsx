@@ -5,7 +5,6 @@ import { Box, Stack, Queue } from '../components/layout'
 import { Ionicons, MaterialIcons } from '@expo/vector-icons'
 import { connect } from 'react-redux'
 import { Colors, CMS_URL, Typography } from '../constants'
-import { SafeAreaConsumer } from 'react-native-safe-area-context'
 import PreviewCard from '../components/PreviewCard'
 
 class ResultsScreen extends React.Component {
