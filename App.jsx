@@ -4,7 +4,7 @@ import { createStore, applyMiddleware, compose } from 'redux'
 import { Provider } from 'react-redux'
 import thunk from 'redux-thunk'
 import { Platform, StatusBar, StyleSheet, View, Modal } from 'react-native'
-import { SplashScreen } from 'expo'
+import * as SplashScreen from 'expo-splash-screen'
 import * as Font from 'expo-font'
 import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
@@ -97,14 +97,14 @@ export default function App(props) {
 	React.useEffect(() => {
 		async function loadResourcesAndDataAsync() {
 			try {
-				SplashScreen.preventAutoHide()
+				SplashScreen.preventAutoHideAsync()
 
 				// Load our initial navigation state
 				setInitialNavigationState(await getInitialState())
 
 				// Load fonts
 				await Font.loadAsync({
-					Ionicons: require('@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/Ionicons.ttf'),
+					// Ionicons: require('@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/Ionicons.ttf'),
 					'poppins-bold': require('./assets/fonts/Poppins/Poppins-SemiBold.ttf'),
 					'poppins-regular': require('./assets/fonts/Poppins/Poppins-Regular.ttf'),
 					'poppins-light': require('./assets/fonts/Poppins/Poppins-Light.ttf'),
@@ -118,7 +118,7 @@ export default function App(props) {
 				console.warn(e)
 			} finally {
 				setFontLoadingComplete(true)
-				SplashScreen.hide()
+				SplashScreen.hideAsync()
 			}
 		}
 
