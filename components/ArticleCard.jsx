@@ -22,13 +22,16 @@ function ArticleCard(props) {
 				<FullWidthImage source={{ uri: props.article.imageURI }} />
 				<Stack size={12} />
 				<View style={[styles.tags, styles.padded]}>
-					{props.article.tags.map((tag) => (
+					<Text style={styles.tag}>
+						{props.article.category}
+					</Text>
+					{/* {props.article.tags.map((tag) => (
 						<View key={tag} style={styles.tagContainer}>
 							<Text style={styles.tag}>{tag}</Text>
 							<Queue size={8} />
 							<Stack size={32}></Stack>
 						</View>
-					))}
+					))} */}
 				</View>
 				<Stack size={4} />
 				<Text style={[styles.headline, styles.padded]}>
@@ -65,16 +68,18 @@ const styles = StyleSheet.create({
 		paddingHorizontal: 24,
 	},
 	tag: {
+		textTransform: 'uppercase',
 		alignSelf: 'flex-start',
-		paddingVertical: 4,
-		paddingHorizontal: 12,
-		borderRadius: 8,
 		fontSize: 12,
 		...Typography.sansBold,
-		color: Colors.paper,
-		backgroundColor: Colors.green,
+		paddingVertical: 4,
+		// paddingHorizontal: 12,
+		// borderRadius: 8,
+		// color: Colors.paper,
+		// backgroundColor: Colors.green,
+		color: Colors.green,
+		// backgroundColor: Colors.green,
 		overflow: 'hidden', // needed to show the borderRadius with backgroundColor
-		textTransform: 'uppercase',
 	},
 	tagContainer: {
 		flexDirection: 'row',
@@ -92,9 +97,11 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 	},
 	author: {
-		...Typography.p,
+		// ...Typography.p,
+		fontSize: 12,
 		...Typography.sansBold,
 		color: Colors.pen,
+		textTransform: 'uppercase',
 	},
 	authorAdd: {
 		marginTop: 2,
