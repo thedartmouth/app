@@ -17,6 +17,7 @@ import HTML from 'react-native-render-html'
 import * as Linking from 'expo-linking'
 import { connect } from 'react-redux'
 import { Typography, Colors, Layout } from '../constants'
+import { utils } from '../lib'
 import { Box, Stack, Queue } from '../components/layout'
 import { actions } from '../store'
 import dateFormat from 'dateformat'
@@ -74,6 +75,18 @@ class ArticleScreen extends React.Component {
 			{ cancelable: false }
 			)
 		// this.props.navigation.push('Author', author);
+	}
+
+	navigateToTag = (tag) => {
+		this.props.discoverArticlesByTag(tag, 1)
+		this.props.navigation.push('Results', {
+			tag: utils.convertTag(tag, 'view'),
+			getMore: (currentPage) =>
+				this.props.discoverArticlesByTag(
+					tag,
+					currentPage
+				),
+		})
 	}
 
 	renderArticleActions = () => {
@@ -243,7 +256,9 @@ class ArticleScreen extends React.Component {
 						<View style={[styles.tags, styles.padded]}>
 							{this.props.articles.current.tags.map((tag) => (
 								<View key={tag} style={styles.tagContainer}>
-									<TouchableOpacity>
+									<TouchableOpacity onPressOut={
+										() => this.navigateToTag(tag)
+									}>
 										<Text style={styles.tag}>#{tag}</Text>
 									</TouchableOpacity>
 									<Queue size={8} />
@@ -385,6 +400,7 @@ export default connect(
 	(dispatch) => ({
 		exitArticle: actions.exitArticle(dispatch),
 		bookmarkArticle: actions.bookmarkArticle(dispatch),
+		discoverArticlesByTag: actions.discoverArticlesByTag(dispatch),
 	})
 )(ArticleScreen)
 

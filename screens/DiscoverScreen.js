@@ -42,12 +42,12 @@ class DiscoverScreen extends React.Component {
 	}
 
 	navigateToTag = (tag) => {
-		this.props.discoverArticlesByTag(utils.convertTag(tag), 1)
+		this.props.discoverArticlesByTag(utils.convertTag(tag, 'api'), 1)
 		this.props.navigation.push('Results', {
 			tag,
 			getMore: (currentPage) =>
 				this.props.discoverArticlesByTag(
-					utils.convertTag(tag),
+					utils.convertTag(tag, 'api'),
 					currentPage
 				),
 		})

@@ -42,14 +42,13 @@ class ResultsScreen extends React.Component {
 					<Box dir="row" justify="center" align="center" expand>
 						<Ionicons
 							name="ios-chevron-back"
-							size={36}
+							size={32}
 							color={Colors.charcoal}
 							onPress={this.props.navigation.goBack}
 							style={styles.backButton}
 						/>
 						<Text style={styles.topTabTitle}>{this.state.title}</Text>
 					</Box>
-					<Stack size={12} />
 				</Box>
 				{this.props.articles.loadingResults ? null : (
 					// <View style={styles.noBookmarks}>
@@ -162,7 +161,7 @@ const styles = StyleSheet.create({
 		position: 'absolute',
 		top: 0,
 		width: '100%',
-
+		height: 48
 		// borderColor: '#e5e6e9',
 		// backgroundColor: 'white',
 		// shadowOffset: { height: 3 },
@@ -175,9 +174,9 @@ const styles = StyleSheet.create({
 		left: 36,
 	},
 	topTabTitle: {
-		...Typography.sansRegular,
-		...Typography.h2,
-		color: Colors.charcoal,
+		...Typography.serifBold,
+		...Typography.h3,
+		color: Colors.pen,
 	},
 	hint: {
 		...Typography.sansLight,
