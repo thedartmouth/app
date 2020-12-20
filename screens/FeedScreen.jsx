@@ -11,7 +11,7 @@ import {
 } from 'react-native'
 import { Divider } from 'react-native-elements'
 import { Stack } from 'react-native-spacing-system'
-import { useSafeArea } from 'react-native-safe-area-context'
+import { SafeAreaView, useSafeArea } from 'react-native-safe-area-context'
 import ArticleCard from '../components/ArticleCard'
 import { Colors } from '../constants'
 
@@ -28,7 +28,7 @@ const FeedScreen = (props) => {
 	}, [page])
 
 	return (
-		<View style={[styles.screen]}>
+		<View style={styles.screen}>
 			<View style={[styles.bannerContainer, { paddingTop: 0 }]}>
 				<Stack size={useSafeArea().top > 0 ? 4 : 16} />
 				<Image

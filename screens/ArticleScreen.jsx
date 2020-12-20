@@ -1,10 +1,10 @@
 /* eslint-disable no-underscore-dangle */
 import * as React from 'react'
 import {
+	Alert,
 	StyleSheet,
 	Text,
 	View,
-	Image,
 	Animated,
 	Dimensions,
 	Share,
@@ -16,11 +16,12 @@ import { ScrollView } from 'react-native-gesture-handler'
 import HTML from 'react-native-render-html'
 import * as Linking from 'expo-linking'
 import { connect } from 'react-redux'
-import { Typography, Colors } from '../constants'
+import { Typography, Colors, Layout } from '../constants'
 import { Box, Stack, Queue } from '../components/layout'
 import { actions } from '../store'
 import dateFormat from 'dateformat'
 import { Platform } from 'react-native'
+import { SafeAreaConsumer } from 'react-native-safe-area-context'
 
 class ArticleScreen extends React.Component {
 	constructor(props) {
@@ -58,8 +59,62 @@ class ArticleScreen extends React.Component {
 	}
 
 	visitAuthor = (author) => {
-		alert('Feature coming soon!')
+		Alert.alert(
+			`Articles by ${author.name}`,
+			'You will be able to browse articles by authors soon.',
+			[
+			//   {
+			// 	text: "Cancel",
+			// 	onPress: () => console.log("Cancel Pressed"),
+			// 	style: "cancel"
+			//   },
+			  { text: "Woo!" }
+			],
+			{ cancelable: false }
+			)
 		// this.props.navigation.push('Author', author);
+	}
+
+	renderArticleActions = () => {
+		return <Box dir='row'>
+		{this.props.articles.current.bookmarked ||
+			this.props.articles.pendingBookmarks.includes(
+				this.props.articles.current.slug
+			) ? (
+				<Ionicons
+					name="ios-bookmark"
+					size={32}
+					color="gray"
+					onPress={() =>
+						this.props.bookmarkArticle(
+							this.props.articles.current.slug
+						)
+					}
+				/>
+			) : (
+				<Ionicons
+					name="ios-bookmark-outline"
+					size={32}
+					color="gray"
+					onPress={() =>
+						this.props.bookmarkArticle(
+							this.props.articles.current.slug
+						)
+					}
+				/>
+			)}
+			<Queue size={12}></Queue>
+			<Ionicons
+				name={
+					this.state.shareButtonPressed
+						? 'ios-share'
+						: 'ios-share-outline'
+				}
+				size={32}
+				color={Colors.charcoal}
+				onPress={this.onShare}
+			/>
+		</Box>
 	}
 
 	render() {
@@ -70,12 +125,37 @@ class ArticleScreen extends React.Component {
 			  )
 			: 'Unknown publish date'
 
+		// const minScroll = 100;
+
+		// const scrollY = new Animated.Value(0)
+
+		// const clampedScrollY = scrollY.interpolate({
+		// inputRange: [minScroll, minScroll + 1],
+		// outputRange: [0, 1],
+		// extrapolateLeft: 'clamp',
+		// });
+
+		// const minusScrollY = Animated.multiply(clampedScrollY, -1);
+
+		// const translateY = Animated.diffClamp(
+		// minusScrollY,
+		// -48,
+		// 0,
+		// );
+
+		// const opacity = translateY.interpolate({
+		// inputRange: [-48, 0],
+		// outputRange: [0.4, 1],
+		// extrapolate: 'clamp',
+		// });
+
 		// animation
 		const scrollY = new Animated.Value(0)
 		const translateYTop = (step) =>
-			Animated.diffClamp(scrollY, 0, step).interpolate({
+			Animated.diffClamp(scrollY, -48, step).interpolate({
 				inputRange: [0, step],
 				outputRange: [0, -step],
+				extrapolateLeft: 'clamp',
 			})
 		const translateYBottom = Animated.diffClamp(scrollY, 0, 192).interpolate({
 			inputRange: [0, 192],
@@ -89,7 +169,9 @@ class ArticleScreen extends React.Component {
 		if (!this.props.articles.current) return null
 		else
 			return (
-				<View style={styles.screen}>
+				<SafeAreaConsumer style={styles.screen}>
+					{(insets) => (
+						<View style={[styles.screen, {marginBottom: - insets.bottom}]}>
 					{Platform.OS === 'ios' ? (
 						<Animated.View
 							style={{
@@ -97,60 +179,69 @@ class ArticleScreen extends React.Component {
 								zIndex: 1,
 							}}
 						>
-							<Box
-								dir="column"
-								justifyContent="center"
-								style={styles.topTab}
+							<Box 
+							dir='column'
+							justifyContent="center"
+							style={styles.topTab}
 							>
-								<Box dir="row">
-									<Queue size={36} />
-									<Animated.View style={{ opacity: opacityButton }}>
+								<Box
+									dir='row'
+									justify='between'
+									align='center'
+									style={styles.padded}
+								>
 										<Ionicons
 											name="ios-chevron-back"
-											size={36}
+											size={32}
 											color={Colors.charcoal}
 											onPress={this.goBack}
 										/>
-									</Animated.View>
+										{this.renderArticleActions()}
 								</Box>
 							</Box>
 						</Animated.View>
-					) : null}
+					) : 
+					<Box 
+					dir='column'
+					justifyContent="center"
+					style={styles.topTab}
+					>
+						<Box
+							dir='row'
+							justify='between'
+							align='center'
+							style={styles.padded}
+						>
+								<Ionicons
+									name="ios-chevron-back"
+									size={32}
+									color={Colors.charcoal}
+									onPress={this.goBack}
+								/>
+								{this.renderArticleActions()}
+						</Box>
+					</Box>
+					}
 					<ScrollView
 						onScroll={(e) => {
-							scrollY.setValue(e.nativeEvent.contentOffset.y)
+							scrollY.setValue(Math.max(e.nativeEvent.contentOffset.y, -48))
 						}}
 						scrollEventThrottle={16}
-						bounces={false}
+						bounces={true}
+						automaticallyAdjustContentInsets={false}
 					>
-						{Platform.OS === 'ios' ? (
-							<Stack size={72} />
-						) : (
-							<View>
-								<Box dir="row">
-									<Queue size={36} />
-									<Animated.View style={{ opacity: opacityButton }}>
-										<Ionicons
-											name="ios-chevron-back"
-											size={36}
-											color={Colors.charcoal}
-											onPress={this.goBack}
-										/>
-									</Animated.View>
-									<Stack size={48}></Stack>
-								</Box>
-							</View>
-						)}
+						<Stack size={72} />
 						<View style={[styles.tags, styles.padded]}>
 							{this.props.articles.current.tags.map((tag) => (
 								<View key={tag} style={styles.tagContainer}>
-									<Text style={styles.tag}>{tag}</Text>
+									<TouchableOpacity>
+										<Text style={styles.tag}>#{tag}</Text>
+									</TouchableOpacity>
 									<Queue size={8} />
-									<Stack size={32} />
+									<Stack size={24} />
 								</View>
 							))}
 						</View>
-						<Stack size={4} />
 						<Text style={[styles.articleTitle, styles.padded]}>
 							{this.props.articles.current.headline}
 						</Text>
@@ -170,13 +261,13 @@ class ArticleScreen extends React.Component {
 												<Text style={styles.author}>
 													{author.name}
 												</Text>
-												<Queue size={4} />
+												{/* <Queue size={4} />
 												<Ionicons
 													style={styles.authorAdd}
 													name="ios-add"
 													size={18}
 													color="gray"
-												/>
+												/> */}
 												{idx <
 												this.props.articles.current.authors.length -
 													1 ? (
@@ -245,7 +336,7 @@ class ArticleScreen extends React.Component {
 										Linking.openURL(href)
 									}}
 									imagesMaxWidth={
-										Dimensions.get('window').width - 36 * 2
+										Dimensions.get('window').width - Layout.margins.horizontal * 2
 									}
 								/>
 							) : null}
@@ -254,7 +345,7 @@ class ArticleScreen extends React.Component {
 							<Stack size={144}></Stack>
 						</View>
 					</ScrollView>
-					<Animated.View
+					{/* <Animated.View
 						style={
 							Platform.OS === 'ios'
 								? {
@@ -268,52 +359,12 @@ class ArticleScreen extends React.Component {
 						<View style={styles.bottomTab}>
 							<Stack size={12} />
 							<View style={styles.bottomTabButtons}>
-								<Ionicons
-									name="ios-heart-outline"
-									size={36}
-									color={Colors.charcoal}
-									onPress={() => alert('Feature coming soon!')}
-								/>
-								{this.props.articles.current.bookmarked ||
-								this.props.articles.pendingBookmarks.includes(
-									this.props.articles.current.slug
-								) ? (
-									<Ionicons
-										name="ios-bookmark"
-										size={36}
-										color="gray"
-										onPress={() =>
-											this.props.bookmarkArticle(
-												this.props.articles.current.slug
-											)
-										}
-									/>
-								) : (
-									<Ionicons
-										name="ios-bookmark-outline"
-										size={36}
-										color="gray"
-										onPress={() =>
-											this.props.bookmarkArticle(
-												this.props.articles.current.slug
-											)
-										}
-									/>
-								)}
-								<Ionicons
-									name={
-										this.state.shareButtonPressed
-											? 'ios-share'
-											: 'ios-share-outline'
-									}
-									size={36}
-									color={Colors.charcoal}
-									onPress={this.onShare}
-								/>
 							</View>
 						</View>
-					</Animated.View>
-				</View>
+					</Animated.View> */}
+					</View>
+					)}
+				</SafeAreaConsumer>
 			)
 	}
 }
@@ -328,13 +379,15 @@ export default connect(
 	})
 )(ArticleScreen)
 
+// alert(Layout.margins.horizontal)
+
 const styles = StyleSheet.create({
 	screen: {
 		backgroundColor: Colors.paper,
 		flex: 1,
 	},
 	padded: {
-		paddingHorizontal: 36,
+		paddingHorizontal: Layout.margins.horizontal,
 	},
 	topTab: {
 		zIndex: 1,
@@ -370,16 +423,18 @@ const styles = StyleSheet.create({
 		flexWrap: 'wrap',
 	},
 	tag: {
+		textTransform: 'uppercase',
 		alignSelf: 'flex-start',
-		paddingVertical: 4,
-		paddingHorizontal: 12,
-		borderRadius: 8,
 		fontSize: 12,
 		...Typography.sansBold,
-		color: Colors.paper,
-		backgroundColor: Colors.green,
-		overflow: 'hidden', // needed to show the borderRadius with backgroundColor
-		textTransform: 'uppercase',
+		// paddingVertical: 4,
+		// paddingHorizontal: 12,
+		// borderRadius: 8,
+		// color: Colors.paper,
+		// backgroundColor: Colors.green,
+		color: Colors.green,
+		// backgroundColor: Colors.green,
+		overflow: 'hidden', // needed to show...Typography.sans,
 	},
 	authorViewsArea: {
 		flexDirection: 'row',
@@ -394,9 +449,17 @@ const styles = StyleSheet.create({
 		flexWrap: 'wrap',
 	},
 	author: {
-		color: Colors.charcoal,
-		...Typography.p,
-		...Typography.sans,
+		alignSelf: 'flex-start',
+		fontSize: 12,
+		...Typography.sansRegular,
+		paddingVertical: 4,
+		paddingHorizontal: 12,
+		borderRadius: 8,
+		borderWidth: 1,
+		borderColor: Colors.green,
+		color: Colors.green,
+		backgroundColor: Colors.white,
+		overflow: 'hidden', // needed to show the borderRadius with backgroundColor
 	},
 	authorAdd: {
 		marginTop: 3, // correction

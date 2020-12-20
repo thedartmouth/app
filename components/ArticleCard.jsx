@@ -17,6 +17,8 @@ function ArticleCard(props) {
 
 				navigation.push('Article')
 			}}
+			underlayColor='white'
+			activeOpacity={0.1}
 		>
 			<View>
 				<FullWidthImage source={{ uri: props.article.imageURI }} />
