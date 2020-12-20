@@ -22,6 +22,7 @@ import { actions } from '../store'
 import dateFormat from 'dateformat'
 import { Platform } from 'react-native'
 import { SafeAreaConsumer } from 'react-native-safe-area-context'
+import * as Haptics from 'expo-haptics';
 
 class ArticleScreen extends React.Component {
 	constructor(props) {
@@ -86,9 +87,12 @@ class ArticleScreen extends React.Component {
 					size={32}
 					color="gray"
 					onPress={() =>
-						this.props.bookmarkArticle(
+						{
+							Haptics.impactAsync()
+							this.props.bookmarkArticle(
 							this.props.articles.current.slug
 						)
+					}
 					}
 				/>
 			) : (
@@ -97,9 +101,11 @@ class ArticleScreen extends React.Component {
 					size={32}
 					color="gray"
 					onPress={() =>
-						this.props.bookmarkArticle(
+						{
+							Haptics.impactAsync()
+							this.props.bookmarkArticle(
 							this.props.articles.current.slug
-						)
+						)}
 					}
 				/>
 			)}
@@ -112,7 +118,10 @@ class ArticleScreen extends React.Component {
 				}
 				size={32}
 				color={Colors.charcoal}
-				onPress={this.onShare}
+				onPress={() => {
+					Haptics.impactAsync()
+					this.onShare()
+				}}
 			/>
 		</Box>
 	}

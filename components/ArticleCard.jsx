@@ -1,11 +1,12 @@
 import React from 'react'
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, TouchableHighlight, View } from 'react-native'
 import FullWidthImage from 'react-native-fullwidth-image'
 import { Stack, Queue } from 'react-native-spacing-system'
 import HTML from 'react-native-render-html'
 import { connect } from 'react-redux'
 import { Colors, Typography } from '../constants'
 import { actions } from '../store'
+import * as Haptics from 'expo-haptics';
 
 function ArticleCard(props) {
 	const { navigation } = props
@@ -13,12 +14,12 @@ function ArticleCard(props) {
 	return (
 		<TouchableOpacity
 			onPress={() => {
+				Haptics.selectionAsync()
 				props.readArticle(props.article)
-
 				navigation.push('Article')
 			}}
-			underlayColor='white'
-			activeOpacity={0.1}
+			// underlayColor={Colors.green}
+			activeOpacity={0.6}
 		>
 			<View>
 				<FullWidthImage source={{ uri: props.article.imageURI }} />
