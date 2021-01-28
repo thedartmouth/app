@@ -1,12 +1,18 @@
 import React from 'react'
-import { StyleSheet, Text, TouchableOpacity, TouchableHighlight, View } from 'react-native'
+import {
+	StyleSheet,
+	Text,
+	TouchableOpacity,
+	TouchableHighlight,
+	View,
+} from 'react-native'
 import FullWidthImage from 'react-native-fullwidth-image'
 import { Stack, Queue } from 'react-native-spacing-system'
 import HTML from 'react-native-render-html'
 import { connect } from 'react-redux'
 import { Colors, Typography } from '../constants'
 import { actions } from '../store'
-import * as Haptics from 'expo-haptics';
+import * as Haptics from 'expo-haptics'
 
 function ArticleCard(props) {
 	const { navigation } = props
@@ -25,9 +31,7 @@ function ArticleCard(props) {
 				<FullWidthImage source={{ uri: props.article.imageURI }} />
 				<Stack size={12} />
 				<View style={[styles.tags, styles.padded]}>
-					<Text style={styles.tag}>
-						{props.article.category}
-					</Text>
+					<Text style={styles.tag}>{props.article.category}</Text>
 					{/* {props.article.tags.map((tag) => (
 						<View key={tag} style={styles.tagContainer}>
 							<Text style={styles.tag}>{tag}</Text>

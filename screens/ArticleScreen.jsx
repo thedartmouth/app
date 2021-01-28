@@ -23,7 +23,7 @@ import { actions } from '../store'
 import dateFormat from 'dateformat'
 import { Platform } from 'react-native'
 import { SafeAreaConsumer } from 'react-native-safe-area-context'
-import * as Haptics from 'expo-haptics';
+import * as Haptics from 'expo-haptics'
 
 class ArticleScreen extends React.Component {
 	constructor(props) {
@@ -65,15 +65,15 @@ class ArticleScreen extends React.Component {
 			`Articles by ${author.name}`,
 			'You will be able to browse articles by authors soon.',
 			[
-			//   {
-			// 	text: "Cancel",
-			// 	onPress: () => console.log("Cancel Pressed"),
-			// 	style: "cancel"
-			//   },
-			  { text: "Woo!" }
+				//   {
+				// 	text: "Cancel",
+				// 	onPress: () => console.log("Cancel Pressed"),
+				// 	style: "cancel"
+				//   },
+				{ text: 'Woo!' },
 			],
 			{ cancelable: false }
-			)
+		)
 		// this.props.navigation.push('Author', author);
 	}
 
@@ -82,61 +82,57 @@ class ArticleScreen extends React.Component {
 		this.props.navigation.push('Results', {
 			tag: utils.convertTag(tag, 'view'),
 			getMore: (currentPage) =>
-				this.props.discoverArticlesByTag(
-					tag,
-					currentPage
-				),
+				this.props.discoverArticlesByTag(tag, currentPage),
 		})
 	}
 
 	renderArticleActions = () => {
-		return <Box dir='row'>
-		{this.props.articles.current.bookmarked ||
-			this.props.articles.pendingBookmarks.includes(
-				this.props.articles.current.slug
-			) ? (
-				<Ionicons
-					name="ios-bookmark"
-					size={32}
-					color="gray"
-					onPress={() =>
-						{
+		return (
+			<Box dir="row">
+				{this.props.articles.current.bookmarked ||
+				this.props.articles.pendingBookmarks.includes(
+					this.props.articles.current.slug
+				) ? (
+					<Ionicons
+						name="ios-bookmark"
+						size={32}
+						color="gray"
+						onPress={() => {
 							Haptics.impactAsync()
 							this.props.bookmarkArticle(
-							this.props.articles.current.slug
-						)
-					}
-					}
-				/>
-			) : (
-				<Ionicons
-					name="ios-bookmark-outline"
-					size={32}
-					color="gray"
-					onPress={() =>
-						{
+								this.props.articles.current.slug
+							)
+						}}
+					/>
+				) : (
+					<Ionicons
+						name="ios-bookmark-outline"
+						size={32}
+						color="gray"
+						onPress={() => {
 							Haptics.impactAsync()
 							this.props.bookmarkArticle(
-							this.props.articles.current.slug
-						)}
+								this.props.articles.current.slug
+							)
+						}}
+					/>
+				)}
+				<Queue size={12}></Queue>
+				<Ionicons
+					name={
+						this.state.shareButtonPressed
+							? 'ios-share'
+							: 'ios-share-outline'
 					}
+					size={32}
+					color={Colors.charcoal}
+					onPress={() => {
+						Haptics.impactAsync()
+						this.onShare()
+					}}
 				/>
-			)}
-			<Queue size={12}></Queue>
-			<Ionicons
-				name={
-					this.state.shareButtonPressed
-						? 'ios-share'
-						: 'ios-share-outline'
-				}
-				size={32}
-				color={Colors.charcoal}
-				onPress={() => {
-					Haptics.impactAsync()
-					this.onShare()
-				}}
-			/>
-		</Box>
+			</Box>
+		)
 	}
 
 	render() {
@@ -193,25 +189,49 @@ class ArticleScreen extends React.Component {
 			return (
 				<SafeAreaConsumer style={styles.screen}>
 					{(insets) => (
-						<View style={[styles.screen, {marginBottom: - insets.bottom}]}>
-					{Platform.OS === 'ios' ? (
-						<Animated.View
-							style={{
-								transform: [{ translateY: translateYTop(48) }],
-								zIndex: 1,
-							}}
+						<View
+							style={[styles.screen, { marginBottom: -insets.bottom }]}
 						>
-							<Box 
-							dir='column'
-							justifyContent="center"
-							style={styles.topTab}
-							>
-								<Box
-									dir='row'
-									justify='between'
-									align='center'
-									style={styles.padded}
+							{Platform.OS === 'ios' ? (
+								<Animated.View
+									style={{
+										transform: [{ translateY: translateYTop(48) }],
+										zIndex: 1,
+									}}
 								>
+									<Box
+										dir="column"
+										justifyContent="center"
+										style={styles.topTab}
+									>
+										<Box
+											dir="row"
+											justify="between"
+											align="center"
+											style={styles.padded}
+										>
+											<Ionicons
+												name="ios-chevron-back"
+												size={32}
+												color={Colors.charcoal}
+												onPress={this.goBack}
+											/>
+											{this.renderArticleActions()}
+										</Box>
+									</Box>
+								</Animated.View>
+							) : (
+								<Box
+									dir="column"
+									justifyContent="center"
+									style={styles.topTab}
+								>
+									<Box
+										dir="row"
+										justify="between"
+										align="center"
+										style={styles.padded}
+									>
 										<Ionicons
 											name="ios-chevron-back"
 											size={32}
@@ -219,157 +239,143 @@ class ArticleScreen extends React.Component {
 											onPress={this.goBack}
 										/>
 										{this.renderArticleActions()}
+									</Box>
 								</Box>
-							</Box>
-						</Animated.View>
-					) : 
-					<Box 
-					dir='column'
-					justifyContent="center"
-					style={styles.topTab}
-					>
-						<Box
-							dir='row'
-							justify='between'
-							align='center'
-							style={styles.padded}
-						>
-								<Ionicons
-									name="ios-chevron-back"
-									size={32}
-									color={Colors.charcoal}
-									onPress={this.goBack}
-								/>
-								{this.renderArticleActions()}
-						</Box>
-					</Box>
-					}
-					<ScrollView
-						onScroll={(e) => {
-							scrollY.setValue(Math.max(e.nativeEvent.contentOffset.y, -48))
-						}}
-						scrollEventThrottle={16}
-						bounces={true}
-						automaticallyAdjustContentInsets={false}
-					>
-						<Stack size={72} />
-						<View style={[styles.tags, styles.padded]}>
-							{this.props.articles.current.tags.map((tag) => (
-								<View key={tag} style={styles.tagContainer}>
-									<TouchableOpacity onPressOut={
-										() => this.navigateToTag(tag)
-									}>
-										<Text style={styles.tag}>#{tag}</Text>
-									</TouchableOpacity>
-									<Queue size={8} />
-									<Stack size={24} />
+							)}
+							<ScrollView
+								onScroll={(e) => {
+									scrollY.setValue(
+										Math.max(e.nativeEvent.contentOffset.y, -48)
+									)
+								}}
+								scrollEventThrottle={16}
+								bounces={true}
+								automaticallyAdjustContentInsets={false}
+							>
+								<Stack size={72} />
+								<View style={[styles.tags, styles.padded]}>
+									{this.props.articles.current.tags.map((tag) => (
+										<View key={tag} style={styles.tagContainer}>
+											<TouchableOpacity
+												onPressOut={() => this.navigateToTag(tag)}
+											>
+												<Text style={styles.tag}>#{tag}</Text>
+											</TouchableOpacity>
+											<Queue size={8} />
+											<Stack size={24} />
+										</View>
+									))}
 								</View>
-							))}
-						</View>
-						<Text style={[styles.articleTitle, styles.padded]}>
-							{this.props.articles.current.headline}
-						</Text>
-						<Stack size={12} />
-						<View style={[styles.authorViewsArea, styles.padded]}>
-							<View style={styles.authorArea}>
-								{this.props.articles.current.authors.map(
-									(author, idx) => (
-										<TouchableOpacity
-											key={author.slug}
-											navigation={this.props.navigation}
-											onPress={() => {
-												this.visitAuthor(author)
-											}}
-										>
-											<Box dir="row" align="center">
-												<Text style={styles.author}>
-													{author.name}
-												</Text>
-												{/* <Queue size={4} />
+								<Text style={[styles.articleTitle, styles.padded]}>
+									{this.props.articles.current.headline}
+								</Text>
+								<Stack size={12} />
+								<View style={[styles.authorViewsArea, styles.padded]}>
+									<View style={styles.authorArea}>
+										{this.props.articles.current.authors.map(
+											(author, idx) => (
+												<TouchableOpacity
+													key={author.slug}
+													navigation={this.props.navigation}
+													onPress={() => {
+														this.visitAuthor(author)
+													}}
+												>
+													<Box dir="row" align="center">
+														<Text style={styles.author}>
+															{author.name}
+														</Text>
+														{/* <Queue size={4} />
 												<Ionicons
 													style={styles.authorAdd}
 													name="ios-add"
 													size={18}
 													color="gray"
 												/> */}
-												{idx <
-												this.props.articles.current.authors.length -
-													1 ? (
-													<Queue size={8}></Queue>
-												) : null}
-											</Box>
-										</TouchableOpacity>
-									)
-								) || <Text style={styles.author}>No authorship</Text>}
-							</View>
-						</View>
-						<Stack size={12} />
-						<FullWidthImage
-							source={{
-								uri: this.props.articles.current.imageURI,
-							}}
-						/>
-						<Stack size={12} />
-						<View style={styles.padded}>
-							<Box dir="row" justify="between">
-								<Text style={styles.details}>{date}</Text>
-								<Text style={styles.details}>
-									{this.props.articles.current.reads || 0}{' '}
-									{this.props.articles.current.reads === 1
-										? 'view'
-										: 'views'}
-								</Text>
-							</Box>
-							<Stack size={12}></Stack>
-							{this.props.articles.current.body ? (
-								<HTML
-									tagsStyles={{
-										p: styles.content,
-										strong: {
-											fontSize: 16,
-											fontFamily: 'libre-bold',
-											color: Colors.pen,
-											lineHeight: 16 * 1.7,
-											marginBottom: 16,
-										},
-										a: styles.links,
+														{idx <
+														this.props.articles.current.authors
+															.length -
+															1 ? (
+															<Queue size={8}></Queue>
+														) : null}
+													</Box>
+												</TouchableOpacity>
+											)
+										) || (
+											<Text style={styles.author}>
+												No authorship
+											</Text>
+										)}
+									</View>
+								</View>
+								<Stack size={12} />
+								<FullWidthImage
+									source={{
+										uri: this.props.articles.current.imageURI,
 									}}
-									classesStyles={{
-										'pull-quote': {
-											backgroundColor: Colors.shade,
-											padding: 24,
-											borderRadius: 8,
-											borderBottomWidth: 8,
-											borderColor: Colors.green,
-											borderStyle: 'solid',
-											marginBottom: 36,
-										},
-										'pull-quote-body': {
-											fontSize: 18,
-											fontFamily: 'libre-regular',
-											marginBottom: 4,
-										},
-										'pull-quote-byline': {
-											marginTop: 4,
-											fontWeight: 'bold',
-											fontSize: 16,
-										}
-									}}
-									html={this.props.articles.current.body}
-									onLinkPress={(event, href) => {
-										Linking.openURL(href)
-									}}
-									imagesMaxWidth={
-										Dimensions.get('window').width - Layout.margins.horizontal * 2
-									}
 								/>
-							) : null}
-						</View>
-						<View>
-							<Stack size={144}></Stack>
-						</View>
-					</ScrollView>
-					{/* <Animated.View
+								<Stack size={12} />
+								<View style={styles.padded}>
+									<Box dir="row" justify="between">
+										<Text style={styles.details}>{date}</Text>
+										<Text style={styles.details}>
+											{this.props.articles.current.reads || 0}{' '}
+											{this.props.articles.current.reads === 1
+												? 'view'
+												: 'views'}
+										</Text>
+									</Box>
+									<Stack size={12}></Stack>
+									{this.props.articles.current.body ? (
+										<HTML
+											tagsStyles={{
+												p: styles.content,
+												strong: {
+													fontSize: 16,
+													fontFamily: 'libre-bold',
+													color: Colors.pen,
+													lineHeight: 16 * 1.7,
+													marginBottom: 16,
+												},
+												a: styles.links,
+											}}
+											classesStyles={{
+												'pull-quote': {
+													backgroundColor: Colors.shade,
+													padding: 24,
+													borderRadius: 8,
+													borderBottomWidth: 8,
+													borderColor: Colors.green,
+													borderStyle: 'solid',
+													marginBottom: 36,
+												},
+												'pull-quote-body': {
+													fontSize: 18,
+													fontFamily: 'libre-regular',
+													marginBottom: 4,
+												},
+												'pull-quote-byline': {
+													marginTop: 4,
+													fontWeight: 'bold',
+													fontSize: 16,
+												},
+											}}
+											html={this.props.articles.current.body}
+											onLinkPress={(event, href) => {
+												Linking.openURL(href)
+											}}
+											imagesMaxWidth={
+												Dimensions.get('window').width -
+												Layout.margins.horizontal * 2
+											}
+										/>
+									) : null}
+								</View>
+								<View>
+									<Stack size={144}></Stack>
+								</View>
+							</ScrollView>
+							{/* <Animated.View
 						style={
 							Platform.OS === 'ios'
 								? {
@@ -386,7 +392,7 @@ class ArticleScreen extends React.Component {
 							</View>
 						</View>
 					</Animated.View> */}
-					</View>
+						</View>
 					)}
 				</SafeAreaConsumer>
 			)
@@ -502,7 +508,7 @@ const styles = StyleSheet.create({
 		marginBottom: 16,
 	},
 	contentStrong: {
-		...Typography.serifBold
+		...Typography.serifBold,
 	},
 	links: {
 		...Typography.p,

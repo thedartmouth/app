@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
 		position: 'absolute',
 		top: 0,
 		width: '100%',
-		height: 48
+		height: 48,
 		// borderColor: '#e5e6e9',
 		// backgroundColor: 'white',
 		// shadowOffset: { height: 3 },
