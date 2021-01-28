@@ -86,7 +86,16 @@ class ProfileScreen extends React.Component {
 						Hello, {this.props.user.data?.name?.first || 'there'}.
 					</Text>
 					<Stack size={24} />
-					<Box dir="row" align="center" style={styles.reward}>
+					<Text style={styles.rewardText}>
+						Good{' '}
+						{new Date().getHours() < 12 - 1
+							? 'morning'
+							: new Date().getHours() < 18 - 1
+							? 'afternoon'
+							: 'evening'}
+						.
+					</Text>
+					{/* <Box dir="row" align="center" style={styles.reward}>
 						<SimpleLineIcons
 							name="cup"
 							size={24}
@@ -99,7 +108,7 @@ class ProfileScreen extends React.Component {
 						</Text>
 						<Queue size={8} />
 						<Text style={styles.rewardText}>coffee cups earned!</Text>
-					</Box>
+					</Box> */}
 				</View>
 				<Stack size={36} />
 				<Divider style={styles.divider} />
@@ -137,7 +146,7 @@ class ProfileScreen extends React.Component {
 						</TouchableOpacity>
 						<Stack size={4} />
 						<Divider style={styles.thinDivider} />
-						<Stack size={4} />
+						{/* <Stack size={4} />
 						<TouchableOpacity
 							style={styles.rowItem}
 							onPress={() => this.navigateProfileContent('POLLS')}
@@ -150,9 +159,9 @@ class ProfileScreen extends React.Component {
 							/>
 						</TouchableOpacity>
 						<Stack size={4} />
-						<Divider style={styles.thinDivider} />
+						<Divider style={styles.thinDivider} /> */}
 					</View>
-					<Stack size={24} />
+					{/* <Stack size={24} />
 					<View style={styles.contentBox}>
 						<Text style={styles.heading}>Notification settings</Text>
 						<Stack size={12} />
@@ -182,7 +191,7 @@ class ProfileScreen extends React.Component {
 								}
 							/>
 						</View>
-					</View>
+					</View> */}
 				</View>
 				<Stack size={36}></Stack>
 				<HTML
