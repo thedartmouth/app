@@ -27,8 +27,17 @@ class Auth extends React.Component {
 
 	switchMode = () => {
 		this.setState((prevState) => {
-			if (prevState.mode === 'signup') return { mode: 'login' }
-			else return { mode: 'signup' }
+			const defaultState = {
+				name: {
+					first: null,
+					last: null,
+				},
+				email: null,
+				password: null,
+				error: null,
+			}
+			if (prevState.mode === 'signup') return { ...defaultState, mode: 'login' }
+			else return { ...defaultState, mode: 'signup' }
 		})
 	}
 
@@ -39,8 +48,8 @@ class Auth extends React.Component {
 				.then(() => {
 					this.setState({ mode: 'welcome' })
 				})
-				.catch((err) => {
-					this.setState({ error: err.message })
+				.catch((e) => {
+					this.setState({ error: e.message })
 				})
 		} else if (this.state.mode === 'signup') {
 			this.props
@@ -48,8 +57,8 @@ class Auth extends React.Component {
 				.then(() => {
 					this.setState({ mode: 'welcome' })
 				})
-				.catch((err) => {
-					this.setState({ error: err.message })
+				.catch((e) => {
+					this.setState({ error: e.message })
 				})
 		}
 	}

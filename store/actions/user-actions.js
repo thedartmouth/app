@@ -39,17 +39,21 @@ export const getUser = (dispatch) => async () => {
 // gives user to reducer, which should save the user to state
 export const signIn = (dispatch) => async (email, password) => {
 	dispatch({ type: ActionTypes.AUTH_USER.REQUEST })
-	const response = await axios.post(`${ROOT_URL}/users/auth`, {
-		email,
-		password,
-	})
-	// axios.defaults.headers.common.Authorization = `Bearer ${response.data.token}`;
-	await Promise.all([
-		SecureStore.setItemAsync('token', response.data.token),
-		SecureStore.setItemAsync('userId', response.data.userId),
-	])
-	auth(dispatch)(response.data.token)
-	await getUser(dispatch)()
+	try {
+		const response = await axios.post(`${ROOT_URL}/users/auth`, {
+			email,
+			password,
+		})
+		await Promise.all([
+			SecureStore.setItemAsync('token', response.data.token),
+			SecureStore.setItemAsync('userId', response.data.userId),
+		])
+		auth(dispatch)(response.data.token)
+		await getUser(dispatch)()
+	} catch (e) {
+		dispatch({ type: ActionTypes.AUTH_USER.FAILURE })
+		throw new Error('Bad login')
+	}
 }
 
 export const auth = (dispatch) => (token) => {
@@ -67,16 +71,20 @@ export const deAuth = (dispatch) => () => {
 // gives user to reducer also
 export const signUp = (dispatch) => async (name, email, password) => {
 	dispatch({ type: ActionTypes.AUTH_USER.REQUEST })
-	const response = await axios.post(`${ROOT_URL}/users`, {
-		email,
-		password,
-		name,
-	})
-	// axios.defaults.headers.common.Authorization = `Bearer ${response.data.token}`;
-	await Promise.all([
-		SecureStore.setItemAsync('token', response.data.token),
-		SecureStore.setItemAsync('userId', response.data.userId),
-	])
-	auth(dispatch)(response.data.token)
-	await getUser(dispatch)()
+	try {
+		const response = await axios.post(`${ROOT_URL}/users`, {
+			email,
+			password,
+			name,
+		})
+		await Promise.all([
+			SecureStore.setItemAsync('token', response.data.token),
+			SecureStore.setItemAsync('userId', response.data.userId),
+		])
+		auth(dispatch)(response.data.token)
+		await getUser(dispatch)()
+	} catch (e) {
+		dispatch({ type: ActionTypes.AUTH_USER.FAILURE })
+		throw new Error('Error with sign up')
+	}
 }
