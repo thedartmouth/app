@@ -3,6 +3,7 @@
 	"scripts": {
 		"format": "prettier --write .",
 		"lint": "eslint .",
+		"dev": "export DEPLOY_TAG=dev; expo start",
 		"start": "expo start",
 		"android": "expo start --android",
 		"ios": "expo start --ios",
