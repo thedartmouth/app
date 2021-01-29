@@ -88,10 +88,8 @@ class DiscoverScreen extends React.Component {
 							inputContainerStyle={styles.searchInputContainer}
 							placeholder="Vox quaerere..."
 							onChangeText={(query) => {
-								if (query) {
-									this.setState({ query })
-									this.debouncedSearch(query)
-								}
+								this.setState({ query })
+								this.debouncedSearch(query)
 							}}
 							onClear={() => {
 								this.setState({
