@@ -372,15 +372,14 @@ class ArticleScreen extends React.Component {
 									) : null}
 								</View>
 								<Stack size={12}></Stack>
-								<Box dir='row' justify='center'>
-
-								<Image
-									source={require('../assets/images/icon.png')}
-									style={styles.logo}
-								/>
+								<Box dir="row" justify="center">
+									<Image
+										source={require('../assets/images/icon.png')}
+										style={styles.logo}
+									/>
 								</Box>
 								<View>
-								<Stack size={72}></Stack>
+									<Stack size={72}></Stack>
 								</View>
 							</ScrollView>
 							{/* <Animated.View
@@ -541,5 +540,5 @@ const styles = StyleSheet.create({
 	logo: {
 		height: 48,
 		resizeMode: 'contain',
-	}
+	},
 })

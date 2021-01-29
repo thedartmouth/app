@@ -44,23 +44,18 @@ function ArticleCard(props) {
 				<Text style={[styles.headline, styles.padded]}>
 					{props.article.headline}
 				</Text>
-				{props.article.abstract ? 
-				(
+				{props.article.abstract ? (
 					<React.Fragment>
-
-				<Stack size={12} />
-				<View style={styles.padded}>
-					<HTML
-						tagsStyles={{ p: styles.abstract, a: styles.links }}
-						html={props.article.abstract}
-						ignoredTags={['u']}
-					></HTML>
-				</View>
+						<Stack size={12} />
+						<View style={styles.padded}>
+							<HTML
+								tagsStyles={{ p: styles.abstract, a: styles.links }}
+								html={props.article.abstract}
+								ignoredTags={['u']}
+							></HTML>
+						</View>
 					</React.Fragment>
-				)
-				:
-				null
-				}
+				) : null}
 				<Stack size={12} />
 				<View style={[styles.authors, styles.padded]}>
 					<Text style={styles.author}>
