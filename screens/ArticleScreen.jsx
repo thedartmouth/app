@@ -308,7 +308,6 @@ class ArticleScreen extends React.Component {
 										)}
 									</View>
 								</View>
-								<Stack size={12} />
 								<FullWidthImage
 									source={{
 										uri: this.props.articles.current.imageURI,
@@ -485,6 +484,7 @@ const styles = StyleSheet.create({
 		...Typography.sansRegular,
 		paddingVertical: 4,
 		paddingHorizontal: 12,
+		marginBottom: 12,
 		borderRadius: 8,
 		borderWidth: 1,
 		borderColor: Colors.green,
