@@ -374,7 +374,7 @@ class ArticleScreen extends React.Component {
 								<Stack size={12}></Stack>
 								<Box dir="row" justify="center">
 									<Image
-										source={require('../assets/images/icon.png')}
+										source={require('../assets/images/icon-light.png')}
 										style={styles.logo}
 									/>
 								</Box>

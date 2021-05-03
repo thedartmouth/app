@@ -36,7 +36,8 @@ class Auth extends React.Component {
 				password: null,
 				error: null,
 			}
-			if (prevState.mode === 'signup') return { ...defaultState, mode: 'login' }
+			if (prevState.mode === 'signup')
+				return { ...defaultState, mode: 'login' }
 			else return { ...defaultState, mode: 'signup' }
 		})
 	}
@@ -69,7 +70,7 @@ class Auth extends React.Component {
 			return (
 				<Box dir="column" align="center" style={styles.container}>
 					<Image
-						source={require('../assets/images/icon.png')}
+						source={require('../assets/images/icon-light.png')}
 						style={styles.logo}
 					/>
 					<Stack size={24}></Stack>
@@ -91,7 +92,7 @@ class Auth extends React.Component {
 		return (
 			<Box dir="column" align="center" style={styles.container}>
 				<Image
-					source={require('../assets/images/icon.png')}
+					source={require('../assets/images/icon-light.png')}
 					style={styles.logo}
 				/>
 				<Stack size={24}></Stack>

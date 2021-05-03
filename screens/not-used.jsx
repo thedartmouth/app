@@ -25,7 +25,7 @@ export default function HomeScreen() {
 					<Image
 						source={
 							__DEV__
-								? require('../assets/images/icon.png')
+								? require('../assets/images/icon-light.png')
 								: require('../assets/images/robot-prod.png')
 						}
 						style={styles.welcomeImage}
