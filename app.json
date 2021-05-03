@@ -1,11 +1,11 @@
 {
 	"expo": {
-		"name": "The Dartmouth Inc.",
+		"name": "The Dartmouth",
 		"slug": "the-dartmouth",
 		"platforms": ["ios", "android", "web"],
 		"version": "1.0.0",
 		"orientation": "portrait",
-		"icon": "./assets/images/icon-small.png",
+		"icon": "./assets/images/icon-dark.png",
 		"scheme": "thedartmouth",
 		"splash": {
 			"image": "./assets/images/splash.png",
@@ -18,8 +18,8 @@
 		"assetBundlePatterns": ["**/*"],
 		"ios": {
 			"supportsTablet": false,
-			"bundleIdentifier": "com.the-dartmouth.ios",
-			"buildNumber": "6"
+			"bundleIdentifier": "com.thedartmouth.ios",
+			"buildNumber": "1"
 		},
 		"android": {
 			"package": "com.thedartmouth.android",
