@@ -40,6 +40,7 @@ const FeedScreen = (props) => {
 			<FlatList
 				style={styles.articleBox}
 				data={props.articles.feed}
+				keyExtractor={({ slug }) => slug}
 				refreshControl={
 					<RefreshControl
 						refreshing={props.articles.feed == null}

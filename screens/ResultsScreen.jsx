@@ -62,6 +62,7 @@ class ResultsScreen extends React.Component {
 					<FlatList
 						style={styles.scroll}
 						data={this.props.articles.results}
+						keyExtractor={({ slug }) => slug}
 						refreshControl={
 							<RefreshControl
 								refreshing={this.props.articles.loadingResults}

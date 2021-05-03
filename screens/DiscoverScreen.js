@@ -128,6 +128,7 @@ class DiscoverScreen extends React.Component {
 						{this.state.mode === 'searching' ? (
 							<FlatList
 								data={this.props.articles.results}
+								keyExtractor={({ slug }) => slug}
 								refreshControl={
 									<RefreshControl
 										refreshing={this.props.articles.loadingResults}
