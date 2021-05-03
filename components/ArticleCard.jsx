@@ -28,7 +28,9 @@ function ArticleCard(props) {
 			activeOpacity={0.6}
 		>
 			<View>
-				<FullWidthImage source={{ uri: props.article.imageURI }} />
+				{props.article.imageURI && (
+					<FullWidthImage source={{ uri: props.article.imageURI }} />
+				)}
 				<Stack size={12} />
 				<View style={[styles.tags, styles.padded]}>
 					<Text style={styles.tag}>{props.article.category}</Text>

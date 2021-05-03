@@ -23,7 +23,9 @@ function PreviewCard(props) {
 				</View>
 				<Queue size={12} />
 				<View style={styles.imageContainer}>
-					<FullWidthImage source={{ uri: props.article.imageURI }} />
+					{props.article.imageURI && (
+						<FullWidthImage source={{ uri: props.article.imageURI }} />
+					)}
 				</View>
 			</View>
 		</TouchableOpacity>

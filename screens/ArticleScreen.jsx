@@ -309,11 +309,13 @@ class ArticleScreen extends React.Component {
 										)}
 									</View>
 								</View>
-								<FullWidthImage
-									source={{
-										uri: this.props.articles.current.imageURI,
-									}}
-								/>
+								{props.article.imageURI && (
+									<FullWidthImage
+										source={{
+											uri: this.props.articles.current.imageURI,
+										}}
+									/>
+								)}
 								<Stack size={12} />
 								<View style={styles.padded}>
 									<Box dir="row" justify="between">
