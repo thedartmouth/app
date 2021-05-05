@@ -309,7 +309,7 @@ class ArticleScreen extends React.Component {
 										)}
 									</View>
 								</View>
-								{props.article.imageURI && (
+								{this.props.articles.current.imageURI && (
 									<FullWidthImage
 										source={{
 											uri: this.props.articles.current.imageURI,
