@@ -49,6 +49,7 @@ const ConnectedModal = connect(
 		visible={props.visible}
 		animationType="slide"
 		presentationStyle="formSheet"
+		style={styles.modal}
 		// presentationStyle={Platform.OS === 'ios' ? 'formSheet' : undefined}
 	>
 		<Ionicons
@@ -205,9 +206,11 @@ const styles = StyleSheet.create({
 		backgroundColor: Colors.paper,
 	},
 	modal: {
-		flex: 1,
+		backgroundColor: Colors.paper,
+		// flex: 1,
 	},
 	modalContainer: {
+		backgroundColor: Colors.paper,
 		width: '100%',
 		height: '100%',
 		justifyContent: 'center',
