@@ -2,8 +2,9 @@
 	"expo": {
 		"name": "The Dartmouth",
 		"slug": "the-dartmouth",
+		"owner": "the-dartmouth",
 		"platforms": ["ios", "android", "web"],
-		"version": "1.1.0",
+		"version": "1.1.1",
 		"orientation": "portrait",
 		"icon": "./assets/images/icon-dark.png",
 		"scheme": "thedartmouth",
