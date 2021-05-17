@@ -12,7 +12,7 @@ import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context'
 import BottomTabNavigator from './navigation/BottomTabNavigator'
 import useLinking from './navigation/useLinking'
 import { reducers, actions } from './store'
-import { Colors } from './constants'
+import { CMS_URL, Colors, ROOT_URL, CMS_QUERY_SETTINGS } from './constants'
 import ArticleScreen from './screens/ArticleScreen'
 import LoadingScreen from './screens/LoadingScreen'
 import AuthorScreen from './screens/AuthorScreen'
@@ -21,6 +21,46 @@ import * as SecureStorage from 'expo-secure-store'
 import Auth from './components/Auth'
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
 import { Ionicons } from '@expo/vector-icons'
+import * as Notifications from 'expo-notifications'
+import Constants from 'expo-constants'
+import Axios from 'axios'
+
+Notifications.setNotificationHandler({
+	handleNotification: async () => ({
+		shouldShowAlert: true,
+		shouldPlaySound: true,
+		shouldSetBadge: true,
+	}),
+})
+
+async function registerForPushNotificationsAsync() {
+	let token
+	if (Constants.isDevice) {
+		const {
+			status: existingStatus,
+		} = await Notifications.getPermissionsAsync()
+		let finalStatus = existingStatus
+		if (existingStatus !== 'granted') {
+			const { status } = await Notifications.requestPermissionsAsync()
+			finalStatus = status
+		}
+		if (finalStatus !== 'granted') {
+			return
+		}
+		token = (await Notifications.getExpoPushTokenAsync()).data
+	}
+
+	if (Platform.OS === 'android') {
+		Notifications.setNotificationChannelAsync('default', {
+			name: 'default',
+			importance: Notifications.AndroidImportance.MAX,
+			vibrationPattern: [0, 250, 250, 250],
+			lightColor: '#FF231F7C',
+		})
+	}
+
+	return token
+}
 
 const Stack = createStackNavigator()
 
@@ -89,13 +129,24 @@ export default function App(props) {
 	const [isFeedLoadingComplete, setFeedLoadingComplete] = React.useState(false)
 	const [initialNavigationState, setInitialNavigationState] = React.useState()
 	const [userLoaded, setUserLoaded] = React.useState(false)
+	const [
+		notificationSettingsLoaded,
+		setNotificationSettingsLoaded,
+	] = React.useState(false)
 	const [showAuthModal, setShowAuthModal] = React.useState(false)
-	const containerRef = React.useRef()
+	const containerRef = React.useRef(null)
+	const [containerMounted, setContainerMounted] = React.useState(false)
 	const { getInitialState } = useLinking(containerRef)
+	const [initialNavigation, setInitialNavigation] = React.useState(null)
 
 	// Load any resources or data that we need prior to rendering the app
 
 	React.useEffect(() => {
+		registerForPushNotificationsAsync().then(async (token) => {
+			Axios.post(`${ROOT_URL}/notifications/tokens`, { token })
+			await SecureStorage.setItemAsync('notificationToken', token)
+		})
+
 		async function loadResourcesAndDataAsync() {
 			try {
 				SplashScreen.preventAutoHideAsync()
@@ -137,9 +188,21 @@ export default function App(props) {
 			}
 		}
 
+		async function loadNotificationSettings() {
+			try {
+				const token = await SecureStorage.getItemAsync('notificationToken')
+				if (token) actions.getSettings(store.dispatch)(token)
+				setNotificationSettingsLoaded(true)
+			} catch (e) {
+				console.error(e)
+			}
+		}
+
 		if (!userLoaded) loadUser()
 
 		if (!isFontLoadingComplete) loadResourcesAndDataAsync()
+
+		if (!notificationSettingsLoaded) loadNotificationSettings()
 
 		// if (!mounted) {
 		//   store.subscribe(() => {
@@ -149,6 +212,24 @@ export default function App(props) {
 		//   setMounted(true)
 		// }
 	}, [])
+
+	const lastNotificationResponse = Notifications.useLastNotificationResponse()
+	React.useEffect(() => {
+		const notificationContent =
+			lastNotificationResponse?.notification?.request?.content
+		if (notificationContent) {
+			const { articleSlug } = notificationContent.data
+			if (articleSlug) {
+				actions
+					.fetchAndReadArticle(store.dispatch)(articleSlug)
+					.then(() => {
+						if (containerMounted) {
+							containerRef.current?.navigate('Article')
+						}
+					})
+			}
+		}
+	}, [lastNotificationResponse])
 
 	if (!isFontLoadingComplete) return null
 	return (
@@ -166,8 +247,12 @@ export default function App(props) {
 						<NavigationContainer
 							ref={containerRef}
 							initialState={initialNavigationState}
+							onReady={() => setContainerMounted(true)}
 						>
-							<Stack.Navigator screenOptions={{ headerShown: false }}>
+							<Stack.Navigator
+								screenOptions={{ headerShown: false }}
+								initialRouteName="Root"
+							>
 								<Stack.Screen
 									name="Root"
 									component={BottomTabNavigator}
