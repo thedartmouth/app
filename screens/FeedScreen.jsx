@@ -27,6 +27,10 @@ const FeedScreen = (props) => {
 		if (page !== 1) props.addFeed(page) // if not refreshing page, add to the feed
 	}, [page])
 
+	// React.useEffect(() => {
+	// 	console.log(`${props.articles.feed.length} articles long`)
+	// }, [props.articles.feed])
+
 	return (
 		<View style={styles.screen}>
 			<View style={[styles.bannerContainer, { paddingTop: 0 }]}>
@@ -43,14 +47,13 @@ const FeedScreen = (props) => {
 				keyExtractor={({ slug }) => slug}
 				refreshControl={
 					<RefreshControl
-						refreshing={props.articles.feed == null}
+						refreshing={props.articles.loadingFeed}
 						onRefresh={onRefresh}
 					/>
 				}
 				onEndReached={() => {
-					console.log('end')
 					setPage(page + 1)
-				}} // set page to adding
+				}}
 				ItemSeparatorComponent={Divider}
 				ListFooterComponent={
 					props.articles.feed == null ? (
@@ -61,9 +64,13 @@ const FeedScreen = (props) => {
 						</View>
 					) : null
 				}
-				renderItem={({ item }) => (
+				renderItem={({ item, index }) => (
 					<View key={item.slug}>
-						<ArticleCard article={item} navigation={props.navigation} />
+						<ArticleCard
+							index={index}
+							article={item}
+							navigation={props.navigation}
+						/>
 						<Stack size={36} />
 					</View>
 				)}
