@@ -13,12 +13,16 @@ import HTML from 'react-native-render-html'
 import { createStackNavigator } from '@react-navigation/stack'
 import VoxButton from '../components/VoxButton'
 import { ScrollView } from 'react-native-gesture-handler'
+import * as SecureStorage from 'expo-secure-store'
 
 const ProfileStack = createStackNavigator()
 
 class ProfileScreen extends React.Component {
 	constructor(props) {
 		super(props)
+		this.state = {
+			notificationToken: null,
+		}
 	}
 
 	componentDidMount() {
@@ -70,6 +74,14 @@ class ProfileScreen extends React.Component {
 				break
 		}
 		this.editProfileElement(updatedProfile)
+	}
+
+	toggleNotificationSetting = async (tagSlug, status) => {
+		const token = await SecureStorage.getItemAsync('notificationToken')
+		console.log(tagSlug, status, token)
+		if (token) {
+			this.props.updateSetting(tagSlug, status, token)
+		}
 	}
 
 	editProfileElement = (updatedProfile) => {
@@ -161,37 +173,40 @@ class ProfileScreen extends React.Component {
 						<Stack size={4} />
 						<Divider style={styles.thinDivider} /> */}
 					</View>
-					{/* <Stack size={24} />
+					<Stack size={24} />
 					<View style={styles.contentBox}>
 						<Text style={styles.heading}>Notification settings</Text>
 						<Stack size={12} />
-						<View style={styles.rowItem}>
-							<Text style={Typography.p}>Trending articles</Text>
-							<Switch
-								onValueChange={() =>
-									this.editProfileElement('NOTIFICATION_TRENDING')
-								}
-							/>
-						</View>
-						<Stack size={8} />
-						<View style={styles.rowItem}>
-							<Text style={Typography.p}>Followed tags</Text>
-							<Switch
-								onValueChange={() =>
-									this.editProfileElement('NOTIFICATION_TAGS')
-								}
-							/>
-						</View>
-						<Stack size={8} />
-						<View style={styles.rowItem}>
-							<Text style={Typography.p}>Followed writers</Text>
-							<Switch
-								onValueChange={() =>
-									this.editProfileElement('NOTIFICATION_AUTHORS')
-								}
-							/>
-						</View>
-					</View> */}
+						{this.props.notification.settings ? (
+							<>
+								{this.props.notification.settings.map(
+									({ slug, name, active }) => {
+										if (slug && name) {
+											return (
+												<React.Fragment key={slug}>
+													<View style={styles.rowItem}>
+														<Text style={Typography.p}>
+															{name}
+														</Text>
+														<Switch
+															value={active}
+															onValueChange={() =>
+																this.toggleNotificationSetting(
+																	slug,
+																	!active
+																)
+															}
+														/>
+													</View>
+													<Stack size={8} />
+												</React.Fragment>
+											)
+										} else return
+									}
+								)}
+							</>
+						) : null}
+					</View>
 				</View>
 				<Stack size={36}></Stack>
 				<HTML
@@ -226,12 +241,15 @@ class ProfileScreen extends React.Component {
 export default connect(
 	(store) => ({
 		user: store.user,
+		notification: store.notification,
 	}),
 	(dispatch) => ({
 		deAuth: actions.deAuth(dispatch),
 		getUser: actions.getUser(dispatch),
 		showAuthModal: actions.showAuthModal(dispatch),
 		getBookmarks: actions.getBookmarks(dispatch),
+		getSettings: actions.getSettings(dispatch),
+		updateSetting: actions.updateSetting(dispatch),
 	})
 )(ProfileScreen)
 
