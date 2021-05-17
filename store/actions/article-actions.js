@@ -168,6 +168,16 @@ export const getBookmarks = (dispatch) => async () => {
 	}
 }
 
+export const fetchAndReadArticle = (dispatch) => async (slug) => {
+	const res = await axios.get(`${CMS_URL}/article/${slug}.json`)
+	const { article } = res.data
+	if (article) {
+		readArticle(dispatch)(types.articleConverter(article))
+	} else {
+		throw new Error(`Could not find article with slug ${slug}.`)
+	}
+}
+
 /**
  * Sends to backend the current article and receives an object back containing data like views.
  * @param {import("../../lib/types").Article} article The article to send backend (current article).
