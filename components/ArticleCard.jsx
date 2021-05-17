@@ -4,9 +4,9 @@ import {
 	Text,
 	TouchableOpacity,
 	TouchableHighlight,
+	Image,
 	View,
 } from 'react-native'
-import FullWidthImage from 'react-native-fullwidth-image'
 import { Stack, Queue } from 'react-native-spacing-system'
 import HTML from 'react-native-render-html'
 import { connect } from 'react-redux'
@@ -16,6 +16,17 @@ import * as Haptics from 'expo-haptics'
 
 function ArticleCard(props) {
 	const { navigation } = props
+	const [cardWidth, setCardWidth] = React.useState(null)
+	const [imageRatio, setImageRatio] = React.useState(null)
+	const [imageLoaded, setImageLoaded] = React.useState(false)
+
+	React.useEffect(() => {
+		if (props.article.imageURI) {
+			Image.getSize(props.article.imageURI, (width, height) => {
+				setImageRatio(height / width)
+			})
+		}
+	}, [])
 
 	return (
 		<TouchableOpacity
@@ -27,20 +38,35 @@ function ArticleCard(props) {
 			// underlayColor={Colors.green}
 			activeOpacity={0.6}
 		>
-			<View>
+			<View
+				onLayout={(event) => {
+					setCardWidth(event.nativeEvent.layout.width)
+				}}
+			>
 				{props.article.imageURI && (
-					<FullWidthImage source={{ uri: props.article.imageURI }} />
+					<Image
+						style={{ width: '100%', height: cardWidth * imageRatio }}
+						source={{ uri: props.article.imageURI }}
+						loadingIndicatorSource={'../assets/images/banner.png'}
+						progressiveRenderingEnabled={true}
+						// onLoadStart={() => console.log(`Loading image for #${props.index} ${props.article.slug}`)}
+						onLoadEnd={() => setImageLoaded(true)}
+					/>
+				)}
+				{props.article.imageURI && !imageLoaded && (
+					<Stack
+						size={
+							!!cardWidth && !!imageRatio
+								? cardWidth * imageRatio
+								: props.article.imageHeight > 0
+								? props.article.imageHeight
+								: 200
+						}
+					></Stack>
 				)}
 				<Stack size={12} />
 				<View style={[styles.tags, styles.padded]}>
 					<Text style={styles.tag}>{props.article.category}</Text>
-					{/* {props.article.tags.map((tag) => (
-						<View key={tag} style={styles.tagContainer}>
-							<Text style={styles.tag}>{tag}</Text>
-							<Queue size={8} />
-							<Stack size={32}></Stack>
-						</View>
-					))} */}
 				</View>
 				<Stack size={4} />
 				<Text style={[styles.headline, styles.padded]}>
@@ -77,6 +103,10 @@ export default connect(null, (dispatch) => ({
 }))(ArticleCard)
 
 const styles = StyleSheet.create({
+	foo: {
+		width: '100%',
+		height: 300,
+	},
 	padded: {
 		paddingHorizontal: 24,
 	},
@@ -93,9 +123,6 @@ const styles = StyleSheet.create({
 		color: Colors.green,
 		// backgroundColor: Colors.green,
 		overflow: 'hidden', // needed to show the borderRadius with backgroundColor
-	},
-	tagContainer: {
-		flexDirection: 'row',
 	},
 	tags: {
 		flexDirection: 'row',
