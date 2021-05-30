@@ -31,7 +31,9 @@ function ArticleCard(props) {
 	return (
 		<TouchableOpacity
 			onPress={() => {
+				if (Platform.OS === 'ios') {
 				Haptics.selectionAsync()
+				}
 				props.readArticle(props.article)
 				navigation.push('Article')
 			}}
