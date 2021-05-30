@@ -4,7 +4,6 @@ import { Divider } from 'react-native-elements'
 import { Stack, Queue } from 'react-native-spacing-system'
 import { Typography } from '../constants'
 import * as uuid from 'uuid'
-import axios from 'axios'
 
 export default function PollCard(props) {
 	return (

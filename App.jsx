@@ -12,14 +12,13 @@ import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context'
 import BottomTabNavigator from './navigation/BottomTabNavigator'
 import useLinking from './navigation/useLinking'
 import { reducers, actions } from './store'
-import { CMS_URL, Colors, ROOT_URL, CMS_QUERY_SETTINGS } from './constants'
+import { Colors, ROOT_URL } from './constants'
 import ArticleScreen from './screens/ArticleScreen'
 import LoadingScreen from './screens/LoadingScreen'
 import AuthorScreen from './screens/AuthorScreen'
 import ResultsScreen from './screens/ResultsScreen'
 import * as SecureStorage from 'expo-secure-store'
 import Auth from './components/Auth'
-import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
 import { Ionicons } from '@expo/vector-icons'
 import * as Notifications from 'expo-notifications'
 import Constants from 'expo-constants'
@@ -90,7 +89,6 @@ const ConnectedModal = connect(
 		animationType="slide"
 		presentationStyle="formSheet"
 		style={styles.modal}
-		// presentationStyle={Platform.OS === 'ios' ? 'formSheet' : undefined}
 	>
 		<Ionicons
 			name="ios-close"
@@ -99,28 +97,7 @@ const ConnectedModal = connect(
 			style={styles.closeModal}
 			onPress={props.hide}
 		></Ionicons>
-		{/* <TouchableWithoutFeedback
-      style={styles.modalFix}
-        delayPressIn={300}
-        onPressIn={(e) => {
-          console.log('hide')
-          props.hide()
-          if (e?.nativeEvent?.locationY < 0) {
-          }
-        }}
-        onPressOut={(e) => {
-          console.log('show')
-          props.show()
-          if (e?.nativeEvent?.locationY < 0) {
-          }
-        }}
-        > */}
-		{/* <SafeAreaView
-            forceInset={{ bottom: 'always' }}
-          > */}
 		{props.children}
-		{/* </SafeAreaView> */}
-		{/* </TouchableWithoutFeedback> */}
 	</Modal>
 ))
 
@@ -203,14 +180,6 @@ export default function App(props) {
 		if (!isFontLoadingComplete) loadResourcesAndDataAsync()
 
 		if (!notificationSettingsLoaded) loadNotificationSettings()
-
-		// if (!mounted) {
-		//   store.subscribe(() => {
-		//     console.log(`updating auth modal status to ${store.getState().user.showAuthModal}, currently it is ${showAuthModal}`)
-		//     if (store.getState().user.showAuthModal !== showAuthModal) setShowAuthModal(store.getState().user.showAuthModal)
-		//   })
-		//   setMounted(true)
-		// }
 	}, [])
 
 	const lastNotificationResponse = Notifications.useLastNotificationResponse()
@@ -292,7 +261,6 @@ const styles = StyleSheet.create({
 	},
 	modal: {
 		backgroundColor: Colors.paper,
-		// flex: 1,
 	},
 	modalContainer: {
 		backgroundColor: Colors.paper,
@@ -307,18 +275,4 @@ const styles = StyleSheet.create({
 		top: 16,
 		right: 16,
 	},
-	// modalBarContainer: {
-	//   position: 'absolute',
-	//   top: 16,
-	//   right: 16,
-	//   width: '100%',
-	//   flexDirection: 'row',
-	//   justifyContent: 'flex-end',
-	// },
-	// modalBar: {
-	//   width: '40%',
-	//   height: 8,
-	//   backgroundColor: Colors.pencil,
-	//   borderRadius: 4
-	// }
 })

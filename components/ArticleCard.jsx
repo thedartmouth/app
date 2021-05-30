@@ -3,11 +3,11 @@ import {
 	StyleSheet,
 	Text,
 	TouchableOpacity,
-	TouchableHighlight,
 	Image,
 	View,
+	Platform,
 } from 'react-native'
-import { Stack, Queue } from 'react-native-spacing-system'
+import { Stack } from 'react-native-spacing-system'
 import HTML from 'react-native-render-html'
 import { connect } from 'react-redux'
 import { Colors, Typography } from '../constants'
@@ -32,12 +32,11 @@ function ArticleCard(props) {
 		<TouchableOpacity
 			onPress={() => {
 				if (Platform.OS === 'ios') {
-				Haptics.selectionAsync()
+					Haptics.selectionAsync()
 				}
 				props.readArticle(props.article)
 				navigation.push('Article')
 			}}
-			// underlayColor={Colors.green}
 			activeOpacity={0.6}
 		>
 			<View
@@ -116,12 +115,7 @@ const styles = StyleSheet.create({
 		fontSize: 12,
 		...Typography.sansBold,
 		paddingVertical: 4,
-		// paddingHorizontal: 12,
-		// borderRadius: 8,
-		// color: Colors.paper,
-		// backgroundColor: Colors.green,
 		color: Colors.green,
-		// backgroundColor: Colors.green,
 		overflow: 'hidden', // needed to show the borderRadius with backgroundColor
 	},
 	tags: {
@@ -137,7 +131,6 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 	},
 	author: {
-		// ...Typography.p,
 		fontSize: 12,
 		...Typography.sansBold,
 		color: Colors.pen,

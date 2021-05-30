@@ -11,7 +11,7 @@ import {
 } from 'react-native'
 import { Divider } from 'react-native-elements'
 import { Stack } from 'react-native-spacing-system'
-import { SafeAreaView, useSafeArea } from 'react-native-safe-area-context'
+import { useSafeArea } from 'react-native-safe-area-context'
 import ArticleCard from '../components/ArticleCard'
 import { Colors } from '../constants'
 
@@ -26,10 +26,6 @@ const FeedScreen = (props) => {
 	React.useEffect(() => {
 		if (page !== 1) props.addFeed(page) // if not refreshing page, add to the feed
 	}, [page])
-
-	// React.useEffect(() => {
-	// 	console.log(`${props.articles.feed.length} articles long`)
-	// }, [props.articles.feed])
 
 	return (
 		<View style={styles.screen}>
@@ -78,10 +74,6 @@ const FeedScreen = (props) => {
 		</View>
 	)
 }
-
-// FeedScreen.navigationOptions = {
-//   header: null,
-// };
 
 export default connect(
 	(reduxState) => ({

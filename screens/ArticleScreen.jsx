@@ -12,7 +12,7 @@ import {
 	TouchableOpacity,
 } from 'react-native'
 import FullWidthImage from 'react-native-fullwidth-image'
-import { Ionicons, FontAwesome5, MaterialIcons } from '@expo/vector-icons'
+import { Ionicons } from '@expo/vector-icons'
 import { ScrollView } from 'react-native-gesture-handler'
 import HTML from 'react-native-render-html'
 import * as Linking from 'expo-linking'
@@ -65,14 +65,7 @@ class ArticleScreen extends React.Component {
 		Alert.alert(
 			`Articles by ${author.name}`,
 			'You will be able to browse articles by authors soon.',
-			[
-				//   {
-				// 	text: "Cancel",
-				// 	onPress: () => console.log("Cancel Pressed"),
-				// 	style: "cancel"
-				//   },
-				{ text: 'Woo!' },
-			],
+			[{ text: 'Woo!' }],
 			{ cancelable: false }
 		)
 		// this.props.navigation.push('Author', author);
@@ -144,31 +137,6 @@ class ArticleScreen extends React.Component {
 			  )
 			: 'Unknown publish date'
 
-		// const minScroll = 100;
-
-		// const scrollY = new Animated.Value(0)
-
-		// const clampedScrollY = scrollY.interpolate({
-		// inputRange: [minScroll, minScroll + 1],
-		// outputRange: [0, 1],
-		// extrapolateLeft: 'clamp',
-		// });
-
-		// const minusScrollY = Animated.multiply(clampedScrollY, -1);
-
-		// const translateY = Animated.diffClamp(
-		// minusScrollY,
-		// -48,
-		// 0,
-		// );
-
-		// const opacity = translateY.interpolate({
-		// inputRange: [-48, 0],
-		// outputRange: [0.4, 1],
-		// extrapolate: 'clamp',
-		// });
-
-		// animation
 		const scrollY = new Animated.Value(0)
 		const translateYTop = (step) =>
 			Animated.diffClamp(scrollY, -48, step).interpolate({
@@ -384,23 +352,6 @@ class ArticleScreen extends React.Component {
 									<Stack size={72}></Stack>
 								</View>
 							</ScrollView>
-							{/* <Animated.View
-						style={
-							Platform.OS === 'ios'
-								? {
-										transform: [{ translateY: translateYBottom }],
-								  }
-								: {
-										// opacity: opacityButton
-								  }
-						}
-					>
-						<View style={styles.bottomTab}>
-							<Stack size={12} />
-							<View style={styles.bottomTabButtons}>
-							</View>
-						</View>
-					</Animated.View> */}
 						</View>
 					)}
 				</SafeAreaConsumer>
@@ -419,8 +370,6 @@ export default connect(
 	})
 )(ArticleScreen)
 
-// alert(Layout.margins.horizontal)
-
 const styles = StyleSheet.create({
 	screen: {
 		backgroundColor: Colors.paper,
@@ -431,22 +380,14 @@ const styles = StyleSheet.create({
 	},
 	topTab: {
 		zIndex: 1,
-		// alignItems: 'center',
 		borderColor: Colors.border,
 		borderStyle: 'solid',
 		borderBottomWidth: 1,
-		// borderWidth: 1,
 		position: 'absolute',
 		top: 0,
 		width: '100%',
 		backgroundColor: Colors.paper,
 		height: 48,
-		// borderColor: '#e5e6e9',
-		// backgroundColor: 'white',
-		// shadowOffset: { height: 3 },
-		// shadowRadius: 10,
-		// shadowColor: 'gray',
-		// shadowOpacity: 0.3,
 	},
 	intro: {
 		alignItems: 'flex-start',
@@ -467,13 +408,7 @@ const styles = StyleSheet.create({
 		alignSelf: 'flex-start',
 		fontSize: 12,
 		...Typography.sansBold,
-		// paddingVertical: 4,
-		// paddingHorizontal: 12,
-		// borderRadius: 8,
-		// color: Colors.paper,
-		// backgroundColor: Colors.green,
 		color: Colors.green,
-		// backgroundColor: Colors.green,
 		overflow: 'hidden', // needed to show...Typography.sans,
 	},
 	authorViewsArea: {
@@ -481,7 +416,6 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		justifyContent: 'space-between',
 		flex: 1,
-		// flexWrap: 'wrap',
 	},
 	authorArea: {
 		flexDirection: 'row',

@@ -1,18 +1,7 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { actions } from '../store'
-import {
-	Animated,
-	Button,
-	Image,
-	Platform,
-	StyleSheet,
-	Text,
-	TouchableOpacity,
-	View,
-	flex,
-	requireNativeComponent,
-} from 'react-native'
+import { Animated, Image, StyleSheet, View } from 'react-native'
 import * as SecureStore from 'expo-secure-store'
 import { Stack } from 'react-native-spacing-system'
 import dateFormat from 'dateformat'
