@@ -49,9 +49,7 @@ function ArticleCard(props) {
 					<Image
 						style={{ width: '100%', height: cardWidth * imageRatio }}
 						source={{ uri: props.article.imageURI }}
-						loadingIndicatorSource={'../assets/images/banner.png'}
 						progressiveRenderingEnabled={true}
-						// onLoadStart={() => console.log(`Loading image for #${props.index} ${props.article.slug}`)}
 						onLoadEnd={() => setImageLoaded(true)}
 					/>
 				)}
