@@ -32,13 +32,14 @@ Notifications.setNotificationHandler({
 	}),
 })
 
-async function registerForPushNotificationsAsync() {
+async function registerForPushNotificationsAsync(setNotificationPermission, setNotificationToken) {
 	let token
 	if (Constants.isDevice) {
 		const {
 			status: existingStatus,
 		} = await Notifications.getPermissionsAsync()
 		let finalStatus = existingStatus
+		setNotificationPermission(existingStatus)
 		if (existingStatus !== 'granted') {
 			const { status } = await Notifications.requestPermissionsAsync()
 			finalStatus = status
@@ -57,6 +58,7 @@ async function registerForPushNotificationsAsync() {
 			lightColor: '#FF231F7C',
 		})
 	}
+	setNotificationToken(token)
 
 	return token
 }
@@ -115,11 +117,13 @@ export default function App(props) {
 	const [containerMounted, setContainerMounted] = React.useState(false)
 	const { getInitialState } = useLinking(containerRef)
 	const [initialNavigation, setInitialNavigation] = React.useState(null)
+	const [notificationPermission, setNotificationPermission] = React.useState('unset')
+	const [notificationToken, setNotificationToken] = React.useState('none')
 
 	// Load any resources or data that we need prior to rendering the app
 
 	React.useEffect(() => {
-		registerForPushNotificationsAsync().then(async (token) => {
+		registerForPushNotificationsAsync(setNotificationPermission, setNotificationToken).then(async (token) => {
 			Axios.post(`${ROOT_URL}/notifications/tokens`, { token })
 			await SecureStorage.setItemAsync('notificationToken', token)
 		})
@@ -224,7 +228,7 @@ export default function App(props) {
 							>
 								<Stack.Screen
 									name="Root"
-									component={BottomTabNavigator}
+									component={() => BottomTabNavigator({ notificationPermission, notificationToken })}
 								/>
 								<Stack.Screen
 									name="Results"
