@@ -25,7 +25,7 @@ class LoadingScreen extends React.Component {
 		Promise.all(loadingPromises).then(() => {
 			setTimeout(() => {
 				this.props.completeLoading()
-			}, 3000)
+			}, 2000)
 		})
 	}
 
@@ -62,7 +62,7 @@ class LoadingScreen extends React.Component {
 						styles.date,
 					]}
 				>
-					{dateFormat(new Date(), 'dddd, mmm. d, yyyy')}
+					{dateFormat(new Date(), 'dddd, mmm d')}
 				</Animated.Text>
 			</View>
 		)
