@@ -47,24 +47,6 @@ export const store = createStore(
 	)
 )
 
-const AuthModal = (props) => (
-	<Modal
-		visible={props.visible}
-		animationType="slide"
-		presentationStyle="formSheet"
-		style={styles.modal}
-	>
-		<Ionicons
-			name="ios-close"
-			size={48}
-			color={Colors.charcoal}
-			style={styles.closeModal}
-			onPress={props.hide}
-		></Ionicons>
-		{props.children}
-	</Modal>
-)
-
 const ConnectedAuthModal = connect(
 	(store) => ({
 		visible: store.user.showAuthModal,
@@ -72,9 +54,7 @@ const ConnectedAuthModal = connect(
 	(dispatch) => ({
 		hide: actions.hideAuthModal(dispatch),
 	})
-)(AuthModal)
-
-const NotificationModal = (props) => (
+)((props) => (
 	<Modal
 		visible={props.visible}
 		animationType="slide"
@@ -90,7 +70,32 @@ const NotificationModal = (props) => (
 		></Ionicons>
 		{props.children}
 	</Modal>
-)
+))
+
+const ConnectedNotificationRequestModal = connect(
+	(store) => ({
+		visible: store.notification.showNotificationRequestModal,
+	}),
+	(dispatch) => ({
+		hide: actions.hideNotificationRequestModal(dispatch),
+	})
+)((props) => (
+	<Modal
+		visible={props.visible}
+		animationType="slide"
+		presentationStyle="formSheet"
+		style={styles.modal}
+	>
+		<Ionicons
+			name="ios-close"
+			size={48}
+			color={Colors.charcoal}
+			style={styles.closeModal}
+			onPress={props.hide}
+		></Ionicons>
+		{props.children}
+	</Modal>
+))
 
 export default function App(props) {
 	const [isFontLoadingComplete, setFontLoadingComplete] = React.useState(false)
@@ -101,9 +106,6 @@ export default function App(props) {
 		notificationSettingsLoaded,
 		setNotificationSettingsLoaded,
 	] = React.useState(false)
-	const [showNotificationsModal, setShowNotificationsModal] = React.useState(
-		false
-	)
 	const containerRef = React.useRef(null)
 	const [containerMounted, setContainerMounted] = React.useState(false)
 	const { getInitialState } = useLinking(containerRef)
@@ -116,11 +118,11 @@ export default function App(props) {
 				await SecureStorage.getItemAsync('bootCount')
 			)
 			if (!bootCount) {
-				await SecureStorage.setItemAsync('bootCount', '1')
+				await SecureStorage.setItemAsync('bootCount', '2')
 			} else {
 				await SecureStorage.setItemAsync('bootCount', `${bootCount + 1}`)
 				if (bootCount === 2) {
-					setShowNotificationsModal(true)
+					actions.showNotificationRequestModal(store.dispatch)
 				}
 			}
 		}
@@ -164,7 +166,7 @@ export default function App(props) {
 					)
 					if (notificationToken) {
 						Axios.post(`${ROOT_URL}/notifications/tokens`, {
-							notificationToken,
+							token: notificationToken,
 							userId,
 						})
 					}
@@ -252,19 +254,18 @@ export default function App(props) {
 					)}
 					<ConnectedAuthModal>
 						<View style={styles.modalContainer}>
-							<Auth></Auth>
+							<Auth />
 						</View>
 					</ConnectedAuthModal>
-					<NotificationModal
-						visible={showNotificationsModal}
-						hide={() => setShowNotificationsModal(false)}
-					>
+					<ConnectedNotificationRequestModal>
 						<View style={styles.modalContainer}>
 							<NotificationRequest
-								hide={() => setShowNotificationsModal(false)}
-							></NotificationRequest>
+								hide={actions.hideNotificationRequestModal(
+									store.dispatch
+								)}
+							/>
 						</View>
-					</NotificationModal>
+					</ConnectedNotificationRequestModal>
 				</SafeAreaView>
 			</SafeAreaProvider>
 		</Provider>

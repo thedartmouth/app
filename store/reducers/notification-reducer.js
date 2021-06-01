@@ -1,8 +1,23 @@
 import { ActionTypes } from '../actions'
 
 const INITIAL_STATE = {
-	settings: null,
+	settings: [
+		{ active: false, slug: 'top-story', name: 'Top Story' },
+		{ active: false, slug: 'top-picture', name: 'Top Picture' },
+		{ active: false, slug: 'cartoon-of-the-day', name: 'Cartoon of the Day' },
+		{ active: false, slug: 'featured', name: 'Featured' },
+		{ active: false, slug: 'student-spotlights', name: 'Student Spotlights' },
+		{ active: false, slug: 'verbum-ultimum', name: 'Verbum Ultimum' },
+		{ active: false, slug: 'news', name: 'News' },
+		{ active: false, slug: 'covid-19', name: 'Covid-19' },
+		{ active: false, slug: 'opinion', name: 'Opinion' },
+		{ active: false, slug: 'sports', name: 'Sports' },
+		{ active: false, slug: 'arts', name: 'Arts' },
+		{ active: false, slug: 'mirror', name: 'Mirror' },
+		{ active: false, slug: 'cartoon', name: 'Cartoon' },
+	],
 	loadingSettings: false,
+	showNotificationRequestModal: false,
 }
 
 const notificationReducer = (state = INITIAL_STATE, action) => {
@@ -19,6 +34,11 @@ const notificationReducer = (state = INITIAL_STATE, action) => {
 			newSettings.find((e) => e.slug === action.payload.tagSlug).active =
 				action.payload.status
 			return { ...state, loadingSettings: false, settings: newSettings }
+		case ActionTypes.SHOW_NOTIFICATION_REQUEST_MODAL:
+			return { ...state, showNotificationRequestModal: true }
+		case ActionTypes.HIDE_NOTIFICATION_REQUEST_MODAL:
+			console.log('hiding')
+			return { ...state, showNotificationRequestModal: false }
 		default:
 			return state
 	}

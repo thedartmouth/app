@@ -12,6 +12,8 @@ export const NOTIFICATION_ACTION_TYPES = {
 		SUCCESS: 'UPDATE_SETTINGS_SUCCESS',
 		FAILURE: 'UPDATE_SETTINGS_FAILURE',
 	},
+	SHOW_NOTIFICATION_REQUEST_MODAL: 'SHOW_NOTIFICATION_REQUEST_MODAL',
+	HIDE_NOTIFICATION_REQUEST_MODAL: 'HIDE_NOTIFICATION_REQUEST_MODAL',
 }
 
 export const getSettings = (dispatch) => async (token) => {
@@ -63,3 +65,13 @@ export const updateSetting = (dispatch) => async (tagSlug, status, token) => {
 		})
 	}
 }
+
+export const showNotificationRequestModal = (dispatch) => () =>
+	dispatch({
+		type: NOTIFICATION_ACTION_TYPES.SHOW_NOTIFICATION_REQUEST_MODAL,
+	})
+
+export const hideNotificationRequestModal = (dispatch) => () =>
+	dispatch({
+		type: NOTIFICATION_ACTION_TYPES.HIDE_NOTIFICATION_REQUEST_MODAL,
+	})

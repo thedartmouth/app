@@ -10,12 +10,12 @@ import ResultsScreen from './ResultsScreen'
 import ArticleScreen from './ArticleScreen'
 import * as Linking from 'expo-linking'
 import HTML from 'react-native-render-html'
-import { createStackNavigator } from '@react-navigation/stack'
+// import { createStackNavigator } from '@react-navigation/stack'
 import VoxButton from '../components/VoxButton'
 import { ScrollView } from 'react-native-gesture-handler'
 import * as SecureStorage from 'expo-secure-store'
 
-const ProfileStack = createStackNavigator()
+// const ProfileStack = createStackNavigator()
 
 class ProfileScreen extends React.Component {
 	constructor(props) {
@@ -31,12 +31,12 @@ class ProfileScreen extends React.Component {
 	// 	})
 	// }
 
-	// checkAuth = () => {
-	// 	if (!this.props.user.lastAuth) {
-	// 		this.props.showAuthModal()
-	// 		return false
-	// 	} else return true
-	// }
+	checkAuth = () => {
+		if (!this.props.user.lastAuth) {
+			this.props.showAuthModal()
+			return false
+		} else return true
+	}
 
 	navigateProfileContent = (scenario) => {
 		const authed = this.checkAuth()
@@ -56,31 +56,12 @@ class ProfileScreen extends React.Component {
 		}
 	}
 
-	toggleProfileSetting = (setting) => {
-		const prevSettings = this.props.user.data?.settings
-		const updatedProfile = { settings: prevSettings }
-		switch (setting) {
-			case 'NOTIFICATION_TRENDING':
-				updatedProfile.settings.notifications.trending = !updatedProfile
-					.settings.notifications?.trending
-				break
-			case 'NOTIFICATION_TAGS':
-				updatedProfile.settings.notifications.tags = !updatedProfile
-					.settings.notifications?.tags
-				break
-			case 'NOTIFICATION_AUTHORS':
-				updatedProfile.settings.notifications.authors = !updatedProfile
-					.settings.notifications?.authors
-				break
-		}
-		this.editProfileElement(updatedProfile)
-	}
-
 	toggleNotificationSetting = async (tagSlug, status) => {
 		const token = await SecureStorage.getItemAsync('notificationToken')
-		console.log(tagSlug, status, token)
 		if (token) {
 			this.props.updateSetting(tagSlug, status, token)
+		} else {
+			this.props.showNotificationRequestModal()
 		}
 	}
 
@@ -91,23 +72,24 @@ class ProfileScreen extends React.Component {
 
 	render() {
 		return (
-			<ScrollView contentContainerStyle={styles.profileScreen}>
-				<Stack size={72} />
-				<View style={styles.intro}>
-					<Text style={styles.title}>
-						Hello, {this.props.user.data?.name?.first || 'there'}.
-					</Text>
-					<Stack size={24} />
-					<Text style={styles.rewardText}>
-						Good{' '}
-						{new Date().getHours() < 12 - 1
-							? 'morning'
-							: new Date().getHours() < 18 - 1
-							? 'afternoon'
-							: 'evening'}
-						.
-					</Text>
-					{/* <Box dir="row" align="center" style={styles.reward}>
+			<View style={styles.profileScreen}>
+				<ScrollView contentContainerStyle={styles.scroll}>
+					<Stack size={72} />
+					<View style={styles.intro}>
+						<Text style={styles.title}>
+							Hello, {this.props.user.data?.name?.first || 'there'}.
+						</Text>
+						<Stack size={24} />
+						<Text style={styles.rewardText}>
+							Good{' '}
+							{new Date().getHours() < 12 - 1
+								? 'morning'
+								: new Date().getHours() < 18 - 1
+								? 'afternoon'
+								: 'evening'}
+							.
+						</Text>
+						{/* <Box dir="row" align="center" style={styles.reward}>
 						<SimpleLineIcons
 							name="cup"
 							size={24}
@@ -121,44 +103,44 @@ class ProfileScreen extends React.Component {
 						<Queue size={8} />
 						<Text style={styles.rewardText}>coffee cups earned!</Text>
 					</Box> */}
-				</View>
-				<Stack size={36} />
-				<Divider style={styles.divider} />
-				<Stack size={36} />
-				<View style={styles.contentBoxes}>
-					<View style={styles.contentBox}>
-						<Text style={styles.heading}>Your stuff</Text>
-						<Stack size={12} />
-						<Divider style={styles.thinDivider} />
-						<Stack size={4} />
-						<TouchableOpacity
-							style={styles.rowItem}
-							onPress={() => this.navigateProfileContent('BOOKMARKS')}
-						>
-							<Text style={Typography.p}>Bookmarks</Text>
-							<Ionicons
-								name="ios-arrow-forward"
-								size={24}
-								style={styles.rowItemIcon}
-							/>
-						</TouchableOpacity>
-						<Stack size={4} />
-						<Divider style={styles.thinDivider} />
-						<Stack size={4} />
-						<TouchableOpacity
-							style={styles.rowItem}
-							onPress={() => this.navigateProfileContent('FOLLOWING')}
-						>
-							<Text style={Typography.p}>Followed authors</Text>
-							<Ionicons
-								name="ios-arrow-forward"
-								size={24}
-								style={styles.rowItemIcon}
-							/>
-						</TouchableOpacity>
-						<Stack size={4} />
-						<Divider style={styles.thinDivider} />
-						{/* <Stack size={4} />
+					</View>
+					<Stack size={36} />
+					<Divider style={styles.divider} />
+					<Stack size={36} />
+					<View style={styles.contentBoxes}>
+						<View style={styles.contentBox}>
+							<Text style={styles.heading}>Your stuff</Text>
+							<Stack size={12} />
+							<Divider style={styles.thinDivider} />
+							<Stack size={4} />
+							<TouchableOpacity
+								style={styles.rowItem}
+								onPress={() => this.navigateProfileContent('BOOKMARKS')}
+							>
+								<Text style={Typography.p}>Bookmarks</Text>
+								<Ionicons
+									name="ios-arrow-forward"
+									size={24}
+									style={styles.rowItemIcon}
+								/>
+							</TouchableOpacity>
+							<Stack size={4} />
+							<Divider style={styles.thinDivider} />
+							<Stack size={4} />
+							<TouchableOpacity
+								style={styles.rowItem}
+								onPress={() => this.navigateProfileContent('FOLLOWING')}
+							>
+								<Text style={Typography.p}>Followed authors</Text>
+								<Ionicons
+									name="ios-arrow-forward"
+									size={24}
+									style={styles.rowItemIcon}
+								/>
+							</TouchableOpacity>
+							<Stack size={4} />
+							<Divider style={styles.thinDivider} />
+							{/* <Stack size={4} />
 						<TouchableOpacity
 							style={styles.rowItem}
 							onPress={() => this.navigateProfileContent('POLLS')}
@@ -172,68 +154,70 @@ class ProfileScreen extends React.Component {
 						</TouchableOpacity>
 						<Stack size={4} />
 						<Divider style={styles.thinDivider} /> */}
+						</View>
+						<Stack size={24} />
+						<View style={styles.contentBox}>
+							<Text style={styles.heading}>Notification settings</Text>
+							<Stack size={12} />
+							{this.props.notification.settings ? (
+								<>
+									<Stack size={8} />
+									{this.props.notification.settings.map(
+										({ slug, name, active }) => {
+											if (slug && name) {
+												return (
+													<React.Fragment key={slug}>
+														<View style={styles.rowItem}>
+															<Text style={Typography.p}>
+																{name}
+															</Text>
+															<Switch
+																value={active}
+																onValueChange={() =>
+																	this.toggleNotificationSetting(
+																		slug,
+																		!active
+																	)
+																}
+															/>
+														</View>
+														<Stack size={8} />
+													</React.Fragment>
+												)
+											} else return
+										}
+									)}
+								</>
+							) : null}
+						</View>
 					</View>
-					<Stack size={24} />
-					<View style={styles.contentBox}>
-						<Text style={styles.heading}>Notification settings</Text>
-						<Stack size={12} />
-						{this.props.notification.settings ? (
-							<>
-								{this.props.notification.settings.map(
-									({ slug, name, active }) => {
-										if (slug && name) {
-											return (
-												<React.Fragment key={slug}>
-													<View style={styles.rowItem}>
-														<Text style={Typography.p}>
-															{name}
-														</Text>
-														<Switch
-															value={active}
-															onValueChange={() =>
-																this.toggleNotificationSetting(
-																	slug,
-																	!active
-																)
-															}
-														/>
-													</View>
-													<Stack size={8} />
-												</React.Fragment>
-											)
-										} else return
-									}
-								)}
-							</>
-						) : null}
-					</View>
-				</View>
-				<Stack size={36}></Stack>
-				<HTML
-					tagsStyles={{ a: styles.policy }}
-					html={`<a href=${POLICY_URL}>Privacy Policy</a>`}
-					onLinkPress={(_, href) => {
-						Linking.openURL(href)
-					}}
-				></HTML>
-				<Stack size={36}></Stack>
-				{this.props.user.lastAuth ? (
-					<>
-						<VoxButton
-							title="Logout"
-							variant="hollow"
-							hue="green"
-							flex={1}
-							// raised
-							onPress={() => {
-								this.props.deAuth()
-								this.checkAuth()
-							}}
-						></VoxButton>
-						<Stack size={36}></Stack>
-					</>
-				) : null}
-			</ScrollView>
+					<Stack size={36}></Stack>
+					<HTML
+						tagsStyles={{ a: styles.policy }}
+						html={`<a href=${POLICY_URL}>Privacy Policy</a>`}
+						onLinkPress={(_, href) => {
+							Linking.openURL(href)
+						}}
+					></HTML>
+					<Stack size={36}></Stack>
+					{this.props.user.lastAuth ? (
+						<>
+							<VoxButton
+								title="Logout"
+								variant="hollow"
+								hue="green"
+								flex={1}
+								// raised
+								onPress={() => {
+									this.props.deAuth()
+									this.checkAuth()
+								}}
+							></VoxButton>
+							<Stack size={36}></Stack>
+						</>
+					) : null}
+				</ScrollView>
+			</View>
 		)
 	}
 }
@@ -250,6 +234,9 @@ export default connect(
 		getBookmarks: actions.getBookmarks(dispatch),
 		getSettings: actions.getSettings(dispatch),
 		updateSetting: actions.updateSetting(dispatch),
+		showNotificationRequestModal: actions.showNotificationRequestModal(
+			dispatch
+		),
 	})
 )(ProfileScreen)
 
@@ -266,8 +253,10 @@ export default connect(
 const styles = StyleSheet.create({
 	profileScreen: {
 		flex: 1,
-		paddingHorizontal: 36,
 		backgroundColor: Colors.paper,
+	},
+	scroll: {
+		paddingHorizontal: 36,
 		alignItems: 'stretch',
 	},
 	intro: {
