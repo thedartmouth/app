@@ -11,6 +11,7 @@ import { createStackNavigator } from '@react-navigation/stack'
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context'
 import BottomTabNavigator from './navigation/BottomTabNavigator'
 import useLinking from './navigation/useLinking'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import { reducers, actions } from './store'
 import { Colors, ROOT_URL } from './constants'
 import ArticleScreen from './screens/ArticleScreen'
@@ -21,7 +22,6 @@ import * as SecureStorage from 'expo-secure-store'
 import Auth from './components/Auth'
 import { Ionicons } from '@expo/vector-icons'
 import * as Notifications from 'expo-notifications'
-import Constants from 'expo-constants'
 import Axios from 'axios'
 import NotificationRequest from './components/NotificationRequest'
 
@@ -114,17 +114,21 @@ export default function App(props) {
 
 	React.useEffect(() => {
 		async function logAppBootCount() {
-			const bootCount = parseInt(
-				await SecureStorage.getItemAsync('bootCount')
-			)
+			const bootCount = parseInt(await AsyncStorage.getItem('bootCount'))
 			if (!bootCount) {
-				await SecureStorage.setItemAsync('bootCount', '2')
+				await AsyncStorage.setItem('bootCount', '2')
 			} else {
-				await SecureStorage.setItemAsync('bootCount', `${bootCount + 1}`)
+				await AsyncStorage.setItem('bootCount', `${bootCount + 1}`)
 				if (bootCount === 2) {
-					actions.showNotificationRequestModal(store.dispatch)
+					const token = await SecureStorage.getItemAsync(
+						'notificationToken'
+					)
+					if (!token) {
+						actions.showNotificationRequestModal(store.dispatch)()
+					}
 				}
 			}
+			// alert(bootCount)
 		}
 
 		async function loadResourcesAndDataAsync() {

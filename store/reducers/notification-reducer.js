@@ -37,7 +37,6 @@ const notificationReducer = (state = INITIAL_STATE, action) => {
 		case ActionTypes.SHOW_NOTIFICATION_REQUEST_MODAL:
 			return { ...state, showNotificationRequestModal: true }
 		case ActionTypes.HIDE_NOTIFICATION_REQUEST_MODAL:
-			console.log('hiding')
 			return { ...state, showNotificationRequestModal: false }
 		default:
 			return state
