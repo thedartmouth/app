@@ -9,7 +9,9 @@
 		"ios": "expo start --ios",
 		"web": "expo start --web",
 		"eject": "expo eject",
-		"test": "jest --watchAll"
+		"test": "jest --watchAll",
+		"build:ios": "expo build:ios",
+		"build:ios:adhoc": "expo build:ios --provisioning-profile-path ./The_Dartmouth__Ad_Hoc.mobileprovision"
 	},
 	"jest": {
 		"preset": "jest-expo"
