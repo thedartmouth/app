@@ -25,18 +25,18 @@ class ProfileScreen extends React.Component {
 		}
 	}
 
-	componentDidMount() {
-		this.props.navigation.addListener('focus', () => {
-			this.checkAuth()
-		})
-	}
+	// componentDidMount() {
+	// 	this.props.navigation.addListener('focus', () => {
+	// 		this.checkAuth()
+	// 	})
+	// }
 
-	checkAuth = () => {
-		if (!this.props.user.lastAuth) {
-			this.props.showAuthModal()
-			return false
-		} else return true
-	}
+	// checkAuth = () => {
+	// 	if (!this.props.user.lastAuth) {
+	// 		this.props.showAuthModal()
+	// 		return false
+	// 	} else return true
+	// }
 
 	navigateProfileContent = (scenario) => {
 		const authed = this.checkAuth()
