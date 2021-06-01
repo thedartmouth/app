@@ -9,9 +9,15 @@ const VoxButton = (props) => {
 		case 'green':
 			primaryColor = Colors.green
 			secondaryColor = Colors.paper
+			break
+		case 'gray':
+			primaryColor = Colors.shade
+			secondaryColor = Colors.charcoal
+			break
 		default:
 			primaryColor = Colors.green
 			secondaryColor = Colors.paper
+			break
 	}
 	const titleStyle = {
 		...Typography.sansRegular,
