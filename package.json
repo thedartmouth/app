@@ -11,7 +11,8 @@
 		"eject": "expo eject",
 		"test": "jest --watchAll",
 		"build:ios": "expo build:ios",
-		"build:ios:adhoc": "expo build:ios --provisioning-profile-path ./The_Dartmouth__Ad_Hoc.mobileprovision"
+		"build:ios:store": "expo build:ios --provisioning-profile-path ../The_Dartmouth.mobileprovision",
+		"build:ios:adhoc": "expo build:ios --provisioning-profile-path ../The_Dartmouth__Ad_Hoc.mobileprovision"
 	},
 	"jest": {
 		"preset": "jest-expo"
