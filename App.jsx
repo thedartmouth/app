@@ -23,6 +23,7 @@ import { Ionicons } from '@expo/vector-icons'
 import * as Notifications from 'expo-notifications'
 import Constants from 'expo-constants'
 import Axios from 'axios'
+import NotificationRequest from './components/NotificationRequest'
 
 Notifications.setNotificationHandler({
 	handleNotification: async () => ({
@@ -31,40 +32,6 @@ Notifications.setNotificationHandler({
 		shouldSetBadge: true,
 	}),
 })
-
-async function registerForPushNotificationsAsync(
-	setNotificationPermission,
-	setNotificationToken
-) {
-	let token
-	if (Constants.isDevice) {
-		const {
-			status: existingStatus,
-		} = await Notifications.getPermissionsAsync()
-		let finalStatus = existingStatus
-		setNotificationPermission(existingStatus)
-		if (existingStatus !== 'granted') {
-			const { status } = await Notifications.requestPermissionsAsync()
-			finalStatus = status
-		}
-		if (finalStatus !== 'granted') {
-			return
-		}
-		token = (await Notifications.getExpoPushTokenAsync()).data
-	}
-
-	if (Platform.OS === 'android') {
-		Notifications.setNotificationChannelAsync('default', {
-			name: 'default',
-			importance: Notifications.AndroidImportance.MAX,
-			vibrationPattern: [0, 250, 250, 250],
-			lightColor: '#FF231F7C',
-		})
-	}
-	setNotificationToken(token)
-
-	return token
-}
 
 const Stack = createStackNavigator()
 
@@ -80,15 +47,7 @@ export const store = createStore(
 	)
 )
 
-const ConnectedModal = connect(
-	(store) => ({
-		visible: store.user.showAuthModal,
-	}),
-	(dispatch) => ({
-		show: actions.showAuthModal(dispatch),
-		hide: actions.hideAuthModal(dispatch),
-	})
-)((props) => (
+const AuthModal = (props) => (
 	<Modal
 		visible={props.visible}
 		animationType="slide"
@@ -104,7 +63,34 @@ const ConnectedModal = connect(
 		></Ionicons>
 		{props.children}
 	</Modal>
-))
+)
+
+const ConnectedAuthModal = connect(
+	(store) => ({
+		visible: store.user.showAuthModal,
+	}),
+	(dispatch) => ({
+		hide: actions.hideAuthModal(dispatch),
+	})
+)(AuthModal)
+
+const NotificationModal = (props) => (
+	<Modal
+		visible={props.visible}
+		animationType="slide"
+		presentationStyle="formSheet"
+		style={styles.modal}
+	>
+		<Ionicons
+			name="ios-close"
+			size={48}
+			color={Colors.charcoal}
+			style={styles.closeModal}
+			onPress={props.hide}
+		></Ionicons>
+		{props.children}
+	</Modal>
+)
 
 export default function App(props) {
 	const [isFontLoadingComplete, setFontLoadingComplete] = React.useState(false)
@@ -115,26 +101,29 @@ export default function App(props) {
 		notificationSettingsLoaded,
 		setNotificationSettingsLoaded,
 	] = React.useState(false)
-	const [showAuthModal, setShowAuthModal] = React.useState(false)
+	const [showNotificationsModal, setShowNotificationsModal] = React.useState(
+		false
+	)
 	const containerRef = React.useRef(null)
 	const [containerMounted, setContainerMounted] = React.useState(false)
 	const { getInitialState } = useLinking(containerRef)
-	const [initialNavigation, setInitialNavigation] = React.useState(null)
-	const [notificationPermission, setNotificationPermission] = React.useState(
-		'unset'
-	)
-	const [notificationToken, setNotificationToken] = React.useState('none')
 
 	// Load any resources or data that we need prior to rendering the app
 
 	React.useEffect(() => {
-		registerForPushNotificationsAsync(
-			setNotificationPermission,
-			setNotificationToken
-		).then(async (token) => {
-			Axios.post(`${ROOT_URL}/notifications/tokens`, { token })
-			await SecureStorage.setItemAsync('notificationToken', token)
-		})
+		async function logAppBootCount() {
+			const bootCount = parseInt(
+				await SecureStorage.getItemAsync('bootCount')
+			)
+			if (!bootCount) {
+				await SecureStorage.setItemAsync('bootCount', '1')
+			} else {
+				await SecureStorage.setItemAsync('bootCount', `${bootCount + 1}`)
+				if (bootCount === 2) {
+					setShowNotificationsModal(true)
+				}
+			}
+		}
 
 		async function loadResourcesAndDataAsync() {
 			try {
@@ -196,6 +185,8 @@ export default function App(props) {
 			}
 		}
 
+		logAppBootCount()
+
 		if (!userLoaded) loadUser()
 
 		if (!isFontLoadingComplete) loadResourcesAndDataAsync()
@@ -245,12 +236,7 @@ export default function App(props) {
 							>
 								<Stack.Screen
 									name="Root"
-									component={() =>
-										BottomTabNavigator({
-											notificationPermission,
-											notificationToken,
-										})
-									}
+									component={BottomTabNavigator}
 								/>
 								<Stack.Screen
 									name="Results"
@@ -264,12 +250,21 @@ export default function App(props) {
 							</Stack.Navigator>
 						</NavigationContainer>
 					)}
-					<ConnectedModal>
-						{/* <View style={styles.modalBar}></View> */}
+					<ConnectedAuthModal>
 						<View style={styles.modalContainer}>
 							<Auth></Auth>
 						</View>
-					</ConnectedModal>
+					</ConnectedAuthModal>
+					<NotificationModal
+						visible={showNotificationsModal}
+						hide={() => setShowNotificationsModal(false)}
+					>
+						<View style={styles.modalContainer}>
+							<NotificationRequest
+								hide={() => setShowNotificationsModal(false)}
+							></NotificationRequest>
+						</View>
+					</NotificationModal>
 				</SafeAreaView>
 			</SafeAreaProvider>
 		</Provider>
