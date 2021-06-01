@@ -10,7 +10,10 @@ import TabBarIcon from '../components/TabBarIcon'
 const BottomTab = createBottomTabNavigator()
 const INITIAL_ROUTE_NAME = 'Feed'
 
-export default function BottomTabNavigator({ notificationPermission, notificationToken }) {
+export default function BottomTabNavigator({
+	notificationPermission,
+	notificationToken,
+}) {
 	// Set the header title on the parent stack navigator depending on the
 	// currently active tab. Learn more in the documentation:
 	// https://reactnavigation.org/docs/en/screen-options-resolution.html
@@ -25,27 +28,27 @@ export default function BottomTabNavigator({ notificationPermission, notificatio
 			tabBarOptions={{ style: styles.tabBar, showLabel: true }}
 		>
 			<BottomTab.Screen
-				name='Feed'
+				name="Feed"
 				component={FeedScreen}
 				options={{
-					title: notificationPermission,
+					title: 'Feed',
 					tabBarIcon: ({ focused }) => (
 						<TabBarIcon focused={focused} name="ios-newspaper" />
 					),
 				}}
 			/>
 			<BottomTab.Screen
-				name='Discover'
+				name="Discover"
 				component={DiscoverScreen}
 				options={{
-					title: notificationToken,
+					title: 'Discover',
 					tabBarIcon: ({ focused }) => (
 						<TabBarIcon focused={focused} name="ios-grid" />
 					),
 				}}
 			/>
 			<BottomTab.Screen
-				name='Me'
+				name="Me"
 				component={ProfileScreen}
 				options={{
 					title: 'My Profile',

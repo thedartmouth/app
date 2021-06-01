@@ -32,7 +32,10 @@ Notifications.setNotificationHandler({
 	}),
 })
 
-async function registerForPushNotificationsAsync(setNotificationPermission, setNotificationToken) {
+async function registerForPushNotificationsAsync(
+	setNotificationPermission,
+	setNotificationToken
+) {
 	let token
 	if (Constants.isDevice) {
 		const {
@@ -117,13 +120,18 @@ export default function App(props) {
 	const [containerMounted, setContainerMounted] = React.useState(false)
 	const { getInitialState } = useLinking(containerRef)
 	const [initialNavigation, setInitialNavigation] = React.useState(null)
-	const [notificationPermission, setNotificationPermission] = React.useState('unset')
+	const [notificationPermission, setNotificationPermission] = React.useState(
+		'unset'
+	)
 	const [notificationToken, setNotificationToken] = React.useState('none')
 
 	// Load any resources or data that we need prior to rendering the app
 
 	React.useEffect(() => {
-		registerForPushNotificationsAsync(setNotificationPermission, setNotificationToken).then(async (token) => {
+		registerForPushNotificationsAsync(
+			setNotificationPermission,
+			setNotificationToken
+		).then(async (token) => {
 			Axios.post(`${ROOT_URL}/notifications/tokens`, { token })
 			await SecureStorage.setItemAsync('notificationToken', token)
 		})
@@ -162,6 +170,15 @@ export default function App(props) {
 				if (token && userId) {
 					actions.auth(store.dispatch)(token)
 					actions.getUser(store.dispatch)()
+					const notificationToken = await SecureStorage.getItemAsync(
+						'notificationToken'
+					)
+					if (notificationToken) {
+						Axios.post(`${ROOT_URL}/notifications/tokens`, {
+							notificationToken,
+							userId,
+						})
+					}
 					setUserLoaded(true)
 				}
 			} catch (err) {
@@ -228,7 +245,12 @@ export default function App(props) {
 							>
 								<Stack.Screen
 									name="Root"
-									component={() => BottomTabNavigator({ notificationPermission, notificationToken })}
+									component={() =>
+										BottomTabNavigator({
+											notificationPermission,
+											notificationToken,
+										})
+									}
 								/>
 								<Stack.Screen
 									name="Results"
