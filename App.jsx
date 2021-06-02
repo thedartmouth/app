@@ -128,7 +128,6 @@ export default function App(props) {
 					}
 				}
 			}
-			// alert(bootCount)
 		}
 
 		async function loadResourcesAndDataAsync() {
@@ -158,46 +157,39 @@ export default function App(props) {
 			}
 		}
 
-		async function loadUser() {
+		async function loadUserAndNotificationToken() {
 			try {
-				const token = await SecureStorage.getItemAsync('token')
+				const userToken = await SecureStorage.getItemAsync('token')
 				const userId = await SecureStorage.getItemAsync('userId')
-				if (token && userId) {
-					actions.auth(store.dispatch)(token)
+
+				if (userToken && userId) {
+					actions.auth(store.dispatch)(userToken)
 					actions.getUser(store.dispatch)()
-					const notificationToken = await SecureStorage.getItemAsync(
-						'notificationToken'
-					)
-					if (notificationToken) {
-						Axios.post(`${ROOT_URL}/notifications/tokens`, {
-							token: notificationToken,
-							userId,
-						})
-					}
 					setUserLoaded(true)
+				}
+				const notificationToken = await SecureStorage.getItemAsync(
+					'notificationToken'
+				)
+				if (notificationToken) {
+					await Axios.post(`${ROOT_URL}/notifications/tokens`, {
+						token: notificationToken,
+						userId,
+					})
+					if (!notificationSettingsLoaded) {
+						actions.getSettings(store.dispatch)(notificationToken)
+						setNotificationSettingsLoaded(true)
+					}
 				}
 			} catch (err) {
 				console.error(err)
 			}
 		}
 
-		async function loadNotificationSettings() {
-			try {
-				const token = await SecureStorage.getItemAsync('notificationToken')
-				if (token) actions.getSettings(store.dispatch)(token)
-				setNotificationSettingsLoaded(true)
-			} catch (e) {
-				console.error(e)
-			}
-		}
-
 		logAppBootCount()
 
-		if (!userLoaded) loadUser()
+		if (!userLoaded) loadUserAndNotificationToken()
 
 		if (!isFontLoadingComplete) loadResourcesAndDataAsync()
-
-		if (!notificationSettingsLoaded) loadNotificationSettings()
 	}, [])
 
 	const lastNotificationResponse = Notifications.useLastNotificationResponse()
