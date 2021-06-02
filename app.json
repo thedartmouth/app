@@ -20,7 +20,7 @@
 		"ios": {
 			"supportsTablet": false,
 			"bundleIdentifier": "com.thedartmouth.ios",
-			"buildNumber": "6"
+			"buildNumber": "7"
 		},
 		"android": {
 			"package": "com.thedartmouth.android",
