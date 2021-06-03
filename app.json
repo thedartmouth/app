@@ -4,7 +4,7 @@
 		"slug": "the-dartmouth",
 		"owner": "the-dartmouth",
 		"platforms": ["ios", "android", "web"],
-		"version": "1.2.0",
+		"version": "1.2.1",
 		"orientation": "portrait",
 		"icon": "./assets/images/icon-dark.png",
 		"scheme": "thedartmouth",
@@ -20,7 +20,7 @@
 		"ios": {
 			"supportsTablet": false,
 			"bundleIdentifier": "com.thedartmouth.ios",
-			"buildNumber": "7"
+			"buildNumber": "1"
 		},
 		"android": {
 			"package": "com.thedartmouth.android",
