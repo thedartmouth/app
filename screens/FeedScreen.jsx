@@ -11,7 +11,7 @@ import {
 } from 'react-native'
 import { Divider } from 'react-native-elements'
 import { Stack } from 'react-native-spacing-system'
-import { SafeAreaView, useSafeArea } from 'react-native-safe-area-context'
+import { useSafeArea } from 'react-native-safe-area-context'
 import ArticleCard from '../components/ArticleCard'
 import { Colors } from '../constants'
 
@@ -43,14 +43,13 @@ const FeedScreen = (props) => {
 				keyExtractor={({ slug }) => slug}
 				refreshControl={
 					<RefreshControl
-						refreshing={props.articles.feed == null}
+						refreshing={props.articles.loadingFeed}
 						onRefresh={onRefresh}
 					/>
 				}
 				onEndReached={() => {
-					console.log('end')
 					setPage(page + 1)
-				}} // set page to adding
+				}}
 				ItemSeparatorComponent={Divider}
 				ListFooterComponent={
 					props.articles.feed == null ? (
@@ -61,9 +60,13 @@ const FeedScreen = (props) => {
 						</View>
 					) : null
 				}
-				renderItem={({ item }) => (
+				renderItem={({ item, index }) => (
 					<View key={item.slug}>
-						<ArticleCard article={item} navigation={props.navigation} />
+						<ArticleCard
+							index={index}
+							article={item}
+							navigation={props.navigation}
+						/>
 						<Stack size={36} />
 					</View>
 				)}
@@ -71,10 +74,6 @@ const FeedScreen = (props) => {
 		</View>
 	)
 }
-
-// FeedScreen.navigationOptions = {
-//   header: null,
-// };
 
 export default connect(
 	(reduxState) => ({

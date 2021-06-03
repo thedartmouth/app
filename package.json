@@ -9,13 +9,17 @@
 		"ios": "expo start --ios",
 		"web": "expo start --web",
 		"eject": "expo eject",
-		"test": "jest --watchAll"
+		"test": "jest --watchAll",
+		"build:ios": "expo build:ios",
+		"build:ios:store": "expo build:ios --provisioning-profile-path ../The_Dartmouth.mobileprovision",
+		"build:ios:adhoc": "expo build:ios --provisioning-profile-path ../The_Dartmouth__Ad_Hoc.mobileprovision"
 	},
 	"jest": {
 		"preset": "jest-expo"
 	},
 	"dependencies": {
 		"@expo/vector-icons": "^12.0.0",
+		"@react-native-async-storage/async-storage": "^1.15.5",
 		"@react-native-community/async-storage": "~1.12.0",
 		"@react-native-community/masked-view": "0.1.10",
 		"@react-navigation/bottom-tabs": "^5.0.0",
@@ -27,10 +31,11 @@
 		"debounce": "^1.2.0",
 		"expo": "^40.0.0",
 		"expo-asset": "~8.2.1",
-		"expo-constants": "~9.3.3",
+		"expo-constants": "^10.1.3",
 		"expo-font": "~8.4.0",
 		"expo-haptics": "~8.4.0",
 		"expo-linking": "^2.0.0",
+		"expo-notifications": "^0.11.6",
 		"expo-secure-store": "~9.3.0",
 		"expo-splash-screen": "^0.8.1",
 		"expo-web-browser": "~8.6.0",

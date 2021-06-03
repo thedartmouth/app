@@ -2,6 +2,7 @@ import { ActionTypes } from '../actions'
 
 const INITIAL_STATE = {
 	feed: [],
+	loadingFeed: false,
 	results: [],
 	totalResults: 0,
 	loadingResults: false,
@@ -42,9 +43,11 @@ const articleReducer = (state = INITIAL_STATE, action) => {
 				totalResults: prevState.totalResults + action.payload.total,
 			}
 		case ActionTypes.REFRESH_FEED.REQUEST:
-			return { ...prevState, feed: null }
+			return { ...prevState, loadingFeed: true }
+		case ActionTypes.REFRESH_FEED.FAILURE:
+			return { ...prevState, loadingFeed: false }
 		case ActionTypes.REFRESH_FEED.SUCCESS:
-			return { ...prevState, feed: action.payload }
+			return { ...prevState, loadingFeed: false, feed: action.payload }
 		case ActionTypes.ADD_FEED:
 			return { ...prevState, feed: [...prevState.feed, ...action.payload] }
 		case ActionTypes.READ_ARTICLE.REQUEST:

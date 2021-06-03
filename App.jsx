@@ -11,16 +11,27 @@ import { createStackNavigator } from '@react-navigation/stack'
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context'
 import BottomTabNavigator from './navigation/BottomTabNavigator'
 import useLinking from './navigation/useLinking'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import { reducers, actions } from './store'
-import { Colors } from './constants'
+import { Colors, ROOT_URL } from './constants'
 import ArticleScreen from './screens/ArticleScreen'
 import LoadingScreen from './screens/LoadingScreen'
 import AuthorScreen from './screens/AuthorScreen'
 import ResultsScreen from './screens/ResultsScreen'
 import * as SecureStorage from 'expo-secure-store'
 import Auth from './components/Auth'
-import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
 import { Ionicons } from '@expo/vector-icons'
+import * as Notifications from 'expo-notifications'
+import Axios from 'axios'
+import NotificationRequest from './components/NotificationRequest'
+
+Notifications.setNotificationHandler({
+	handleNotification: async () => ({
+		shouldShowAlert: true,
+		shouldPlaySound: true,
+		shouldSetBadge: true,
+	}),
+})
 
 const Stack = createStackNavigator()
 
@@ -36,12 +47,11 @@ export const store = createStore(
 	)
 )
 
-const ConnectedModal = connect(
+const ConnectedAuthModal = connect(
 	(store) => ({
 		visible: store.user.showAuthModal,
 	}),
 	(dispatch) => ({
-		show: actions.showAuthModal(dispatch),
 		hide: actions.hideAuthModal(dispatch),
 	})
 )((props) => (
@@ -50,7 +60,6 @@ const ConnectedModal = connect(
 		animationType="slide"
 		presentationStyle="formSheet"
 		style={styles.modal}
-		// presentationStyle={Platform.OS === 'ios' ? 'formSheet' : undefined}
 	>
 		<Ionicons
 			name="ios-close"
@@ -59,28 +68,32 @@ const ConnectedModal = connect(
 			style={styles.closeModal}
 			onPress={props.hide}
 		></Ionicons>
-		{/* <TouchableWithoutFeedback
-      style={styles.modalFix}
-        delayPressIn={300}
-        onPressIn={(e) => {
-          console.log('hide')
-          props.hide()
-          if (e?.nativeEvent?.locationY < 0) {
-          }
-        }}
-        onPressOut={(e) => {
-          console.log('show')
-          props.show()
-          if (e?.nativeEvent?.locationY < 0) {
-          }
-        }}
-        > */}
-		{/* <SafeAreaView
-            forceInset={{ bottom: 'always' }}
-          > */}
 		{props.children}
-		{/* </SafeAreaView> */}
-		{/* </TouchableWithoutFeedback> */}
+	</Modal>
+))
+
+const ConnectedNotificationRequestModal = connect(
+	(store) => ({
+		visible: store.notification.showNotificationRequestModal,
+	}),
+	(dispatch) => ({
+		hide: actions.hideNotificationRequestModal(dispatch),
+	})
+)((props) => (
+	<Modal
+		visible={props.visible}
+		animationType="slide"
+		presentationStyle="formSheet"
+		style={styles.modal}
+	>
+		<Ionicons
+			name="ios-close"
+			size={48}
+			color={Colors.charcoal}
+			style={styles.closeModal}
+			onPress={props.hide}
+		></Ionicons>
+		{props.children}
 	</Modal>
 ))
 
@@ -89,13 +102,34 @@ export default function App(props) {
 	const [isFeedLoadingComplete, setFeedLoadingComplete] = React.useState(false)
 	const [initialNavigationState, setInitialNavigationState] = React.useState()
 	const [userLoaded, setUserLoaded] = React.useState(false)
-	const [showAuthModal, setShowAuthModal] = React.useState(false)
-	const containerRef = React.useRef()
+	const [
+		notificationSettingsLoaded,
+		setNotificationSettingsLoaded,
+	] = React.useState(false)
+	const containerRef = React.useRef(null)
+	const [containerMounted, setContainerMounted] = React.useState(false)
 	const { getInitialState } = useLinking(containerRef)
 
 	// Load any resources or data that we need prior to rendering the app
 
 	React.useEffect(() => {
+		async function logAppBootCount() {
+			const bootCount = parseInt(await AsyncStorage.getItem('bootCount'))
+			if (!bootCount) {
+				await AsyncStorage.setItem('bootCount', '2')
+			} else {
+				await AsyncStorage.setItem('bootCount', `${bootCount + 1}`)
+				if (bootCount === 2) {
+					const token = await SecureStorage.getItemAsync(
+						'notificationToken'
+					)
+					if (!token) {
+						actions.showNotificationRequestModal(store.dispatch)()
+					}
+				}
+			}
+		}
+
 		async function loadResourcesAndDataAsync() {
 			try {
 				SplashScreen.preventAutoHideAsync()
@@ -123,32 +157,58 @@ export default function App(props) {
 			}
 		}
 
-		async function loadUser() {
+		async function loadUserAndNotificationToken() {
 			try {
-				const token = await SecureStorage.getItemAsync('token')
+				const userToken = await SecureStorage.getItemAsync('token')
 				const userId = await SecureStorage.getItemAsync('userId')
-				if (token && userId) {
-					actions.auth(store.dispatch)(token)
+
+				if (userToken && userId) {
+					actions.auth(store.dispatch)(userToken)
 					actions.getUser(store.dispatch)()
 					setUserLoaded(true)
+				}
+				const notificationToken = await SecureStorage.getItemAsync(
+					'notificationToken'
+				)
+				if (notificationToken) {
+					await Axios.post(`${ROOT_URL}/notifications/tokens`, {
+						token: notificationToken,
+						userId,
+					})
+					if (!notificationSettingsLoaded) {
+						actions.getSettings(store.dispatch)(notificationToken)
+						setNotificationSettingsLoaded(true)
+					}
 				}
 			} catch (err) {
 				console.error(err)
 			}
 		}
 
-		if (!userLoaded) loadUser()
+		logAppBootCount()
+
+		if (!userLoaded) loadUserAndNotificationToken()
 
 		if (!isFontLoadingComplete) loadResourcesAndDataAsync()
-
-		// if (!mounted) {
-		//   store.subscribe(() => {
-		//     console.log(`updating auth modal status to ${store.getState().user.showAuthModal}, currently it is ${showAuthModal}`)
-		//     if (store.getState().user.showAuthModal !== showAuthModal) setShowAuthModal(store.getState().user.showAuthModal)
-		//   })
-		//   setMounted(true)
-		// }
 	}, [])
+
+	const lastNotificationResponse = Notifications.useLastNotificationResponse()
+	React.useEffect(() => {
+		const notificationContent =
+			lastNotificationResponse?.notification?.request?.content
+		if (notificationContent) {
+			const { articleSlug } = notificationContent.data
+			if (articleSlug) {
+				actions
+					.fetchAndReadArticle(store.dispatch)(articleSlug)
+					.then(() => {
+						if (containerMounted) {
+							containerRef.current?.navigate('Article')
+						}
+					})
+			}
+		}
+	}, [lastNotificationResponse])
 
 	if (!isFontLoadingComplete) return null
 	return (
@@ -166,8 +226,12 @@ export default function App(props) {
 						<NavigationContainer
 							ref={containerRef}
 							initialState={initialNavigationState}
+							onReady={() => setContainerMounted(true)}
 						>
-							<Stack.Navigator screenOptions={{ headerShown: false }}>
+							<Stack.Navigator
+								screenOptions={{ headerShown: false }}
+								initialRouteName="Root"
+							>
 								<Stack.Screen
 									name="Root"
 									component={BottomTabNavigator}
@@ -184,12 +248,20 @@ export default function App(props) {
 							</Stack.Navigator>
 						</NavigationContainer>
 					)}
-					<ConnectedModal>
-						{/* <View style={styles.modalBar}></View> */}
+					<ConnectedAuthModal>
 						<View style={styles.modalContainer}>
-							<Auth></Auth>
+							<Auth />
 						</View>
-					</ConnectedModal>
+					</ConnectedAuthModal>
+					<ConnectedNotificationRequestModal>
+						<View style={styles.modalContainer}>
+							<NotificationRequest
+								hide={actions.hideNotificationRequestModal(
+									store.dispatch
+								)}
+							/>
+						</View>
+					</ConnectedNotificationRequestModal>
 				</SafeAreaView>
 			</SafeAreaProvider>
 		</Provider>
@@ -207,7 +279,6 @@ const styles = StyleSheet.create({
 	},
 	modal: {
 		backgroundColor: Colors.paper,
-		// flex: 1,
 	},
 	modalContainer: {
 		backgroundColor: Colors.paper,
@@ -222,18 +293,4 @@ const styles = StyleSheet.create({
 		top: 16,
 		right: 16,
 	},
-	// modalBarContainer: {
-	//   position: 'absolute',
-	//   top: 16,
-	//   right: 16,
-	//   width: '100%',
-	//   flexDirection: 'row',
-	//   justifyContent: 'flex-end',
-	// },
-	// modalBar: {
-	//   width: '40%',
-	//   height: 8,
-	//   backgroundColor: Colors.pencil,
-	//   borderRadius: 4
-	// }
 })

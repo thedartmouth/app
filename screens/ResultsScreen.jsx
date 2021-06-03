@@ -1,10 +1,10 @@
 import * as React from 'react'
 import { StyleSheet, View, FlatList, Text, RefreshControl } from 'react-native'
 import { Divider } from 'react-native-elements'
-import { Box, Stack, Queue } from '../components/layout'
-import { Ionicons, MaterialIcons } from '@expo/vector-icons'
+import { Box, Stack } from '../components/layout'
+import { Ionicons } from '@expo/vector-icons'
 import { connect } from 'react-redux'
-import { Colors, CMS_URL, Typography } from '../constants'
+import { Colors, Typography } from '../constants'
 import PreviewCard from '../components/PreviewCard'
 
 class ResultsScreen extends React.Component {
@@ -38,7 +38,6 @@ class ResultsScreen extends React.Component {
 		return (
 			<View style={styles.bookmarkScreen}>
 				<Box dir="column" style={styles.topTab}>
-					{/* <Queue size={36} /> */}
 					<Box dir="row" justify="center" align="center" expand>
 						<Ionicons
 							name="ios-chevron-back"
@@ -154,21 +153,13 @@ const styles = StyleSheet.create({
 	topTab: {
 		backgroundColor: Colors.paper,
 		zIndex: 1,
-		// alignItems: 'center',
 		borderColor: Colors.border,
 		borderStyle: 'solid',
 		borderBottomWidth: 1,
-		// borderWidth: 1,
 		position: 'absolute',
 		top: 0,
 		width: '100%',
 		height: 48,
-		// borderColor: '#e5e6e9',
-		// backgroundColor: 'white',
-		// shadowOffset: { height: 3 },
-		// shadowRadius: 10,
-		// shadowColor: 'gray',
-		// shadowOpacity: 0.3,
 	},
 	backButton: {
 		position: 'absolute',

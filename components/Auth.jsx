@@ -1,11 +1,8 @@
 import React from 'react'
-import { StyleSheet, Text, TouchableOpacity, Image, View } from 'react-native'
+import { StyleSheet, Text, Image, View } from 'react-native'
 import { Input } from 'react-native-elements'
-import { Ionicons } from '@expo/vector-icons'
 import { Box, Stack, Queue } from '../components/layout'
 import VoxButton from '../components/VoxButton'
-import FullWidthImage from 'react-native-fullwidth-image'
-import HTML from 'react-native-render-html'
 import { connect } from 'react-redux'
 import { Colors, Typography } from '../constants'
 import actions from '../store/actions'
@@ -227,8 +224,6 @@ const styles = StyleSheet.create({
 		...Typography.sansLight,
 		color: Colors.pen,
 		...Typography.p,
-		// width: '100%',
-		// flex: 1,
 	},
 	nameInput: {
 		width: '50%',

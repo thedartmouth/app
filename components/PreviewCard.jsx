@@ -39,7 +39,6 @@ export default connect(null, (dispatch) => ({
 const styles = StyleSheet.create({
 	infoBox: {
 		flexDirection: 'row',
-		// justifyContent: 'space-between',
 	},
 	textArea: {
 		flex: 2,
