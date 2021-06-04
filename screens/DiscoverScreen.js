@@ -187,37 +187,37 @@ class DiscoverScreen extends React.Component {
                   </Box>
                 </Box> */}
 								<DiscoverTile
-									title="COVID-19"
+									title="News"
 									colors={[Colors.theme[0], Colors.paper]}
 									onPress={this.navigateToTag}
 								/>
 								<Stack size={24}></Stack>
 								<DiscoverTile
-									title="Mirror"
+									title="Opinion"
 									colors={[Colors.theme[1], Colors.paper]}
 									onPress={this.navigateToTag}
 								/>
 								<Stack size={24}></Stack>
 								<DiscoverTile
-									title="Arts"
+									title="COVID-19"
 									colors={[Colors.theme[2], Colors.paper]}
 									onPress={this.navigateToTag}
 								/>
 								<Stack size={24}></Stack>
 								<DiscoverTile
-									title="Featured"
+									title="Sports"
 									colors={[Colors.theme[3], Colors.paper]}
 									onPress={this.navigateToTag}
 								/>
 								<Stack size={24}></Stack>
 								<DiscoverTile
-									title="Opinion"
+									title="Mirror"
 									colors={[Colors.theme[4], Colors.paper]}
 									onPress={this.navigateToTag}
 								/>
 								<Stack size={24}></Stack>
 								<DiscoverTile
-									title="Sports"
+									title="Arts"
 									colors={[Colors.theme[5], Colors.paper]}
 									onPress={this.navigateToTag}
 								/>
