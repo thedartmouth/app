@@ -1,7 +1,7 @@
 import axios from 'axios'
 import * as SecureStore from 'expo-secure-store'
 import { CMS_URL, ROOT_URL } from '../../constants'
-import { types } from '../../lib'
+import { types, utils } from '../../lib'
 import { showAuthModal } from './user-actions'
 
 export const ActionTypes = {
@@ -56,7 +56,8 @@ export const refreshFeed = (dispatch) => () =>
 					type: ActionTypes.REFRESH_FEED.SUCCESS,
 					payload: response.data.items
 						.filter(types.articleFilter)
-						.map(types.articleConverter),
+						.map(types.articleConverter)
+						.sort(utils.feedSorter('DATE')),
 				})
 				resolve()
 			})
