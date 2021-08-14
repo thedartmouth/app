@@ -7,7 +7,7 @@ const DEPLOY_TAG = 'prod'
 const CMS_URL = 'https://www.thedartmouth.com'
 const ROOT_URL =
 	DEPLOY_TAG === 'dev'
-		? 'http://10.0.0.99:9090'
+		? 'http://192.168.0.233:9090'
 		: 'https://the-dartmouth-core-prod.herokuapp.com'
 const POLICY_URL = 'https://www.thedartmouth.com/page/policies'
 
