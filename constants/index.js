@@ -6,7 +6,7 @@ const DEPLOY_TAG = 'prod'
 
 const CMS_URL = 'https://www.thedartmouth.com'
 const ROOT_URL =
-	DEPLOY_TAG === 'dev'
+	DEPLOY_TAG === 'prod'
 		? 'https://the-dartmouth-core-staging.herokuapp.com'
 		: 'https://the-dartmouth-core-prod.herokuapp.com'
 const POLICY_URL = 'https://www.thedartmouth.com/page/policies'

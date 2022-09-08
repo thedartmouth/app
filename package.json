@@ -38,6 +38,7 @@
 		"expo-notifications": "^0.11.6",
 		"expo-secure-store": "~9.3.0",
 		"expo-splash-screen": "^0.8.1",
+		"expo-updates": "~0.4.1",
 		"expo-web-browser": "~8.6.0",
 		"native-base": "^2.13.12",
 		"node-html-parser": "^1.2.19",
