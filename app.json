@@ -28,7 +28,7 @@
       "supportsTablet": false,
       "bundleIdentifier": "com.thedartmouth.ios",
       "buildNumber": "3",
-      "runtimeVersion": "sdkVersion"
+      "runtimeVersion": "1.0.0"
     },
     "android": {
       "package": "com.thedartmouth.android",
