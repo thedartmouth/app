@@ -25,6 +25,10 @@ import dateFormat from 'dateformat'
 import { Platform } from 'react-native'
 import { SafeAreaConsumer } from 'react-native-safe-area-context'
 import * as Haptics from 'expo-haptics'
+import { Analytics, PageHit } from 'expo-analytics-google';
+
+await Analytics.init({ propertyId: 'UA-336941941-Y' });
+Analytics.hit(new PageHit('Article'));
 
 class ArticleScreen extends React.Component {
 	constructor(props) {

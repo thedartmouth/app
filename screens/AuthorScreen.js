@@ -11,6 +11,10 @@ import { Ionicons } from '@expo/vector-icons'
 import HTML from 'react-native-render-html'
 import PreviewCard from '../components/PreviewCard'
 import axios from 'axios'
+import { Analytics, PageHit } from 'expo-analytics-google';
+
+await Analytics.init({ propertyId: 'UA-336941941-Y' });
+Analytics.hit(new PageHit('Author'));
 
 class AuthorScreen extends React.Component {
 	constructor(props) {
