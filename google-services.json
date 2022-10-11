@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "951240691962",
+    "project_id": "the-dartmouth-android",
+    "storage_bucket": "the-dartmouth-android.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:951240691962:android:80a6d3843d444a965f3943",
+        "android_client_info": {
+          "package_name": "com.thedartmouth.android"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "951240691962-7cog26mcfssle9d5bj88u9mciahei9ic.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBUnTivwYRmv_5HZ-Me3TxkkaLdtSzvGDQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "951240691962-7cog26mcfssle9d5bj88u9mciahei9ic.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
