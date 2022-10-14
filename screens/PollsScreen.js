@@ -7,10 +7,10 @@ import { Stack, Queue } from 'react-native-spacing-system'
 import PollCard from '../components/PollCard'
 import { Typography, Colors } from '../constants'
 import * as uuid from 'uuid'
-import { Analytics, PageHit } from 'expo-analytics-google';
+import { Analytics, PageHit } from 'expo-analytics';
 
-await Analytics.init({ propertyId: 'UA-336941941-Y' });
-Analytics.hit(new PageHit('Polls'));
+const analytics = new Analytics('UA-336941941-Y');
+analytics.hit(new PageHit('Polls'))
 
 class PollsScreen extends React.Component {
 	constructor(props) {

@@ -14,10 +14,10 @@ import { Stack } from 'react-native-spacing-system'
 import { useSafeArea } from 'react-native-safe-area-context'
 import ArticleCard from '../components/ArticleCard'
 import { Colors } from '../constants'
-import { Analytics, PageHit } from 'expo-analytics-google';
+import { Analytics, PageHit } from 'expo-analytics';
 
-await Analytics.init({ propertyId: 'UA-336941941-Y' });
-Analytics.hit(new PageHit('Feed'));
+const analytics = new Analytics('UA-336941941-Y');
+analytics.hit(new PageHit('Feed'))
 
 const FeedScreen = (props) => {
 	const [page, setPage] = React.useState(1)
