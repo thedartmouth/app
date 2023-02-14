@@ -4,8 +4,9 @@
 #import <React/RCTBridgeDelegate.h>
 #import <UIKit/UIKit.h>
 
-#import <UMCore/UMAppDelegateWrapper.h>
 
-@interface AppDelegate : EXAppDelegateWrapper <RCTBridgeDelegate, EXUpdatesAppControllerDelegate>
+//@interface AppDelegate : EXAppDelegateWrapper <RCTBridgeDelegate, EXUpdatesAppControllerDelegate>
+@interface AppDelegate : EXAppDelegateWrapper <UIApplicationDelegate, RCTBridgeDelegate>
 
 @end
+

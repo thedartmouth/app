@@ -17,10 +17,10 @@ import { debounce } from 'debounce'
 import { actions } from '../store'
 import { utils } from '../lib'
 import PreviewCard from '../components/PreviewCard'
-import { Analytics, PageHit } from 'expo-analytics';
+import { Analytics, PageHit } from 'expo-analytics-google';
 
-const analytics = new Analytics('UA-336941941-Y');
-analytics.hit(new PageHit('Discover'))
+await Analytics.init({ propertyId: 'UA-336941941-Y' });
+Analytics.hit(new PageHit('Discover'));
 
 const DiscoverTile = (props) => {
 	return (

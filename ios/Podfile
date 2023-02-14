@@ -6,12 +6,10 @@ platform :ios, '12.4'
 
 target 'TheDartmouth' do
   use_expo_modules!
+  pod 'EXCore', path: '../node_modules/expo-core/ios'
+  pod 'EXFontInterface', path: "../node_modules/expo-font-interface/ios"
+  pod 'EXReactNativeAdapter', path: '../node_modules/expo-react-native-adapter/ios', inhibit_warnings: true
   post_integrate do |installer|
-    begin
-      expo_patch_react_imports!(installer)
-    rescue => e
-      Pod::UI.warn e
-    end
     begin
       expo_patch_react_imports!(installer)
     rescue => e

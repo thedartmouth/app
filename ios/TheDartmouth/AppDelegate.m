@@ -6,7 +6,9 @@
 #import <React/RCTLinkingManager.h>
 
 #import <EXSplashScreen/EXSplashScreenService.h>
-#import <UMCore/UMModuleRegistryProvider.h>
+#import <EXCore/EXModuleRegistry.h>
+#import <EXReactNativeAdapter/EXNativeModulesProxy.h>
+#import <EXReactNativeAdapter/EXModuleRegistryAdapter.h>
 
 #if defined(FB_SONARKIT_ENABLED) && __has_include(<FlipperKit/FlipperClient.h>)
 #import <FlipperKit/FlipperClient.h>
@@ -30,10 +32,13 @@ static void InitializeFlipper(UIApplication *application) {
 @interface AppDelegate () <RCTBridgeDelegate>
 
 @property (nonatomic, strong) NSDictionary *launchOptions;
+@property (nonatomic, strong) NSDictionary *moduleRegistryAdapter;
 
 @end
 
 @implementation AppDelegate
+
+@synthesize moduleRegistryAdapter;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
@@ -41,7 +46,7 @@ static void InitializeFlipper(UIApplication *application) {
   InitializeFlipper(application);
 #endif
   
-  self.moduleRegistryAdapter = [[UMModuleRegistryAdapter alloc] initWithModuleRegistryProvider:[[UMModuleRegistryProvider alloc] init]];
+  self.moduleRegistryAdapter = [[EXModuleRegistryAdapter alloc] initWithModuleRegistryProvider:[[EXModuleRegistryProvider alloc] init]];
   self.launchOptions = launchOptions;
   self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
   #ifdef DEBUG
@@ -73,7 +78,7 @@ static void InitializeFlipper(UIApplication *application) {
 
 - (NSURL *)sourceURLForBridge:(RCTBridge *)bridge {
  #ifdef DEBUG
-  return [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
+  return [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index"];
  #else
   return [[EXUpdatesAppController sharedInstance] launchAssetUrl];
  #endif
@@ -81,7 +86,7 @@ static void InitializeFlipper(UIApplication *application) {
 
 - (void)appController:(EXUpdatesAppController *)appController didStartWithSuccess:(BOOL)success {
   appController.bridge = [self initializeReactNativeApp];
-  EXSplashScreenService *splashScreenService = (EXSplashScreenService *)[UMModuleRegistryProvider getSingletonModuleForClass:[EXSplashScreenService class]];
+  EXSplashScreenService *splashScreenService = (EXSplashScreenService *)[EXModuleRegistryProvider getSingletonModuleForClass:[EXSplashScreenService class]];
   [splashScreenService showSplashScreenFor:self.window.rootViewController];
 }
 

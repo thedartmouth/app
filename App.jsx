@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { connect } from 'react-redux'
-import { createStore, applyMiddleware, compose } from 'redux'
+import { configureStore, applyMiddleware, compose } from 'redux'
 import { Provider } from 'react-redux'
 import thunk from 'redux-thunk'
 import { Platform, StatusBar, StyleSheet, View, Modal } from 'react-native'
@@ -35,7 +35,7 @@ Notifications.setNotificationHandler({
 
 const Stack = createStackNavigator()
 
-export const store = createStore(
+export const store = configureStore(
 	reducers,
 	{},
 	compose(
